@@ -1,10 +1,6 @@
-export default function handler(req, res) {
+export default async function handler(req, res) {
     // Get data submitted in request's body.
     const body = req.body
-    console.log(req);
-    // Optional logging to see the responses
-    // in the command line where next.js app is running.
-    console.log('body: ', body)
   
     // Guard clause checks for first and last name,
     // and returns early if they are not found
@@ -17,8 +13,20 @@ export default function handler(req, res) {
     // Sends a HTTP success code
 
     //make request to Lambda
-    const lambda_resp = 'true';
+    const url = 'https://jwfjuifdunib5gmornhrs4nm4a0pitnm.lambda-url.us-east-2.on.aws/';
+    const options = {
+      method: 'POST',
+      mode : 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+        'token' : 'zpdkwA.2_kLU@zg'
+      },
+      body: {email : body.email, password : body.password},
+    }
 
-    return res.status(200).json(lambda_resp)
+    const lambda_resp = await fetch(url, options);
+    const lambda_data = await lambda_resp.json();
+
+    return res.status(200).json(lambda_data);
 
   }

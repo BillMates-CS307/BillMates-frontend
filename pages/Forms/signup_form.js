@@ -42,7 +42,7 @@ export default function PageWithJSbasedForm() {
       // Get the response data from server as JSON.
       // If server returns the name submitted, that means the form works.
       const result = await response.json();
-      //console.log(response);
+      console.log(response);
       console.log(result);
       if (result) {
         alert("worked!");
@@ -52,20 +52,32 @@ export default function PageWithJSbasedForm() {
     }
 
     return (
-        <form onSubmit={handleSubmit} method="post" className={styles.signup_form}>
-        <label htmlFor="email">Email:</label>
-        <input required type="email" id="email" name="email" />
-        <label htmlFor="password">Password:</label>
-  <input
-    type="password"
-    id="password"
-    name="password"
-    pattern="[a-zA-Z0-9]+"
-    title="Password should be digits (0 to 9) or alphabets (a to z)."
-    required
-  />
-        <button type="submit">Submit</button>
-      </form>
+<>
+    <div className={styles.signup_form}>
+        <form onSubmit={handleSubmit} method="post">
+            <div>
+            <label htmlFor="email">Email:</label>
+            <input required type="email" id="email" name="email" />
+            </div>
+            <div>
+            <label htmlFor="password">Password:</label>
+            <input
+            type="password"
+            id="password"
+            name="password"
+            pattern="[a-zA-Z0-9]+"
+            title="Password should be digits (0 to 9) or alphabets (a to z)."
+            required
+            />
+            </div>
+            <button type="submit">Sign In</button>
+        </form>
+    </div>
+
+    <p>
+    New to BillMates? <a href="/register">Register</a>
+    </p>
+</>
     )
 
 }  

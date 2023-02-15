@@ -2,7 +2,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { Inter } from '@next/font/google'
 import styles from '@/styles/Home.module.css'
-import PageWithJSbasedForm from './signup_form'
+import PageWithJSbasedForm from './Forms/signup_form'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -24,7 +24,7 @@ export default function Home() {
 
       <main className = {styles.main}>
 
-      <div className= {styles.signupbox}>
+      <div className= {styles.position_box}>
 
       <PageWithJSbasedForm></PageWithJSbasedForm>
 

@@ -7,39 +7,62 @@
   min-height: 100vh;
 }
 
-.signup_form {
-  width: 50vw;
-  height: 50vh;
-  padding: 3rem;
-  background: #fff;
-  border-radius: 5px;
-
-}
-
-.signup_form * {
-  margin: 5px auto;
+.position_box {
+  width: 80vw;
+  display: block;
 }
 
 .signup_form label {
-  margin-top: 15px;
   display: block;
-  width: 50%;
+    margin-bottom: 5px;
 }
 
 .signup_form input {
-  width: 50%;
-  height: 1.5rem;
   display: block;
+    height: 1.5rem;
+    padding: 3px 5px;
+    width: 100%;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    border : 1px solid #9e9e9e
+}
+
+.signup_form input:focus {
+  outline: 1px solid #00C923;
 }
 
 .signup_form button {
+  width: 100%;
+    line-height: 2;
+    background: #00C923;
+    color: #FFF;
+    border: none;
+    border-radius: 5px;
+}
+
+.signup_form {
+  margin: 15px auto;
+    /* margin-top: 15px; */
+    width: 80%;
+    background: #FFF;
+    padding: 1rem;
+    border-radius: 10px;
+}
+
+.position_box p {
+  text-align: center;
+    padding: 15px;
+    border: 1px solid #d5d2d2;
+    border-radius: 5px;
+    width: 80%;
+    margin: auto;
+    background: #FFF;
+}
+
+.position_box a {
   display: block;
-  width: 50%;
-  background-color: #00C923;
-  margin-top: 15px;
-  color: #fff;
-  border: none;
-  height: 1.5rem;
-  border-radius: 5px;
-  cursor: pointer;
+  color: #00C923;
+}
+.position_box a:visited {
+  color: #007b15;
 }
