@@ -20,10 +20,10 @@ export default function Register() {
             field_check.elms[i].style = "outline: 1px solid #ff0101;";
             field_check.elms[i].addEventListener('keydown', function () {
               this.style = "";
-              this.nextElementSibling.style = "";
+              this.parentElement.nextElementSibling.style = "";
             }, {once : true});
-            field_check.elms[i].nextElementSibling.textContent = field_check.messages[i];
-            field_check.elms[i].nextElementSibling.style = "display:block";
+            field_check.elms[i].parentElement.nextElementSibling.textContent = field_check.messages[i];
+            field_check.elms[i].parentElement.nextElementSibling.style = "display:block";
           }
           field_check.elms[0].focus();
           return;
@@ -133,25 +133,33 @@ export default function Register() {
         <form onSubmit={handleSubmit} method="post">
             <div>
             <label htmlFor="fname">First Name:</label>
+            <empty>
             <input type="text" id="fname" name="fname" />
+            </empty>
             <span></span>
             </div>
 
             <div>
             <label htmlFor="lname">Last Name:</label>
+            <empty>
             <input type="text" id="lname" name="lname" />
+            </empty>
             <span></span>
             </div>
 
             <div>
             <label htmlFor="email">Email:</label>
+            <empty>
             <input  type="text" id="email" name="email" />
+            </empty>
             <span></span>
             </div>
             
             <div>
             <label htmlFor="remail">Re-type Email:</label>
+            <empty>
             <input  type="text" id="remail" name="remail" />
+            </empty>
             <span></span>
             </div>
 
