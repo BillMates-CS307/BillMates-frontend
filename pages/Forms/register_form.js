@@ -4,51 +4,103 @@ import styles from '@/styles/Home.module.css'
 export default function Register() {
 
     const handleSubmit = async (event) => {
-        // Stop the form from submitting and refreshing the page.
         event.preventDefault()
-    
-        // Get data from the form.
         const data = {
+          fname : event.target.fname.value ,
+          lname : event.target.lname.value,
           email: event.target.email.value,
+          remail: event.target.remail.value,
           password: event.target.password.value,
+          rpassword : event.target.rpassword.value
+        }
+
+        const field_check = checkFields(data);
+        if (!field_check.valid) {
+          for (let i in field_check.elms) {
+            field_check.elms[i].style = "outline: 1px solid #ff0101;";
+            field_check.elms[i].addEventListener('keydown', function () {
+              this.style = "";
+              this.nextElementSibling.style = "";
+            }, {once : true});
+            field_check.elms[i].nextElementSibling.textContent = field_check.messages[i];
+            field_check.elms[i].nextElementSibling.style = "display:block";
+          }
+          field_check.elms[0].focus();
+          return;
         }
     
-        // Send the data to the server in JSON format.
         const JSONdata = JSON.stringify(data)
-    
-        // API endpoint where we send form data.
-        const endpoint = '/api/signup_form'
-    
-        // Form the request for sending data to the server.
+        const endpoint = '/api/register_api'
         const options = {
-          // The method is POST because we are sending data.
           method: 'POST',
-          // Tell the server we're sending JSON.
+          mode : 'no-cors',
           headers: {
             'Content-Type': 'application/json',
           },
-          // Body of the request is the JSON data we created above.
           body: JSONdata,
         }
+
     
-        // Send the form data to our forms API on Vercel and get a response.
         const response = await fetch(endpoint, options);
-  
         if (response.status == 400) {
           alert("Unable to find form fields");
           return;
         }
-    
-        // Get the response data from server as JSON.
-        // If server returns the name submitted, that means the form works.
+
         const result = await response.json();
-        console.log(response);
         console.log(result);
-        if (result) {
-          alert("worked!");
-        } else {
-          alert("failed");
+        // if (result) {
+        //   alert("worked!");
+        // } else {
+        //   alert("failed");
+        // }
+      }
+
+
+      const checkFields = (target) => {
+        let output = {valid : true, elms : [], messages : []}
+        if (target.fname == "") {
+          output.elms.push(document.querySelector('#fname'));
+          output.messages.push("Cannot be empty");
         }
+        if (target.lname == "") {
+          output.elms.push(document.querySelector('#lname'));
+          output.messages.push("Cannot be empty");
+        }
+
+        let regex = /[a-zA-z0-9]@[a-zA-z0-9.]/g;
+        if (target.email == "" || target.email.search(regex) == -1) {
+          output.elms.push(document.querySelector('#email'));
+          output.messages.push("Invalid Email");
+        }        
+        // if (target.remail == "" || target.email != target.remail || target.remail.search(regex) == -1) {
+        //   output.elms.push(document.querySelector('#remail'));
+        //   output.messages.push("Invalid Email");
+        // }
+        if (target.email != target.remail) {
+          output.elms.push(document.querySelector('#remail'));
+          output.messages.push("Emails must match");
+        }
+
+        regex = /[a-zA-Z0-9]{5,}/g;
+        if (target.password == "" || target.password.search(regex) == -1) {
+          output.elms.push(document.querySelector('#password'));
+          output.messages.push("Password must be at least 5 characters or numbers");
+        }        
+        // if (target.remail == "" || target.email != target.remail || target.remail.search(regex) == -1) {
+        //   output.elms.push(document.querySelector('#remail'));
+        //   output.messages.push("Invalid Email");
+        // }
+        if (target.password != target.rpassword) {
+          output.elms.push(document.querySelector('#rpassword'));
+          output.messages.push("Passwords must match");
+        }
+
+        if (output.elms.length > 0) {
+          output.valid = false;
+        }
+
+        return output;
       }
 
     return(
@@ -57,22 +109,26 @@ export default function Register() {
         <form onSubmit={handleSubmit} method="post">
             <div>
             <label htmlFor="fname">First Name:</label>
-            <input required type="text" id="fname" name="fname" />
+            <input type="text" id="fname" name="fname" />
+            <span></span>
             </div>
 
             <div>
             <label htmlFor="lname">Last Name:</label>
-            <input required type="text" id="lname" name="lname" />
+            <input type="text" id="lname" name="lname" />
+            <span></span>
             </div>
 
             <div>
             <label htmlFor="email">Email:</label>
-            <input required type="email" id="email" name="email" />
+            <input  type="text" id="email" name="email" />
+            <span></span>
             </div>
             
             <div>
             <label htmlFor="remail">Re-type Email:</label>
-            <input required type="email" id="remail" name="remail" />
+            <input  type="text" id="remail" name="remail" />
+            <span></span>
             </div>
 
             <div>
@@ -83,8 +139,9 @@ export default function Register() {
             name="password"
             pattern="[a-zA-Z0-9]+"
             title="Password should be digits (0 to 9) or alphabets (a to z)."
-            required
+            
             />
+            <span></span>
             </div>
 
             <div>
@@ -95,8 +152,9 @@ export default function Register() {
             name="rpassword"
             pattern="[a-zA-Z0-9]+"
             title="Password should be digits (0 to 9) or alphabets (a to z)."
-            required
+            
             />
+            <span></span>
             </div>
             <button type="submit">Sign Up</button>
         </form>

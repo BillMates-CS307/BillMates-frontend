@@ -3,13 +3,16 @@
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  padding: 6rem;
   min-height: 100vh;
 }
 
 .position_box {
   width: 80vw;
   display: block;
+}
+
+.signup_form div {
+  margin-bottom: 15px;
 }
 
 .signup_form label {
@@ -22,13 +25,24 @@
     height: 1.5rem;
     padding: 3px 5px;
     width: 100%;
-    margin-bottom: 15px;
     border-radius: 5px;
     border : 1px solid #9e9e9e
 }
 
 .signup_form input:focus {
   outline: 1px solid #00C923;
+}
+.signup_form input.active {
+  border: 1px solid #ff0101;
+}
+
+.signup_form span {
+  display: none;
+  width: 100%;
+  font-size: 80%;
+  height: fit-content;
+  margin-top: 0.25rem;
+  color: #F00;
 }
 
 .signup_form button {
@@ -47,6 +61,7 @@
     background: #FFF;
     padding: 1rem;
     border-radius: 10px;
+    box-shadow: 1px 2px 15px 0 #949494;
 }
 
 .position_box p {
@@ -57,6 +72,7 @@
     width: 80%;
     margin: auto;
     background: #FFF;
+    box-shadow: 1px 2px 15px 0 #949494;
 }
 
 .position_box a {
