@@ -2,6 +2,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { Inter } from '@next/font/google'
 import styles from '@/styles/Group.module.css'
+import Header from './Globals/Header.js'
 
 export default function Group () {
 
@@ -10,6 +11,7 @@ export default function Group () {
 
 return (
 <>
+<Header></Header>
 <main className={styles.main}>
     <div className={styles.group_heading}>
         <div className={styles.group_info}>
