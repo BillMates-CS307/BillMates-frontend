@@ -14,7 +14,7 @@ export default async function handler(req, res) {
     // Sends a HTTP success code
 
     //make request to Lambda
-    const body_json = {fname : req_body.fname, lname : req_body.lname, email : req_body.email, password : req_body.password};
+    const body_json = {fname : req_body.fname, lname : req_body.lname, email : req_body.email, password : req_body.password, name : req_body.name};
     const url = 'https://rdsn74oehsmrcoc2spf6aiw4iy0hqcbv.lambda-url.us-east-2.on.aws/';
     const options = {
       method: 'POST',

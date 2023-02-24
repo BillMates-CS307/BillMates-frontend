@@ -28,7 +28,7 @@ export default function Register() {
           field_check.elms[0].focus();
           return;
         }
-    
+        data["name"] = data.fname + " " + data.lname;
         const JSONdata = JSON.stringify(data)
         const endpoint = '/api/register_api'
         const options = {
@@ -94,8 +94,8 @@ export default function Register() {
         if (target.password.search(/(?=(.*[?#@!*()])+)/g) == -1) {
           message = "Must have at least 1 special character ? # @ ! * ( )";
         }
-        if (target.password == "" || target.password.length < 5) {
-          message = "Password must be at least 5 characters in length";
+        if (target.password == "" || target.password.length < 10) {
+          message = "Password must be at least 10 characters in length";
         }
         if (message != "") {
           output.elms.push(document.querySelector('#password'));
