@@ -1,0 +1,97 @@
+.main {
+    width: 100vw;
+    height: 90vh;
+    top: 10vh;
+    position: absolute;
+    background: #FFF;
+    display: grid;
+    grid-template-rows: min-content 1fr;
+}
+
+.group_heading {
+    width: 100%;
+    position: relative;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.group_info {
+    width: 90%;
+    display: grid;
+    grid-template-columns: minmax(min-content, 80%) 1fr;
+    margin: auto;
+    padding: 10px;
+    border: 1px solid #000;
+    border-radius: 5px;
+}
+
+.group_info p {
+    font-size: 1rem;
+}
+.group_info p:first-of-type {
+    font-size: 1.5rem;
+}
+
+.group_amount {
+    display: flex;
+    align-items: center;
+}
+.group_amount p {
+    font-size: 1rem;
+    color: inherit;
+}
+.banner {
+    width: 100%;
+    margin-top: 15px;
+    background-color: #0f0;
+    text-align: center;
+    padding: 5px 0;
+}
+.banner p {
+    font-size: 1rem;
+    color: #fff;
+}
+
+.transaction_history {
+    width: 100%;
+    overflow-y: scroll;
+}
+
+.transaction_container {
+    width: 95%;
+    margin: auto;
+    border: 1px solid #000;
+    display: grid;
+    grid-template-columns: 75% 25%;
+    align-items: center;
+    margin-bottom: 10px;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.transaction_container > div {
+    pointer-events: none;
+}
+
+.transaction_info div {
+    display: grid;
+    grid-template-columns: minmax(20%, 1fr) min-content;
+    background-color: #ADADAD;
+    padding: 0 5px;
+}
+
+.transaction_info div:first-of-type {
+    background-color: #4D4D4D;
+    color: #FFF;
+}
+
+.transaction_info p {
+    word-break: keep-all;
+    overflow-x: hidden;
+    padding: 0 1px;
+}
+
+.relative_amount p {
+    text-align: center;
+}
+
