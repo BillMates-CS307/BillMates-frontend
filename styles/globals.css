@@ -139,6 +139,60 @@ header svg {
   color : #000;
 }
 
+footer {
+  position: fixed;
+  bottom: 0;
+  width: 100vw;
+  display: grid;
+  grid-template-columns: 50px 1fr 50px;
+  padding: 5px 10px;
+}
+
+footer img {
+  transform: scale(70%);
+}
+
+footer div {
+  height: 50px;
+  border-radius: 50%;
+  background-color: #D9D9D9;
+  cursor: pointer;
+  position: relative;
+  z-index: 5;
+}
+
+footer div a {
+  height: 50px;
+  display: inline-block;
+}
+
+footer span {
+  pointer-events: none;
+}
+
+#plus_button:after {
+  content: '';
+  position: absolute;
+  transform: translate(-50%, -50%);
+  height: 3px;
+  width: 35%;
+  background: #000;
+  top: 50%;
+  left: 50%;
+}
+
+#plus_button:before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #000;
+  height: 35%;
+  width: 3px;
+}
+
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;

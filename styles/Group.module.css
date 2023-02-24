@@ -6,6 +6,11 @@
     grid-template-rows: min-content 1fr;
 }
 
+.main p {
+    text-overflow: ellipsis;
+    overflow-x: hidden;
+}
+
 .group_heading {
     width: 100%;
     position: relative;
@@ -16,7 +21,7 @@
 .group_info {
     width: 90%;
     display: grid;
-    grid-template-columns: minmax(min-content, 80%) 1fr;
+    grid-template-columns: 1fr min-content;
     margin: auto;
     padding: 10px;
     border: 1px solid #000;
@@ -28,6 +33,10 @@
 }
 .group_info p:first-of-type {
     font-size: 1.5rem;
+}
+
+.names_members {
+    overflow-x: hidden;
 }
 
 .group_amount {

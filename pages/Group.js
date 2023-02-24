@@ -3,6 +3,30 @@ import Image from 'next/image'
 import { Inter } from '@next/font/google'
 import styles from '@/styles/Group.module.css'
 import Header from './Globals/Header.js'
+import Footer from './Globals/Footer.js'
+
+function Transaction ({jsonString}) {
+    console.log(amount);
+    const body = JSON.parse(jsonString);
+    return (
+        <div className={styles.transaction_container}>
+        <div className={styles.transaction_info}>
+            <div className={styles.transaction_name_amount}>
+                <p>{item}</p>
+                <p>${amount}</p>
+            </div>
+            <div className={styles.transaction_owner_date}>
+                <p>{name}</p>
+                <p>{date}</p>
+            </div>
+        </div>
+        <div className={styles.relative_amount}>
+            <p>${relative}</p>
+        </div>
+    
+    </div>
+    );
+}
 
 export default function Group () {
 
@@ -28,6 +52,7 @@ return (
         </div>
     </div>
     <div className={styles.transaction_history}>
+        {/* <Transaction name="Logan Cover" item="Testing" amount="10.00" date="02/24/2023" relative="5.00"/> */}
         <div className={styles.transaction_container}>
             <div className={styles.transaction_info}>
                 <div className={styles.transaction_name_amount}>
@@ -351,6 +376,7 @@ return (
     </div>
     
 </main>
+<Footer></Footer>
 </>
 );
 }
