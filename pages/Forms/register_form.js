@@ -1,8 +1,8 @@
 import styles from '@/styles/Home.module.css'
-
+import { useRouter } from 'next/router'
 
 export default function Register() {
-
+    let router = useRouter();
     const handleSubmit = async (event) => {
         event.preventDefault()
         const data = {
@@ -48,14 +48,27 @@ export default function Register() {
         }
 
         const result = await response.json();
-        console.log(result);
-        // if (result) {
-        //   alert("worked!");
-        // } else {
-        //   alert("failed");
-        // }
-      }
 
+        if (!result.token_success) {
+          alert("Failed to validate signup attempt, please try again later");
+          return;
+        }
+        if (!result.signup_success) {
+          const email = document.querySelector('#email');
+          email.style = "outline: 1px solid #ff0101;";
+          email.addEventListener('keydown', function () {
+            this.style = "";
+            this.parentElement.nextElementSibling.style = "";
+          }, {once : true});
+          email.parentElement.nextElementSibling.textContent = "Email already in use";
+          email.parentElement.nextElementSibling.style = "display:block";
+          email.focus();
+        } else {
+          router.push('/')
+        }
+
+
+      }
 
       const checkFields = (target) => {
         let output = {valid : true, elms : [], messages : []}

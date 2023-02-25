@@ -1,7 +1,6 @@
 import Image from 'next/image'
 
-export default function Footer() {
-
+export default function Footer({callback, args}) {
     return (
         <>
             <footer>
@@ -17,7 +16,7 @@ export default function Footer() {
                 </a>
                 </div>
                 <span></span>
-                <div id='plus_button'>
+                <div id='plus_button' onClick={(args) => callback(args)}>
                 </div>
             </footer>
         </>

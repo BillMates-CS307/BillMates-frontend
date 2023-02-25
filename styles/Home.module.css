@@ -1,11 +1,14 @@
 .header {
   width: 100vw;
-  height: 100px;
+  height: 80px;
   display: block;
+  background-color: transparent;
+  border: none;
+  padding: 0;
 }
 .header img {
-  width: 100px;
-  height: 100px;
+  width: 80px;
+  height: 80px;
   display: block;
   margin: auto;
 }
@@ -21,6 +24,16 @@
   width: 80vw;
   display: block;
   padding-bottom: 5vh;
+}
+
+.incorrect_box {
+  display: none;
+}
+
+.incorrect_box p {
+  background: #F008 !important;
+  border: none !important;
+  color : #900;
 }
 
 .signup_form div {
