@@ -60,7 +60,6 @@ export async function getServerSideProps() {
 function splitEven() {
     if (typeof window !== "undefined") {
         const total = parseFloat(document.querySelector('#input_item_total').value);
-        console.log(total);
         if (total <= 0 || isNaN(total)) {
             return;
         }
@@ -73,6 +72,7 @@ function splitEven() {
                 let val = (total / num).toFixed(2);
                 input.lastChild.value =  val;
                 running_sum -= val;
+                running_sum = Math.round(running_sum * 100) / 100;
             }
         }
         if (running_sum != 0 && elements.length != 0) {
@@ -121,7 +121,6 @@ function hide(elm, clear = false) {
 
 function sumMemberExpenses(expense, owner) {
     let total = 0.00;
-    console.log(expense);
     for (let user in expense) {
         total += parseFloat(expense[user]);
     }
@@ -154,7 +153,7 @@ function GroupHeading({name, members, amount}) {
 
 export default function Group (data) {
     let relative_amount = 0;
-    let num = 0;
+    let num = -1;
 
     return (
     <>
@@ -164,11 +163,11 @@ export default function Group (data) {
              {
                 data.history.map( (trans) => {
                     num++;
-                    let isOwner = ( trans.owner == "b@gmail.com" );
-                    let relative = ( isOwner ) ? sumMemberExpenses(trans.expenses, "b@gmail.com")  : (parseFloat(trans.expenses["b@gmail.com"]).toFixed(2) || 0.00.toFixed(2));
+                    let isOwner = ( trans.owner == "a@gmail.com" );
+                    let relative = ( isOwner ) ? sumMemberExpenses(trans.expenses, "a@gmail.com")  : (parseFloat(trans.expenses["a@gmail.com"]).toFixed(2) || 0.00.toFixed(2));
                     relative_amount += parseFloat(((isOwner) ? relative : relative * -1));
                     return (
-                        <div className={`${styles.transaction_container} ${(relative == 0)? styles.neutral  : ( (isOwner) ? styles.positive : styles.negative)}`} key={num}>
+                        <div index={num} className={`${styles.transaction_container} ${(relative == 0)? styles.neutral  : ( (isOwner) ? styles.positive : styles.negative)}`} key={num} onClick={(e) => makeTransactionView(e)}>
                         <div className={styles.transaction_info}>
                             <div className={styles.transaction_name_amount}>
                                 <p>{trans.title}</p>
@@ -223,7 +222,41 @@ export default function Group (data) {
         </div>
         </div>
 
+        <div className={styles.transaction_background} id = "transaction_view">
+        <div className={styles.transaction_large}>
+            <div className={styles.x_button} onClick={(e) => hide(e.nativeEvent.target.parentNode.parentNode)}></div>
+            <div className={styles.transaction_heading} id = "view_item_info">
+                <p>PLACEHOLDER</p>
+                <p>PLACEHOLDER</p>
+                <p>Logan Cover</p>
+            </div>
+            <div><p className={styles.debt_remaining_text}>Debts Remaining</p></div>
+            <div className={styles.transaction_people} id = "view_transaction_people">
+            </div>
+            <div className={styles.submit_expense_container}><p>Bill Me</p></div>
+        </div>
+        </div>
 
     </>
     );
+
+
+    function makeTransactionView(event) {
+        const expense = data.history[event.target.getAttribute("index")];
+        const heading = document.querySelector('#view_item_info');
+        heading.children[0].textContent = expense.title;
+        heading.children[1].textContent = "$" + expense.total;
+        heading.children[2].textContent = data.members[expense.owner];
+        const people_view = document.querySelector('#view_transaction_people');
+        let children_string = "";
+        for (let person in expense.expenses) {
+            let amt_remaining = parseFloat(expense.expenses[person]);
+            if (amt_remaining == 0 || person == expense.owner) {
+                continue;
+            }
+            children_string += `<div class="${styles.person} ${styles.person_view}"><p>${data.members[person]}</p><p>$${amt_remaining.toFixed(2)}</p></div>`;
+        }
+        people_view.innerHTML = children_string;
+        document.querySelector('#transaction_view').style = "display:block";
+    }
 }
