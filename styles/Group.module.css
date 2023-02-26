@@ -255,6 +255,15 @@
     outline: none;
 }
 
+.transaction_large span {
+    display: none;
+    width: 100%;
+    font-size: 80%;
+    height: fit-content;
+    margin-top: 0.05rem;
+    color: var(--red-background);
+  }
+
 .submit_expense_container {
     background-color: var(--green-background);
     padding: 10px;

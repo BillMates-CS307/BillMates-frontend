@@ -55,7 +55,7 @@ export default function Register() {
         }
         if (!result.signup_success) {
           const email = document.querySelector('#email');
-          email.style = "outline: 1px solid #ff0101;";
+          email.style = "outline: 1px solid var(--red-background);";
           email.addEventListener('keydown', function () {
             this.style = "";
             this.parentElement.nextElementSibling.style = "";

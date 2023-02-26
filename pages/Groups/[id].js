@@ -1,12 +1,10 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import { Cookie, Inter } from '@next/font/google'
 import styles from '@/styles/Group.module.css'
-import Header from './Globals/Header.js'
-import Footer from './Globals/Footer.js'
+import Header from '../Globals/Header.js'
+import Footer from '../Globals/Footer.js'
 
 
-export async function getServerSideProps() {
+export async function getServerSideProps({req, res}) {
+    const group_id = req.url.match("[0-9]+$")[0];
     //make API call to lambda
     //const response = await fetch();
     //const data = await response.json()
@@ -46,6 +44,7 @@ export async function getServerSideProps() {
 
     const data = {
         groupName : groupInformation.groupName,
+        groupId : group_id,
         members : groupInformation.members,
         id : "0000",
         history : transactionHistory
@@ -59,26 +58,36 @@ export async function getServerSideProps() {
 
 function splitEven() {
     if (typeof window !== "undefined") {
-        const total = parseFloat(document.querySelector('#input_item_total').value);
+        const input_total = document.querySelector('#input_item_total');
+        if (input_total.value.search(/^[0-9]*[.][0-9]{2}$/g) == -1 && input_total.value.search(/^[0-9]*$/g) == -1) {
+            input_total.nextElementSibling.textContent = "Invalid Number";
+            input_total.style = "outline: 2px solid var(--red-background);";
+            input_total.nextElementSibling.style ="display:block";
+            input_total.addEventListener('keydown', function () {
+                this.style = "";
+                this.nextElementSibling.style = "";
+          }, {once : true});
+          return;
+        }
+        const total = parseFloat(input_total.value);
         if (total <= 0 || isNaN(total)) {
             return;
         }
+        
+
         const elm = document.querySelector('#transaction_people');
         const num = elm.getAttribute("count");
-        let running_sum = total;
+        if (num == 0) {return;}
+        const augmented_total = Math.round( total * 100);
+        const remainder = augmented_total % num;
+        const amount_per = Math.trunc(augmented_total / num);
         const elements = elm.querySelectorAll("." + `${styles.person}`);
         for (let input of elements) {
             if (input.firstChild.classList.contains(`${styles.active}`)) {
-                let val = (total / num).toFixed(2);
-                input.lastChild.value =  val;
-                running_sum -= val;
-                running_sum = Math.round(running_sum * 100) / 100;
+                input.lastChild.value = (amount_per / 100);
             }
         }
-        if (running_sum != 0 && elements.length != 0) {
-            let poor_soul = elements[0];
-            poor_soul.lastChild.value = parseFloat(poor_soul.lastChild.value) + (running_sum);
-        }
+        elements[0].lastChild.value = (amount_per + remainder) / 100;
     }
 }
 
@@ -196,7 +205,9 @@ export default function Group (data) {
             <div className={styles.x_button} onClick={(e) => hide(e.nativeEvent.target.parentNode.parentNode, true)}></div>
             <div className={styles.transaction_heading}>
                 <input type="text" placeholder='Item Name' id = "input_item_name"></input>
+                <span></span>
                 <input type="text" placeholder='00.00' id = "input_item_total"></input>
+                <span></span>
                 <p>Logan Cover</p>
             </div>
             <div className={styles.split_button_container}>
@@ -210,7 +221,7 @@ export default function Group (data) {
                     <div className={styles.person}>
                         <div className={styles.radio} onClick={(e) => selectPerson(e)}></div>
                         <p className={styles.person_name} onClick={(e) => selectPerson(e)}>{data.members[id]}</p>
-                        <input type="text" placeholder='00.00'></input>
+                        <input type="text" placeholder='00.00' email={id} onChange={ (e) => {e.target.parentNode.parentNode.nextElementSibling.style = "";} }></input>
                     </div>
                     )
                 })
@@ -218,7 +229,8 @@ export default function Group (data) {
                 }
  
             </div>
-            <div className={styles.submit_expense_container}><p>Submit</p></div>
+            <span></span>
+            <div className={styles.submit_expense_container} onClick={handleExpenseSubmit}><p>Submit</p></div>
         </div>
         </div>
 
@@ -258,5 +270,80 @@ export default function Group (data) {
         }
         people_view.innerHTML = children_string;
         document.querySelector('#transaction_view').style = "display:block";
+    }
+
+    function handleExpenseSubmit() {
+        const form = document.querySelector('#transaction_input');
+        const inputs = form.querySelectorAll('input');
+        let format = {
+            title : "",
+            total : "",
+            owner : "a@gmail.com",
+            breakdown : {}
+        }
+        let running_sum = 0;
+        loooping:
+        for (let i = 0; i < inputs.length; i++) {
+            switch (i) {
+                case 0:
+                    format.title = inputs[i].value;
+                    break;
+                case 1:
+                    format.total = inputs[i].value;
+                    break;
+                default:
+                    if (inputs[i].value.search(/^[0-9]*[.][0-9]{2}$/g) == -1 && inputs[i].value.search(/^[0-9]*$/g) == -1) {
+                    inputs[i].style = "outline: 2px solid var(--red-background);";
+                    inputs[i].addEventListener('keydown', function () {
+                        this.style = "";
+                    }, {once : true});
+                    format.breakdown = "";
+                    break loooping;
+                    } else {
+                        format.breakdown[inputs[i].getAttribute("email")] = inputs[i].value;
+                        running_sum += parseFloat(inputs[i].value) || 0;
+                    }
+            }
+        }
+
+        if (format.title == "") {
+            inputs[0].nextElementSibling.textContent = "Cannot be blank";
+            inputs[0].style = "outline: 2px solid var(--red-background);";
+            inputs[0].nextElementSibling.style ="display:block";
+            inputs[0].addEventListener('keydown', function () {
+                this.style = "";
+                this.nextElementSibling.style = "";
+          }, {once : true});
+        }
+
+        if (format.total == "" || parseFloat(format.total) <= 0) {
+            inputs[1].nextElementSibling.textContent = "Cannot be blank";
+            inputs[1].style = "outline: 2px solid var(--red-background);";
+            inputs[1].nextElementSibling.style ="display:block";
+            inputs[1].addEventListener('keydown', function () {
+                this.style = "";
+                this.nextElementSibling.style = "";
+          }, {once : true});
+        } else if (format.total.search(/^[0-9]*[.][0-9]{2}$/g) == -1 && format.total.search(/^[0-9]*$/g) == -1) {
+            inputs[1].nextElementSibling.textContent = "Invalid Number";
+            inputs[1].style = "outline: 2px solid var(--red-background);";
+            inputs[1].nextElementSibling.style ="display:block";
+            inputs[1].addEventListener('keydown', function () {
+                this.style = "";
+                this.nextElementSibling.style = "";
+          }, {once : true});
+          format.total = "";
+        } else if (parseFloat(format.total) != running_sum) {
+            const elm = document.querySelector("#transaction_people").nextElementSibling;
+            elm.style = "display:block";
+            elm.textContent = "Amount Difference: $" + (Math.round((parseFloat(format.total) - running_sum) * 100) / 100);
+            format.total = "";
+        }
+
+        if (format.title == "" || format.total == "" || format.breakdown == "") {
+            return;
+        } else {
+            console.log(format);
+        }
     }
 }

@@ -1,10 +1,5 @@
 import styles from '@/styles/Home.module.css'
 import { useRouter } from 'next/router'
-//import cookieCutter from 'cookie-cutter'
-
-function redirectUser() {
-  router.push('/index')
-}
 
 export default function PageWithJSbasedForm() {
     let router = useRouter();
@@ -56,7 +51,6 @@ export default function PageWithJSbasedForm() {
         }
 
         const result = await response.json();
-        console.log(result);
 
         if (!result.token_success) {
           alert("Failed to validate signup attempt, please try again later");
@@ -72,8 +66,12 @@ export default function PageWithJSbasedForm() {
           localStorage.setItem('timeout', new Date(Date.now() + 3600000));
         } else {
           localStorage.removeItem('timeout');
+          console.log(result.token);
+
+          //add to local storage because I don't have WIFI to install cookies
+          localStorage.setItem('token', result.token);
           //placeholder until home page is done
-          router.push('/Group');
+          //router.push('/Groups/1');
         }
 
       } catch(e) {
