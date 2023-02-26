@@ -4,6 +4,7 @@ import UserInformation from "./__components__/UserInformation";
 import Notification from "./__components__/Notification";
 import PaymentPreference from "./__components__/PaymentPreference";
 import SubmitButton from "./__components__/SubmitButton";
+import Theme from "./__components__/Theme";
 
 export default function Settings() {
   return (
@@ -12,6 +13,7 @@ export default function Settings() {
         <UserInformation />
         <Notification />
         <PaymentPreference />
+        <Theme />
         <SubmitButton />
       </SettingsForm>
     </SettingsWrapper>

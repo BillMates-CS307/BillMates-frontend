@@ -1,10 +1,37 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "@emotion/styled";
+import { PAYMENT_PREFERENCE } from "@/lib/constants";
 
 export default function PaymentPreference() {
-  // TODO: should be saved on local storage
-  const [paymentPref, setPaymentPref] = useState("cash");
+  const [paymentPref, setPaymentPref] = useState(null);
+
+  useEffect(() => {
+    setPaymentPref(
+      JSON.parse(localStorage.getItem("payment_preference")) ??
+        PAYMENT_PREFERENCE.CASH
+    );
+  }, [paymentPref]);
+
+  const onPaymentPreferenceChangeHandler = (e) => {
+    switch (e.target.value) {
+      case PAYMENT_PREFERENCE.VENMO:
+        localStorage.setItem(
+          "payment_preference",
+          JSON.stringify(e.target.value)
+        );
+        setPaymentPref(PAYMENT_PREFERENCE.VENMO);
+
+        break;
+      case PAYMENT_PREFERENCE.CASH:
+        localStorage.setItem(
+          "payment_preference",
+          JSON.stringify(e.target.value)
+        );
+        setPaymentPref(PAYMENT_PREFERENCE.CASH);
+        break;
+    }
+  };
+
   return (
     <PaymentPreferenceWrapper>
       <PaymentPreferenceTitleWrapper>
@@ -14,19 +41,21 @@ export default function PaymentPreference() {
         <PaymentPreferenceRadioButton
           type="radio"
           name="payment"
-          value="venmo"
-          onChange={(e) => setPaymentPref(e.target.value)}
+          value={PAYMENT_PREFERENCE.CASH}
+          checked={paymentPref === PAYMENT_PREFERENCE.CASH}
+          onChange={onPaymentPreferenceChangeHandler}
         />
-        <PaymentPreferenceButtonLabel>Venmo</PaymentPreferenceButtonLabel>
+        <PaymentPreferenceButtonLabel>Cash</PaymentPreferenceButtonLabel>
       </PaymentPreferenceRadioButtonWrapper>
       <PaymentPreferenceRadioButtonWrapper>
         <PaymentPreferenceRadioButton
           type="radio"
           name="payment"
-          value="cash"
-          onChange={(e) => setPaymentPref(e.target.value)}
+          value={PAYMENT_PREFERENCE.VENMO}
+          checked={paymentPref === PAYMENT_PREFERENCE.VENMO}
+          onChange={onPaymentPreferenceChangeHandler}
         />
-        <PaymentPreferenceButtonLabel>Cash</PaymentPreferenceButtonLabel>
+        <PaymentPreferenceButtonLabel>Venmo</PaymentPreferenceButtonLabel>
       </PaymentPreferenceRadioButtonWrapper>
     </PaymentPreferenceWrapper>
   );
