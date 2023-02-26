@@ -1,9 +1,19 @@
 import styles from '@/styles/Group.module.css'
 import Header from '../Globals/Header.js'
 import Footer from '../Globals/Footer.js'
+import { userService } from '../services/authorization.js';
 
 
 export async function getServerSideProps({req, res}) {
+    //check if user is signed in
+    const {email, token} = userService.getUserFromToken({res, req});
+    if (email == null) {
+        return {
+            props:{},
+            redirect : {permanent: false,
+                destination: "/"}
+        }
+    }
     const group_id = req.url.match("[0-9]+$")[0];
     //make API call to lambda
     //const response = await fetch();
@@ -12,7 +22,7 @@ export async function getServerSideProps({req, res}) {
     const groupInformation = {
         groupName : "Baller Mates",
         members : {"a@gmail.com" : "Logan Cover", "b@gmail.com" : "Ben Lilley", "c@gmail.com" : "Ryan Rittner"},
-        id : "0000"
+        id : group_id
     }
 
     const transactionHistory = [
@@ -40,24 +50,21 @@ export async function getServerSideProps({req, res}) {
         }
     ]
 
-
-
-    const data = {
-        groupName : groupInformation.groupName,
-        groupId : group_id,
-        members : groupInformation.members,
-        id : "0000",
-        history : transactionHistory
-    }
-
         return {
-            props : data
+            props : {
+                groupName : groupInformation.groupName,
+                groupId : group_id,
+                members : groupInformation.members,
+                history : transactionHistory,
+                userId : email
+            }
         }
 }
 
 
 function splitEven() {
     if (typeof window !== "undefined") {
+        
         const input_total = document.querySelector('#input_item_total');
         if (input_total.value.search(/^[0-9]*[.][0-9]{2}$/g) == -1 && input_total.value.search(/^[0-9]*$/g) == -1) {
             input_total.nextElementSibling.textContent = "Invalid Number";
@@ -160,20 +167,21 @@ function GroupHeading({name, members, amount}) {
     );
 }
 
-export default function Group (data) {
+export default function Group ({groupName, groupId, members, history, userId}) {
     let relative_amount = 0;
     let num = -1;
-
+    const user = userService.signout();
+    
     return (
     <>
     <Header></Header>
     <main className={styles.main}>
         <div className={styles.transaction_history}>
              {
-                data.history.map( (trans) => {
+                history.map( (trans) => {
                     num++;
-                    let isOwner = ( trans.owner == "a@gmail.com" );
-                    let relative = ( isOwner ) ? sumMemberExpenses(trans.expenses, "a@gmail.com")  : (parseFloat(trans.expenses["a@gmail.com"]).toFixed(2) || 0.00.toFixed(2));
+                    let isOwner = ( trans.owner == userId );
+                    let relative = ( isOwner ) ? sumMemberExpenses(trans.expenses, userId)  : (parseFloat(trans.expenses[userId]).toFixed(2) || 0.00.toFixed(2));
                     relative_amount += parseFloat(((isOwner) ? relative : relative * -1));
                     return (
                         <div index={num} className={`${styles.transaction_container} ${(relative == 0)? styles.neutral  : ( (isOwner) ? styles.positive : styles.negative)}`} key={num} onClick={(e) => makeTransactionView(e)}>
@@ -183,7 +191,7 @@ export default function Group (data) {
                                 <p>${trans.total}</p>
                             </div>
                             <div className={styles.transaction_owner_date}>
-                                <p>{data.members[trans.owner]}</p>
+                                <p>{members[trans.owner]}</p>
                                 <p>{trans.date}</p>
                             </div>
                         </div>
@@ -196,7 +204,7 @@ export default function Group (data) {
             }
             <div className={styles.buffer_block}></div>
         </div>
-        <GroupHeading name={data.groupName} members={Object.keys(data.members).length} amount={relative_amount.toFixed(2)}></GroupHeading>
+        <GroupHeading name={groupName} members={Object.keys(members).length} amount={relative_amount.toFixed(2)}></GroupHeading>
     </main>
     <Footer callback={showTransactionInput} args = {""}></Footer>
 
@@ -208,7 +216,7 @@ export default function Group (data) {
                 <span></span>
                 <input type="text" placeholder='00.00' id = "input_item_total"></input>
                 <span></span>
-                <p>Logan Cover</p>
+                <p>{members[userId]}</p>
             </div>
             <div className={styles.split_button_container}>
                 <button onClick={() => splitEven()}>Split Even</button>
@@ -216,11 +224,11 @@ export default function Group (data) {
             <div className={styles.transaction_people} count = "0" id = "transaction_people">
                 {
 
-                Object.keys(data.members).map( (id) => {
+                Object.keys(members).map( (id) => {
                     return (
                     <div className={styles.person}>
                         <div className={styles.radio} onClick={(e) => selectPerson(e)}></div>
-                        <p className={styles.person_name} onClick={(e) => selectPerson(e)}>{data.members[id]}</p>
+                        <p className={styles.person_name} onClick={(e) => selectPerson(e)}>{members[id]}</p>
                         <input type="text" placeholder='00.00' email={id} onChange={ (e) => {e.target.parentNode.parentNode.nextElementSibling.style = "";} }></input>
                     </div>
                     )
@@ -254,11 +262,11 @@ export default function Group (data) {
 
 
     function makeTransactionView(event) {
-        const expense = data.history[event.target.getAttribute("index")];
+        const expense = history[event.target.getAttribute("index")];
         const heading = document.querySelector('#view_item_info');
         heading.children[0].textContent = expense.title;
         heading.children[1].textContent = "$" + expense.total;
-        heading.children[2].textContent = data.members[expense.owner];
+        heading.children[2].textContent = members[expense.owner];
         const people_view = document.querySelector('#view_transaction_people');
         let children_string = "";
         for (let person in expense.expenses) {
@@ -266,7 +274,7 @@ export default function Group (data) {
             if (amt_remaining == 0 || person == expense.owner) {
                 continue;
             }
-            children_string += `<div class="${styles.person} ${styles.person_view}"><p>${data.members[person]}</p><p>$${amt_remaining.toFixed(2)}</p></div>`;
+            children_string += `<div class="${styles.person} ${styles.person_view}"><p>${members[person]}</p><p>$${amt_remaining.toFixed(2)}</p></div>`;
         }
         people_view.innerHTML = children_string;
         document.querySelector('#transaction_view').style = "display:block";

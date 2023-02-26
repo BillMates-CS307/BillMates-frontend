@@ -1,7 +1,5 @@
 import jwt from 'jsonwebtoken';
-import getConfig from 'next/config';
-
-const { serverRuntimeConfig } = getConfig();
+import { serverRuntimeConfig } from '@/next.config';
 
 export default async function handler(req, res) {
 
@@ -38,7 +36,7 @@ export default async function handler(req, res) {
     const lambda_resp = await fetch(url, options);
     const lambda_data = await lambda_resp.json();
     if (lambda_data.token_success && lambda_data.login_success) {
-      lambda_data["token"] = jwt.sign({ sub: email}, serverRuntimeConfig.JWT_TOKEN, { expiresIn: '7d' });
+      lambda_data["token"] = jwt.sign({ email: email}, serverRuntimeConfig.JWT_TOKEN, { expiresIn: '7d' });
     }
 
     return res.status(200).json(lambda_data);

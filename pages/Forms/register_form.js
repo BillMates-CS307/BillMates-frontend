@@ -29,8 +29,8 @@ export default function Register() {
           return;
         }
         data["name"] = data.fname + " " + data.lname;
-        const JSONdata = JSON.stringify(data)
-        const endpoint = '/api/register_api'
+        const JSONdata = JSON.stringify(data);
+        const endpoint = '/api/register_api';
         const options = {
           method: 'POST',
           mode : 'no-cors',
