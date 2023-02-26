@@ -1,0 +1,75 @@
+.mainpgChild,
+.mainpgItem {
+  position: absolute;
+  top: 63px;
+  left: 0;
+  width: 320px;
+  height: 2px;
+}
+.mainpgItem {
+  top: 70px;
+  left: 11px;
+  border-radius: var(--br-md);
+  width: 298px;
+  height: 60px;
+}
+.mainpgInner,
+.myGroups {
+  position: absolute;
+  top: 134px;
+  left: 0;
+  width: 320px;
+  height: 22px;
+}
+.myGroups {
+  top: 135px;
+  left: 109px;
+  letter-spacing: 0.1em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 105px;
+  height: 21px;
+  mix-blend-mode: normal;
+}
+.image5Icon {
+  position: absolute;
+  top: 24px;
+  left: 96px;
+  width: 131px;
+  height: 28px;
+  object-fit: cover;
+}
+.yourName {
+  margin-block-start: 0;
+  margin-block-end: 0;
+}
+.totalDebt2250 {
+  margin: 0;
+}
+.yourNameTotalContainer1 {
+  line-break: anywhere;
+  width: 100%;
+}
+.yourNameTotalContainer {
+  position: absolute;
+  top: 78px;
+  left: 85px;
+  color: var(--color-black);
+  text-align: left;
+  display: flex;
+  align-items: center;
+  width: 197px;
+  height: 43px;
+}
+.mainpg {
+  position: relative;
+  background-color: var(--color-white);
+  width: 100%;
+  height: 568px;
+  overflow: hidden;
+  text-align: center;
+  font-size: var(--font-size-sm);
+  color: var(--color-white);
+  font-family: var(--font-imprima);
+}
