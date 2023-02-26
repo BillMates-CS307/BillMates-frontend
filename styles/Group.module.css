@@ -1,0 +1,284 @@
+.main {
+    width: 100vw;
+    height: 90vh;
+    background: var(--main-background);
+    display: grid;
+    grid-template-rows: min-content 1fr;
+}
+
+.main p {
+    text-overflow: ellipsis;
+    overflow-x: hidden;
+    color: var(--main-background-font-color);
+}
+
+
+.group_heading {
+    width: 100%;
+    position: relative;
+    display: block;
+    margin: 10px 0;
+    grid-row: 1;
+}
+
+.group_info {
+    width: 90%;
+    display: grid;
+    grid-template-columns: 1fr min-content;
+    margin: auto;
+    padding: 10px;
+    border: 1px solid var(--main-background-font-color);
+    border-radius: 5px;
+}
+
+.group_info p {
+    font-size: 1rem;
+}
+.group_info p:first-of-type {
+    font-size: 1.5rem;
+}
+
+.names_members {
+    overflow-x: hidden;
+}
+
+.group_amount {
+    display: flex;
+    align-items: center;
+}
+.group_amount p {
+    font-size: 1rem;
+    color: inherit;
+}
+.banner {
+    width: 100%;
+    margin-top: 15px;
+    background-color: var(--green-background);
+    text-align: center;
+    padding: 5px 0;
+}
+.banner p {
+    font-size: 1rem;
+    color: #FFF;
+}
+
+.transaction_history {
+    width: 100%;
+    overflow-y: scroll;
+}
+
+.buffer_block {
+    background : transparent;
+    height: 60px;
+    width: 100%;
+    display: block;
+}
+
+.transaction_container {
+    width: 95%;
+    margin: auto;
+    border: 1px solid var(--main-background-font-color);
+    display: grid;
+    grid-template-columns: 75% 25%;
+    align-items: center;
+    margin-bottom: 10px;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.positive {
+    background-color: var(--green-background);
+}
+.negative {
+    background-color: var(--red-background);
+}
+.neutral {
+    background-color: var(--neutral-background);
+}
+
+.transaction_container > div {
+    pointer-events: none;
+}
+
+.transaction_info div {
+    display: grid;
+    grid-template-columns: minmax(20%, 1fr) min-content;
+    background-color: var(--neutral-background);
+    padding: 0 5px;
+}
+
+.transaction_info div:first-of-type {
+    background-color: var(--dark-neutral-background);
+}
+.transaction_info div:first-of-type p {
+    color: #FFF;
+}
+
+.transaction_info p {
+    word-break: keep-all;
+    overflow-x: hidden;
+    padding: 0 1px;
+}
+
+.relative_amount p {
+    text-align: center;
+}
+
+
+.transaction_background {
+    background-color: #000A;
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: none;
+    z-index: 0;
+    cursor: pointer;
+}
+.transaction_background p {
+    text-overflow: ellipsis;
+    overflow-x: hidden;
+}
+.transaction_large {
+    width: 95vw;
+    height: auto;
+    max-height: 90vh;
+    padding: 15px;
+    background-color: var(--main-background);
+    margin: auto;
+    margin-top: 5vh;
+    position: relative;
+    z-index: 10;
+    cursor: default;
+}
+
+.transaction_heading {
+    border-bottom: 1px solid var(--main-background-font-color);
+    margin-bottom: 5px;
+}
+
+.x_button {
+    display: block;
+    width: 20px;
+    height: 20px;
+    position: relative;
+    cursor: pointer;
+    margin-left: auto;
+}
+
+.x_button:after {
+    content: '';
+    position: absolute;
+    transform: translate(-50%, -50%) rotate(45deg);
+    height: 3px;
+    width: 100%;
+    background: var(--main-background-font-color);
+    top: 50%;
+    left: 50%;
+  }
+  
+  .x_button:before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+    background: var(--main-background-font-color);
+    height: 100%;
+    width: 3px;
+  }
+
+.transaction_heading > * {
+    margin: 5px 0;
+}
+
+.transaction_heading p {
+    display: block;
+    width: 100%;
+    font-size: 1rem;
+}
+.transaction_heading input {
+    width: 100%;
+    font-size: 1rem;
+    line-height: 1.5;
+    border: none;
+    border-bottom: 1px solid var(--neutral-background);
+    outline: none;
+}
+
+.split_button_container {
+    text-align: end;
+}
+.split_button_container button {
+    line-height: 1.5;
+    font-size: 1rem;
+    background: var(--opposite-background);
+    color: var(--opposite-background-font-color);
+    padding: 5px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.person {
+    display: grid;
+    grid-template-columns: 20px 1fr 30%;
+    align-items: center;
+    cursor: pointer;
+    margin-bottom: 5px;
+    z-index: 0;
+}
+
+.person_view {
+    grid-template-columns: 70% 30%;
+}
+
+.radio {
+    background-color: var(--neutral-background);
+    border-radius: 50%;
+    height: 20px;
+    z-index: 1;
+}
+.active {
+    background-color: var(--green-background);
+}
+.person p {
+    margin-left: 5px;
+    z-index: 1;
+}
+.person input {
+    width: 100%;
+    font-size: 1rem;
+    line-height: 1.5;
+    border: none;
+    border-bottom: 1px solid var(--neutral-background);
+    outline: none;
+}
+
+.transaction_large span {
+    display: none;
+    width: 100%;
+    font-size: 80%;
+    height: fit-content;
+    margin-top: 0.05rem;
+    color: var(--red-background);
+  }
+
+.submit_expense_container {
+    background-color: var(--green-background);
+    padding: 10px;
+    text-align: center;
+    margin-top: 20px;
+  }
+  .submit_expense_container p {
+    color : #FFF;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+
+
+  .debt_remaining_text {
+    font-size: 0.75rem;
+    font-style: italic;
+    color : var(--neutral-background);
+  }

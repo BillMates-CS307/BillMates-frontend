@@ -38,9 +38,21 @@
   --callout-border-rgb: 172, 175, 176;
   --card-rgb: 180, 185, 188;
   --card-border-rgb: 131, 134, 135;
+  
+  
+  font-size: 15px;
+  --green-background : #20AD20;
+  --red-background : #F00;
+  --neutral-background : #adadad;
+  --dark-neutral-background: #4D4D4D;
+  --main-background : #FFF;
+  --main-background-font-color : #000;
+  --opposite-background-font-color : #FFF;
+  --opposite-background : #000;
+
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 255, 255, 255;
     --background-start-rgb: 0, 0, 0;
@@ -71,7 +83,7 @@
     --card-rgb: 100, 100, 100;
     --card-border-rgb: 200, 200, 200;
   }
-}
+} */
 
 * {
   box-sizing: border-box;
@@ -104,8 +116,102 @@ a {
   text-decoration: none;
 }
 
+header {
+  width: 100vw;
+  padding: 10px;
+  border-bottom: 1px solid #000;
+  background-color: #FFF;
+  display: grid;
+  grid-template-columns: 30px 1fr 30px;
+  height: 10vh;
+  align-items: center;
+}
+
+header svg {
+  width: 30px;
+  height: 30px;
+}
+
+header div {
+  text-align: center;
+}
+
+header div p {
+  display: inline-block;
+  font-size: 2rem;
+  color: #20AD20;
+}
+
+header div p:first-of-type {
+  color: #000;
+}
+
+header svg {
+  color : #000;
+}
+
+footer {
+  position: fixed;
+  bottom: 0;
+  width: 100vw;
+  display: grid;
+  grid-template-columns: 50px 1fr 50px;
+  padding: 5px 10px;
+}
+
+footer img {
+  transform: scale(70%);
+}
+
+footer div {
+  height: 50px;
+  border-radius: 50%;
+  background-color: #D9D9D9;
+  cursor: pointer;
+  position: relative;
+  z-index: 5;
+}
+
+footer div a {
+  height: 50px;
+  display: inline-block;
+}
+
+footer span {
+  pointer-events: none;
+}
+
+#plus_button:after {
+  content: '';
+  position: absolute;
+  transform: translate(-50%, -50%);
+  height: 3px;
+  width: 35%;
+  background: #000;
+  top: 50%;
+  left: 50%;
+}
+
+#plus_button:before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #000;
+  height: 35%;
+  width: 3px;
+}
+
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
+  }
+}
+
+@media screen and (min-width: 800px) {
+  :root {
+    font-size: 20px;
   }
 }

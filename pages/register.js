@@ -1,4 +1,5 @@
 import Head from 'next/head'
+import Image from 'next/image'
 import { Inter } from '@next/font/google'
 import styles from '@/styles/Home.module.css'
 import Register from './Forms/register_form'
@@ -21,8 +22,16 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
+      <header className={styles.header}>
+        {/* change to just name with white background */}
+            <Image
+                src = "/billmates_logo_trans.png"
+                alt={"Billmates Logo"}
+                width={500}
+                height={500}
+            ></Image>
+        </header>
       <main className = {styles.main}>
-
       <div className= {styles.position_box}>
 
       <Register></Register>

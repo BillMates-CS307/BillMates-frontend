@@ -1,9 +1,14 @@
 import styles from '@/styles/Home.module.css'
-
+import { useRouter } from 'next/router'
 
 export default function PageWithJSbasedForm() {
+    let router = useRouter();
     const handleSubmit = async (event) => {
-      event.preventDefault()
+      event.preventDefault();
+      if ( localStorage.getItem('timeout') != null && Date.parse(localStorage.getItem('timeout')) >= Date.now()) {
+        return;
+      }
+
       // Get data from the form.
       const data = {
         email: event.target.email.value,
@@ -18,7 +23,6 @@ export default function PageWithJSbasedForm() {
             this.style = "";
             this.parentElement.nextElementSibling.style = "";
           }, {once : true});
-          console.log(field_check.elms[i].parentElement);
           field_check.elms[i].parentElement.nextElementSibling.textContent = field_check.messages[i];
           field_check.elms[i].parentElement.nextElementSibling.style = "display:block";
         }
@@ -38,14 +42,43 @@ export default function PageWithJSbasedForm() {
         },
         body: JSONdata
       }
-      const response = await fetch(endpoint, options);
-      if (response.status == 400) {
-        alert("Unable to find form fields");
-        return;
+
+      try {
+        const response = await fetch(endpoint, options);
+        if (response.status == 400) {
+          alert("Unable to find form fields");
+          return;
+        }
+
+        const result = await response.json();
+
+        if (!result.token_success) {
+          alert("Failed to validate signup attempt, please try again later");
+          return;
+        }
+        if (!result.login_success) {
+          const element = document.querySelector("#incorrect");
+          const inputs = document.querySelectorAll('input');
+          inputs[0].style = "outline: 1px solid #ff0101;";
+          inputs[1].style = "outline: 1px solid #ff0101;";
+          inputs[1].value = "";
+          element.style = "display:block";
+          localStorage.setItem('timeout', new Date(Date.now() + 3600000));
+        } else {
+          localStorage.removeItem('timeout');
+          console.log(result.token);
+
+          //add to local storage because I don't have WIFI to install cookies
+          localStorage.setItem('token', result.token);
+          //placeholder until home page is done
+          //router.push('/Groups/1');
+        }
+
+      } catch(e) {
+        console.log(e);
+        alert("Something went wrong please try again later");
       }
 
-      const result = await response.json();
-      console.log(result);
       // if (result) {
       //   alert('worked');
       // } else {
@@ -90,6 +123,9 @@ export default function PageWithJSbasedForm() {
     }
     return (
 <>
+    <div id="incorrect" className={styles.incorrect_box}>
+      <p>Email or Password is incorrect</p>
+    </div>
     <div className={styles.signup_form}>
         <form onSubmit={handleSubmit} method="post">
             <div>
