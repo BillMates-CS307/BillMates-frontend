@@ -3,7 +3,6 @@ import Header from '../Globals/Header.js'
 import Footer from '../Globals/Footer.js'
 import { userService } from '../services/authorization.js';
 
-
 export async function getServerSideProps({req, res}) {
     //check if user is signed in
     const {email, token} = userService.getUserFromToken({res, req});
@@ -50,13 +49,27 @@ export async function getServerSideProps({req, res}) {
         }
     ]
 
+    const pendingApproval = [
+        {
+            owner : "a@gmail.com",
+            total : "50.00",
+            title : "Testing",
+            date : "02/24/2023",
+            expenses : {
+                who :"b@gmail.com",
+                amount : "20.00"
+            }
+        }
+    ]
+
         return {
             props : {
                 groupName : groupInformation.groupName,
                 groupId : group_id,
                 members : groupInformation.members,
                 history : transactionHistory,
-                userId : email
+                userId : email,
+                pendingApproval : pendingApproval
             }
         }
 }
@@ -89,12 +102,14 @@ function splitEven() {
         const remainder = augmented_total % num;
         const amount_per = Math.trunc(augmented_total / num);
         const elements = elm.querySelectorAll("." + `${styles.person}`);
+        let used = [];
         for (let input of elements) {
             if (input.firstChild.classList.contains(`${styles.active}`)) {
-                input.lastChild.value = (amount_per / 100);
+                input.lastChild.value = (amount_per / 100).toFixed(2);
+                used.push(input);
             }
         }
-        elements[0].lastChild.value = (amount_per + remainder) / 100;
+        used[0].lastChild.value = ((amount_per + remainder) / 100).toFixed(2);
     }
 }
 
@@ -167,24 +182,46 @@ function GroupHeading({name, members, amount}) {
     );
 }
 
-export default function Group ({groupName, groupId, members, history, userId}) {
+export default function Group ({groupName, groupId, members, history, userId, pendingApproval}) {
     let relative_amount = 0;
-    let num = -1;
-    const user = userService.signout();
-    
+    let history_num = -1;
+    let pending_num = -1;
+
     return (
     <>
     <Header></Header>
     <main className={styles.main}>
         <div className={styles.transaction_history}>
              {
+                pendingApproval.map( (trans) => {
+                    pending_num++;
+                    return (
+                        <div index={pending_num} className={`${styles.transaction_container} ${styles.pending}`} key={pending_num} onClick={(e) => makePendingView(e)}>
+                        <div className={styles.transaction_info}>
+                            <div className={styles.transaction_name_amount}>
+                                <p>Pending:</p>
+                                <p>{trans.title}</p>
+                            </div>
+                            <div className={styles.transaction_owner_date}>
+                                <p>{members[trans.expenses.who]}</p>
+                                <p>{trans.date}</p>
+                            </div>
+                        </div>
+                        <div className={styles.relative_amount}>
+                            <p>${trans.expenses.amount}</p>
+                        </div>
+                    </div>
+                    )
+                })
+            }
+            {  
                 history.map( (trans) => {
-                    num++;
+                    history_num++;
                     let isOwner = ( trans.owner == userId );
-                    let relative = ( isOwner ) ? sumMemberExpenses(trans.expenses, userId)  : (parseFloat(trans.expenses[userId]).toFixed(2) || 0.00.toFixed(2));
+                    let relative = ( isOwner ) ? sumMemberExpenses(trans.expenses, userId)  : ((parseFloat(trans.expenses[userId]) || 0.00).toFixed(2));
                     relative_amount += parseFloat(((isOwner) ? relative : relative * -1));
                     return (
-                        <div index={num} className={`${styles.transaction_container} ${(relative == 0)? styles.neutral  : ( (isOwner) ? styles.positive : styles.negative)}`} key={num} onClick={(e) => makeTransactionView(e)}>
+                        <div index={history_num} className={`${styles.transaction_container} ${(relative == 0)? styles.neutral  : ( (isOwner) ? styles.positive : styles.negative)}`} key={history_num} onClick={(e) => makeTransactionView(e)}>
                         <div className={styles.transaction_info}>
                             <div className={styles.transaction_name_amount}>
                                 <p>{trans.title}</p>
@@ -243,20 +280,42 @@ export default function Group ({groupName, groupId, members, history, userId}) {
         </div>
 
         <div className={styles.transaction_background} id = "transaction_view">
+            <div className={styles.transaction_large}>
+                <div className={styles.x_button} onClick={(e) => hide(e.nativeEvent.target.parentNode.parentNode)}></div>
+                <div className={styles.transaction_heading} id = "view_item_info">
+                    <p>PLACEHOLDER</p>
+                    <p>PLACEHOLDER</p>
+                    <p>PLACEHOLDER</p>
+                </div>
+                <div><p className={styles.debt_remaining_text}>Debts Remaining</p></div>
+                <div className={styles.transaction_people} id = "view_transaction_people">
+                </div>
+                <div className={styles.submit_expense_container} onClick={(e) => {hide(e.nativeEvent.target.parentNode.parentNode); showFulfillExpense(e)}}><p>Bill Me</p></div>
+            </div>
+        </div>
+        <div className={styles.transaction_background} id = "pending_view">
+            <div className={styles.transaction_large}>
+                <div className={styles.x_button} onClick={(e) => hide(e.nativeEvent.target.parentNode.parentNode)}></div>
+                <div className={styles.transaction_heading} id = "pending_item_info">
+                    <p>PLACEHOLDER</p>
+                    <p>PLACEHOLDER</p>
+                </div>
+                <div><p className={`${styles.debt_remaining_text} ${styles.pending_larger_p}`}>Amount Paying</p></div>
+                <div className={styles.submit_expense_container} onClick={(e) => {hide(e.nativeEvent.target.parentNode.parentNode); handlePendingPay(e, true)}}><p>Accept</p></div>
+                <div className={`${styles.submit_expense_container} ${styles.negative}`} onClick={(e) => {hide(e.nativeEvent.target.parentNode.parentNode); handlePendingPay(e, false)}}><p>Reject</p></div>
+            </div>
+        </div>
+    <div className={styles.transaction_background} id = "submit_expense">
         <div className={styles.transaction_large}>
             <div className={styles.x_button} onClick={(e) => hide(e.nativeEvent.target.parentNode.parentNode)}></div>
-            <div className={styles.transaction_heading} id = "view_item_info">
-                <p>PLACEHOLDER</p>
-                <p>PLACEHOLDER</p>
-                <p>Logan Cover</p>
+            <div className={styles.payment_method}><button className={styles.selected_method}>BillMates</button><button>Venmo</button></div> 
+            <div className={styles.expense_payment_form}>
+                <p>Original Amount : </p>
+                <input type="text" id = "expense_paying" placeholder='00.00'></input>
             </div>
-            <div><p className={styles.debt_remaining_text}>Debts Remaining</p></div>
-            <div className={styles.transaction_people} id = "view_transaction_people">
-            </div>
-            <div className={styles.submit_expense_container}><p>Bill Me</p></div>
+            <div className={styles.submit_expense_container} onClick={(e) => {handleExpensePay(e)}}><p>Bill Me</p></div>
         </div>
-        </div>
-
+    </div>
     </>
     );
 
@@ -277,7 +336,20 @@ export default function Group ({groupName, groupId, members, history, userId}) {
             children_string += `<div class="${styles.person} ${styles.person_view}"><p>${members[person]}</p><p>$${amt_remaining.toFixed(2)}</p></div>`;
         }
         people_view.innerHTML = children_string;
+        people_view.nextElementSibling.setAttribute("index", event.target.getAttribute("index"));
         document.querySelector('#transaction_view').style = "display:block";
+    }
+    function makePendingView(event) {
+        const expense = pendingApproval[event.target.getAttribute("index")];
+        const heading = document.querySelector('#pending_item_info');
+        heading.children[0].textContent = expense.title;
+        heading.children[1].textContent = members[expense.expenses.who];
+        heading.nextElementSibling.children[0].textContent = "Amount Paying: $" + expense.expenses.amount;
+        // const people_view = document.querySelector('#pending_transaction_people');
+        // let children_string = "";
+        // people_view.innerHTML = children_string;
+        // people_view.nextElementSibling.setAttribute("index", event.target.getAttribute("index"));
+        document.querySelector('#pending_view').style = "display:block";
     }
 
     function handleExpenseSubmit() {
@@ -286,7 +358,7 @@ export default function Group ({groupName, groupId, members, history, userId}) {
         let format = {
             title : "",
             total : "",
-            owner : "a@gmail.com",
+            owner : userId,
             breakdown : {}
         }
         let running_sum = 0;
@@ -353,5 +425,42 @@ export default function Group ({groupName, groupId, members, history, userId}) {
         } else {
             console.log(format);
         }
+    }
+
+    function showFulfillExpense(event) {
+        const index = event.target.getAttribute("index");
+        if (history[index].expenses[userId] == undefined) {
+            alert("You do not have any debts here")
+            return;
+        }
+        const elm = document.querySelector("#submit_expense");
+        console.log(elm);
+        if (history[index].owner == userId) {
+            elm.children[0].children[2].children[0].textContent = "Would you like to clear this debt?";
+            elm.children[0].children[2].children[1].value = sumMemberExpenses(history[index].expenses, userId);
+        } else {
+            elm.children[0].children[2].children[0].textContent = "Original Amount: " + history[index].expenses[userId];
+            elm.children[0].children[2].children[1].value = history[index].expenses[userId];
+        }
+        elm.children[0].children[3].setAttribute("index", index);
+        elm.style = "display:block";
+    }
+
+    function handleExpensePay(event) {
+        const index = event.target.getAttribute("index");
+        const input = document.querySelector("#expense_paying");
+        if (input.value == "" || (input.value.search(/^[0-9]*[.][0-9]{2}$/g) == -1 && input.value.search(/^[0-9]*$/g) == -1)) {
+            input.style = "outline: 2px solid var(--red-background);";
+            input.addEventListener('keydown', function () {
+                this.style = "";
+            }, {once : true});
+        } else {
+            const value = parseFloat(input.value);
+            console.log(history[index].expenses);
+        }
+    }
+
+    function handlePendingPay(event) {
+        console.log(event);
     }
 }
