@@ -1,115 +1,122 @@
-import styles from '@/styles/Home.module.css'
-import { useRouter } from 'next/router'
+import styles from "@/styles/Home.module.css";
+import { useRouter } from "next/router";
 
 export default function Register() {
-    let router = useRouter();
-    const handleSubmit = async (event) => {
-        event.preventDefault()
-        const data = {
-          fname : event.target.fname.value ,
-          lname : event.target.lname.value,
-          email: event.target.email.value,
-          remail: event.target.remail.value,
-          password: event.target.password.value,
-          rpassword : event.target.rpassword.value
-        }
+  let router = useRouter();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const data = {
+      fname: event.target.fname.value,
+      lname: event.target.lname.value,
+      email: event.target.email.value,
+      remail: event.target.remail.value,
+      password: event.target.password.value,
+      rpassword: event.target.rpassword.value,
+    };
 
-        const field_check = checkFields(data);
-        if (!field_check.valid) {
-          for (let i in field_check.elms) {
-            field_check.elms[i].style = "outline: 1px solid #ff0101;";
-            field_check.elms[i].addEventListener('keydown', function () {
-              this.style = "";
-              this.parentElement.nextElementSibling.style = "";
-            }, {once : true});
-            field_check.elms[i].parentElement.nextElementSibling.textContent = field_check.messages[i];
-            field_check.elms[i].parentElement.nextElementSibling.style = "display:block";
-          }
-          field_check.elms[0].focus();
-          return;
-        }
-        data["name"] = data.fname + " " + data.lname;
-        const JSONdata = JSON.stringify(data)
-        const endpoint = '/api/register_api'
-        const options = {
-          method: 'POST',
-          mode : 'no-cors',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSONdata,
-        }
-
-    
-        const response = await fetch(endpoint, options);
-        if (response.status == 400) {
-          alert("Unable to find form fields");
-          return;
-        }
-
-        const result = await response.json();
-
-        if (!result.token_success) {
-          alert("Failed to validate signup attempt, please try again later");
-          return;
-        }
-        if (!result.signup_success) {
-          const email = document.querySelector('#email');
-          email.style = "outline: 1px solid var(--red-background);";
-          email.addEventListener('keydown', function () {
+    const field_check = checkFields(data);
+    if (!field_check.valid) {
+      for (let i in field_check.elms) {
+        field_check.elms[i].style = "outline: 1px solid #ff0101;";
+        field_check.elms[i].addEventListener(
+          "keydown",
+          function () {
             this.style = "";
             this.parentElement.nextElementSibling.style = "";
-          }, {once : true});
-          email.parentElement.nextElementSibling.textContent = "Email already in use";
-          email.parentElement.nextElementSibling.style = "display:block";
-          email.focus();
-        } else {
-          router.push('/')
-        }
-
-
+          },
+          { once: true }
+        );
+        field_check.elms[i].parentElement.nextElementSibling.textContent =
+          field_check.messages[i];
+        field_check.elms[i].parentElement.nextElementSibling.style =
+          "display:block";
       }
+      field_check.elms[0].focus();
+      return;
+    }
+    data["name"] = data.fname + " " + data.lname;
+    const JSONdata = JSON.stringify(data);
+    const endpoint = "/api/register_api";
+    const options = {
+      method: "POST",
+      mode: "no-cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSONdata,
+    };
 
-    const response = await fetch(endpoint, options);
+    let response = await fetch(endpoint, options);
     if (response.status == 400) {
       alert("Unable to find form fields");
       return;
     }
 
-        let regex = /[a-zA-z0-9]@[a-zA-z0-9.]/g;
-        if (target.email == "" || target.email.search(regex) == -1) {
-          output.elms.push(document.querySelector('#email'));
-          output.messages.push("Invalid Email");
-        }        
-        // if (target.remail == "" || target.email != target.remail || target.remail.search(regex) == -1) {
-        //   output.elms.push(document.querySelector('#remail'));
-        //   output.messages.push("Invalid Email");
-        // }
-        if (target.email != target.remail) {
-          output.elms.push(document.querySelector('#remail'));
-          output.messages.push("Emails must match");
-        }
-        let message = "";        
-        if (target.password.search(/(?=(.*[a-z]){3,})/g) == -1) {
-          message = "Must have at least 3 lower case letters";
-        }
-        if (target.password.search(/(?=(.*[A-Z]){3,})/g) == -1) {
-          message = "Must have at least 3 upper case letters";
-        }
-        if (target.password.search(/(?=(.*[0-9]){3,})/g) == -1) {
-          message = "Must have at least 3 numbers";
-        }
-        if (target.password.search(/(?=(.*[?#@!*()])+)/g) == -1) {
-          message = "Must have at least 1 special character ? # @ ! * ( )";
-        }
-        if (target.password == "" || target.password.length < 10) {
-          message = "Password must be at least 10 characters in length";
-        }
-        if (message != "") {
-          output.elms.push(document.querySelector('#password'));
-          output.messages.push(message);
-        }
+    const result = await response.json();
 
+    if (!result.token_success) {
+      alert("Failed to validate signup attempt, please try again later");
+      return;
+    }
+    if (!result.signup_success) {
+      const email = document.querySelector("#email");
+      email.style = "outline: 1px solid var(--red-background);";
+      email.addEventListener(
+        "keydown",
+        function () {
+          this.style = "";
+          this.parentElement.nextElementSibling.style = "";
+        },
+        { once: true }
+      );
+      email.parentElement.nextElementSibling.textContent =
+        "Email already in use";
+      email.parentElement.nextElementSibling.style = "display:block";
+      email.focus();
+    } else {
+      router.push("/");
+    }
+
+    response = await fetch(endpoint, options);
+    if (response.status == 400) {
+      alert("Unable to find form fields");
+      return;
+    }
+
+    let regex = /[a-zA-z0-9]@[a-zA-z0-9.]/g;
+    if (target.email == "" || target.email.search(regex) == -1) {
+      output.elms.push(document.querySelector("#email"));
+      output.messages.push("Invalid Email");
+    }
+    // if (target.remail == "" || target.email != target.remail || target.remail.search(regex) == -1) {
+    //   output.elms.push(document.querySelector('#remail'));
+    //   output.messages.push("Invalid Email");
+    // }
+    if (target.email != target.remail) {
+      output.elms.push(document.querySelector("#remail"));
+      output.messages.push("Emails must match");
+    }
+    let message = "";
+    if (target.password.search(/(?=(.*[a-z]){3,})/g) == -1) {
+      message = "Must have at least 3 lower case letters";
+    }
+    if (target.password.search(/(?=(.*[A-Z]){3,})/g) == -1) {
+      message = "Must have at least 3 upper case letters";
+    }
+    if (target.password.search(/(?=(.*[0-9]){3,})/g) == -1) {
+      message = "Must have at least 3 numbers";
+    }
+    if (target.password.search(/(?=(.*[?#@!*()])+)/g) == -1) {
+      message = "Must have at least 1 special character ? # @ ! * ( )";
+    }
+    if (target.password == "" || target.password.length < 10) {
+      message = "Password must be at least 10 characters in length";
+    }
+    if (message != "") {
+      output.elms.push(document.querySelector("#password"));
+      output.messages.push(message);
+    }
+  };
   const checkFields = (target) => {
     let output = { valid: true, elms: [], messages: [] };
     if (target.fname == "") {
