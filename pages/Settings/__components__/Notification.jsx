@@ -1,35 +1,32 @@
 import React from "react";
 import styled from "@emotion/styled";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  selectsettingsData,
-  settingsDataAction,
-} from "@/lib/store/settingsData.slice";
+import { selectUserData, userDataAction } from "@/lib/store/userData.slice";
 import { NOTIFICATION_PREFERENCE } from "@/lib/constants";
 
 export default function Notification() {
   const dispatch = useDispatch();
-  const { notiPref } = useSelector(selectsettingsData);
+  const { notiPref } = useSelector(selectUserData);
 
   const onNotificationPreferenceChangeHandler = (e) => {
     switch (e.target.value) {
       case NOTIFICATION_PREFERENCE.BOTH:
         dispatch(
-          settingsDataAction.setNotiPref({
+          userDataAction.setNotiPref({
             notiPref: NOTIFICATION_PREFERENCE.BOTH,
           })
         );
         break;
       case NOTIFICATION_PREFERENCE.ONLY_BILLMATES:
         dispatch(
-          settingsDataAction.setNotiPref({
+          userDataAction.setNotiPref({
             notiPref: NOTIFICATION_PREFERENCE.ONLY_BILLMATES,
           })
         );
         break;
       case NOTIFICATION_PREFERENCE.ONLY_EMAIL:
         dispatch(
-          settingsDataAction.setNotiPref({
+          userDataAction.setNotiPref({
             notiPref: NOTIFICATION_PREFERENCE.ONLY_EMAIL,
           })
         );
