@@ -1,10 +1,18 @@
-//import styles from '@/styles/Home.module.css'
 import Head from 'next/head'
 import Footer from './Globals/Footer'
 import Header from './Globals/Header'
 import { Inter } from '@next/font/google'
 import styles from "@/styles/Home.module.css";
 
+const inter = Inter({ subsets: ['latin'] })
+
+// const home = () => {
+//     return (
+//         <div>
+//             Books
+//         </div>
+//     )
+// }
 
 export default function Home() {
     return ( 
@@ -21,6 +29,7 @@ export default function Home() {
                     <p className={styles.totalDebt2250}>Total debt: $22.50</p>
                 </span>
             </div>
+            
             <Footer></Footer>
         </div>
     )
