@@ -1,7 +1,11 @@
 import styles from '@/styles/Home.module.css'
 import { useRouter } from 'next/router'
+import { userService } from '../services/authorization'
+import { LAMBDA_RESP } from '../lib/constants';
+
 
 export default function PageWithJSbasedForm() {
+    const user = userService.user;
     let router = useRouter();
     const handleSubmit = async (event) => {
       event.preventDefault();
@@ -30,33 +34,15 @@ export default function PageWithJSbasedForm() {
         return;
       }
 
-      const JSONdata = JSON.stringify(data)
-      const endpoint = '/api/signin_api'
-  
-      // Form the request for sending data to the server.
-      const options = {
-        method: 'POST',
-        mode : 'no-cors',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSONdata
-      }
 
-      try {
-        const response = await fetch(endpoint, options);
-        if (response.status == 400) {
-          alert("Unable to find form fields");
-          return;
-        }
+      const {status, token} = await userService.authenticateCredentials(data.email, data.password);
+      console.log(status);
 
-        const result = await response.json();
-
-        if (!result.token_success) {
+        if (status == LAMBDA_RESP.ERROR || status == LAMBDA_RESP.INVALID_TOKEN) {
           alert("Failed to validate signup attempt, please try again later");
           return;
         }
-        if (!result.login_success) {
+        if (status == LAMBDA_RESP.INVALID) {
           const element = document.querySelector("#incorrect");
           const inputs = document.querySelectorAll('input');
           inputs[0].style = "outline: 1px solid #ff0101;";
@@ -66,24 +52,13 @@ export default function PageWithJSbasedForm() {
           localStorage.setItem('timeout', new Date(Date.now() + 3600000));
         } else {
           localStorage.removeItem('timeout');
-          console.log(result.token);
-
+          console.log(token);
           //add to local storage because I don't have WIFI to install cookies
-          localStorage.setItem('token', result.token);
+          localStorage.setItem('token', token);
+          
           //placeholder until home page is done
-          //router.push('/Groups/1');
+          router.push('/Groups/1');
         }
-
-      } catch(e) {
-        console.log(e);
-        alert("Something went wrong please try again later");
-      }
-
-      // if (result) {
-      //   alert('worked');
-      // } else {
-      //   alert("failed");
-      // }
     }
 
     const checkFields = (target) => {

@@ -1,5 +1,7 @@
 import styles from "@/styles/Home.module.css";
 import { useRouter } from "next/router";
+import { LAMBDA_RESP } from "../lib/constants";
+import { userService } from "../services/authorization";
 
 export default function Register() {
   let router = useRouter();
@@ -13,7 +15,6 @@ export default function Register() {
       password: event.target.password.value,
       rpassword: event.target.rpassword.value,
     };
-
     const field_check = checkFields(data);
     if (!field_check.valid) {
       for (let i in field_check.elms) {
@@ -35,6 +36,32 @@ export default function Register() {
       return;
     }
     data["name"] = data.fname + " " + data.lname;
+    let result = await userService.register(data);
+
+    if (result == LAMBDA_RESP.INVALID_TOKEN) {
+      alert("Failed to validate signup attempt, please try again later");
+      return;
+    }
+    if (result == LAMBDA_RESP.EMAIL_TAKEN) {
+      const email = document.querySelector("#email");
+      email.style = "outline: 1px solid var(--red-background);";
+      email.addEventListener(
+        "keydown",
+        function () {
+          this.style = "";
+          this.parentElement.nextElementSibling.style = "";
+        },
+        { once: true }
+      );
+      email.parentElement.nextElementSibling.textContent =
+        "Email already in use";
+      email.parentElement.nextElementSibling.style = "display:block";
+      email.focus();
+    } else {
+      router.push("/");
+    }
+
+    data["name"] = data.fname + " " + data.lname;
     const JSONdata = JSON.stringify(data);
     const endpoint = "/api/register_api";
     const options = {
@@ -52,7 +79,7 @@ export default function Register() {
       return;
     }
 
-    const result = await response.json();
+    result = await response.json();
 
     if (!result.token_success) {
       alert("Failed to validate signup attempt, please try again later");
