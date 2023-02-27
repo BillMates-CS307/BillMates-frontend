@@ -11,7 +11,6 @@ export const userService = {
     signout
 };
 
-
 function signout() {
   deleteCookie('JWT_Token', {path : "/", domain : "localhost"});
 }
@@ -91,7 +90,7 @@ async function authenticateCredentials(e, p) {
       if (!result.login_success) {
         return {status : "invalid", token : null};
       }
-      setCookie('JWT_Token', result.token);
+      setCookie('JWT_Token', result.token ,{maxAge: 60 * 60 * 24 * 7});
       return {status : "success", token : result.token};
     } catch(e) {
         console.log(e);
@@ -99,6 +98,27 @@ async function authenticateCredentials(e, p) {
     }
 }
 
-function register(email, name, password) {
-    
+async function register(data) {
+  const JSONdata = JSON.stringify(data);
+  const endpoint = '/api/register_api'
+  const options = {
+    method: 'POST',
+    mode : 'no-cors',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSONdata,
+  }
+
+  return await fetch(endpoint, options).then( (response) =>  {
+    return response.json()
+  }).then( (result) => {
+    if (!result.token_success) {
+      return "error";
+    }
+    if (!result.signup_success) {
+      return "email";
+    }
+    return "success";
+  }).catch( (e) => {console.log(e); return "error"} )  
 }

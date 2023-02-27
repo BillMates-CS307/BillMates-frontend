@@ -1,5 +1,7 @@
 import styles from '@/styles/Home.module.css'
 import { useRouter } from 'next/router'
+import { LAMBDA_RESP } from '../lib/constants';
+import { userService } from '../services/authorization';
 
 export default function Register() {
     let router = useRouter();
@@ -29,31 +31,13 @@ export default function Register() {
           return;
         }
         data["name"] = data.fname + " " + data.lname;
-        const JSONdata = JSON.stringify(data);
-        const endpoint = '/api/register_api';
-        const options = {
-          method: 'POST',
-          mode : 'no-cors',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSONdata,
-        }
+        const result = await userService.register(data);
 
-    
-        const response = await fetch(endpoint, options);
-        if (response.status == 400) {
-          alert("Unable to find form fields");
-          return;
-        }
-
-        const result = await response.json();
-
-        if (!result.token_success) {
+        if (result == LAMBDA_RESP.INVALID_TOKEN) {
           alert("Failed to validate signup attempt, please try again later");
           return;
         }
-        if (!result.signup_success) {
+        if (result == LAMBDA_RESP.EMAIL_TAKEN) {
           const email = document.querySelector('#email');
           email.style = "outline: 1px solid var(--red-background);";
           email.addEventListener('keydown', function () {
@@ -64,10 +48,8 @@ export default function Register() {
           email.parentElement.nextElementSibling.style = "display:block";
           email.focus();
         } else {
-          router.push('/')
+          router.push('/');
         }
-
-
       }
 
       const checkFields = (target) => {

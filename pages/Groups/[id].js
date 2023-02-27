@@ -2,6 +2,8 @@ import styles from '@/styles/Group.module.css'
 import Header from '../Globals/Header.js'
 import Footer from '../Globals/Footer.js'
 import { userService } from '../services/authorization.js';
+import { groupService } from '../services/groups.js';
+import { LAMBDA_RESP } from '../lib/constants'
 
 export async function getServerSideProps({req, res}) {
     //check if user is signed in
@@ -13,10 +15,10 @@ export async function getServerSideProps({req, res}) {
                 destination: "/"}
         }
     }
-    const group_id = req.url.match("[0-9]+$")[0];
-    //make API call to lambda
-    //const response = await fetch();
-    //const data = await response.json()
+    const group_id = req.url.match("[0-9a-z\-]+$")[0];
+
+    const group_data = await groupService.getGroup(group_id);
+    console.log(group_data);
 
     const groupInformation = {
         groupName : "Baller Mates",
@@ -188,6 +190,7 @@ export default function Group ({groupName, groupId, members, history, userId, pe
     let pending_num = -1;
 
     return (
+
     <>
     <Header></Header>
     <main className={styles.main}>
@@ -195,6 +198,7 @@ export default function Group ({groupName, groupId, members, history, userId, pe
              {
                 pendingApproval.map( (trans) => {
                     pending_num++;
+                    if (trans.owner == userId) {
                     return (
                         <div index={pending_num} className={`${styles.transaction_container} ${styles.pending}`} key={pending_num} onClick={(e) => makePendingView(e)}>
                         <div className={styles.transaction_info}>
@@ -212,6 +216,9 @@ export default function Group ({groupName, groupId, members, history, userId, pe
                         </div>
                     </div>
                     )
+                    } else {
+                        return <></>
+                    }
                 })
             }
             {  
@@ -349,10 +356,12 @@ export default function Group ({groupName, groupId, members, history, userId, pe
         // let children_string = "";
         // people_view.innerHTML = children_string;
         // people_view.nextElementSibling.setAttribute("index", event.target.getAttribute("index"));
-        document.querySelector('#pending_view').style = "display:block";
+        const view = document.querySelector('#pending_view');
+        view.children[0].setAttribute("index", event.target.getAttribute("index"));
+        view.style = "display:block";
     }
 
-    function handleExpenseSubmit() {
+    async function handleExpenseSubmit() {
         const form = document.querySelector('#transaction_input');
         const inputs = form.querySelectorAll('input');
         let format = {
@@ -424,6 +433,18 @@ export default function Group ({groupName, groupId, members, history, userId, pe
             return;
         } else {
             console.log(format);
+
+            const result = await groupService.submitExpense(format);
+            console.log(result);
+            if (result == LAMBDA_RESP.SUCCESS) {
+                location.reload();
+            } else if (result == LAMBDA_RESP.INVALID) {
+                alert("Check to make sure all inputs sum to the total, there are no '$', and that there is at least one person paying");
+                return;
+            } else if (result == LAMBDA_RESP.ERROR || result == LAMBDA_RESP.INVALID_TOKEN) {
+                alert("Something went wrong please try again later");
+                return;
+            }
         }
     }
 
@@ -446,7 +467,8 @@ export default function Group ({groupName, groupId, members, history, userId, pe
         elm.style = "display:block";
     }
 
-    function handleExpensePay(event) {
+    //when BillMe button is pushed to pay out an existing debt
+    async function handleExpensePay(event) {
         const index = event.target.getAttribute("index");
         const input = document.querySelector("#expense_paying");
         if (input.value == "" || (input.value.search(/^[0-9]*[.][0-9]{2}$/g) == -1 && input.value.search(/^[0-9]*$/g) == -1)) {
@@ -457,10 +479,42 @@ export default function Group ({groupName, groupId, members, history, userId, pe
         } else {
             const value = parseFloat(input.value);
             console.log(history[index].expenses);
+
+            const result = await groupService.payDebt(userId, value, history[index].expenses);
+            console.log(result);
+            if (result == LAMBDA_RESP.SUCCESS) {
+                location.reload();
+            } else if (result == LAMBDA_RESP.INVALID) {
+                alert("Sorry, we could not process this request");
+                location.reload();
+            } else if (result == LAMBDA_RESP.ERROR || result == LAMBDA_RESP.INVALID_TOKEN) {
+                alert("Something went wrong please try again later");
+            }
+
         }
     }
+    //when accept or reject is pushed to accept/reject a pending request
+    async function handlePendingPay(event, isAccepted) {
+        const expense = pendingApproval[event.target.parentNode.getAttribute("index")];
+        let accepted = true;
+        if (isAccepted) {
+            
+            console.log(expense);
+            console.log("Will be accepted");
+        } else {
+            accepted = false;
+            console.log(expense);
+            console.log("Will be Denied");
+        }
 
-    function handlePendingPay(event) {
-        console.log(event);
+        const result = await groupService.updatePendingState(expense, userId, accepted);
+        if (result == LAMBDA_RESP.SUCCESS) {
+            location.reload();
+        } else if (result == LAMBDA_RESP.INVALID) {
+            alert("Sorry, we could not process this request");
+            location.reload();
+        } else if (result == LAMBDA_RESP.ERROR || result == LAMBDA_RESP.INVALID_TOKEN) {
+            alert("Something went wrong please try again later");
+        }
     }
 }
