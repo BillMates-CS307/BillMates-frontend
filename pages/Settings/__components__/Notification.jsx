@@ -6,28 +6,30 @@ import { NOTIFICATION_PREFERENCE } from "@/lib/constants";
 
 export default function Notification() {
   const dispatch = useDispatch();
-  const { notiPref } = useSelector(selectUserData);
+  const {
+    settings: { notification },
+  } = useSelector(selectUserData);
 
   const onNotificationPreferenceChangeHandler = (e) => {
     switch (e.target.value) {
       case NOTIFICATION_PREFERENCE.BOTH:
         dispatch(
-          userDataAction.setNotiPref({
-            notiPref: NOTIFICATION_PREFERENCE.BOTH,
+          userDataAction.setSettingsNotification({
+            settings: { notification: NOTIFICATION_PREFERENCE.BOTH },
           })
         );
         break;
       case NOTIFICATION_PREFERENCE.ONLY_BILLMATES:
         dispatch(
-          userDataAction.setNotiPref({
-            notiPref: NOTIFICATION_PREFERENCE.ONLY_BILLMATES,
+          userDataAction.setSettingsNotification({
+            settings: { notification: NOTIFICATION_PREFERENCE.ONLY_BILLMATES },
           })
         );
         break;
       case NOTIFICATION_PREFERENCE.ONLY_EMAIL:
         dispatch(
-          userDataAction.setNotiPref({
-            notiPref: NOTIFICATION_PREFERENCE.ONLY_EMAIL,
+          userDataAction.setSettingsNotification({
+            settings: { notification: NOTIFICATION_PREFERENCE.ONLY_EMAIL },
           })
         );
         break;
@@ -45,7 +47,7 @@ export default function Notification() {
           type="radio"
           name="noti"
           value={NOTIFICATION_PREFERENCE.BOTH}
-          checked={notiPref === NOTIFICATION_PREFERENCE.BOTH}
+          checked={notification === NOTIFICATION_PREFERENCE.BOTH}
           onChange={onNotificationPreferenceChangeHandler}
         />
         <NotificationButtonLabel>Both</NotificationButtonLabel>
@@ -55,7 +57,7 @@ export default function Notification() {
           type="radio"
           name="noti"
           value={NOTIFICATION_PREFERENCE.ONLY_BILLMATES}
-          checked={notiPref === NOTIFICATION_PREFERENCE.ONLY_BILLMATES}
+          checked={notification === NOTIFICATION_PREFERENCE.ONLY_BILLMATES}
           onChange={onNotificationPreferenceChangeHandler}
         />
         <NotificationButtonLabel>Only Billmates</NotificationButtonLabel>
@@ -65,7 +67,7 @@ export default function Notification() {
           type="radio"
           name="noti"
           value={NOTIFICATION_PREFERENCE.ONLY_EMAIL}
-          checked={notiPref === NOTIFICATION_PREFERENCE.ONLY_EMAIL}
+          checked={notification === NOTIFICATION_PREFERENCE.ONLY_EMAIL}
           onChange={onNotificationPreferenceChangeHandler}
         />
         <NotificationButtonLabel>Only email</NotificationButtonLabel>
