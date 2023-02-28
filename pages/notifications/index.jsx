@@ -10,16 +10,17 @@ export default function Notifications() {
     {
       id: "objectId1",
       sender: "sender1",
-      message: "some message1",
+      message:
+        "some message1some message1some message1some message1some message1",
       time: "Some Time?",
-      isRead: false,
+      isread: false,
     },
     {
       id: "objectId2",
       sender: "sender2",
       message: "some message2",
       time: "Some Time?",
-      isRead: true,
+      isread: true,
     },
   ];
 
@@ -29,7 +30,7 @@ export default function Notifications() {
       <NotificationsWrapper>
         <NotificationsList>
           {notifications.map((noti, i) => (
-            <NotificationItem key={noti.id} isFirst={i == 0} {...noti} />
+            <NotificationItem key={noti.id} isfirst={i == 0} {...noti} />
           ))}
         </NotificationsList>
       </NotificationsWrapper>

@@ -4,17 +4,17 @@ import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 
 export default function NotificationItem({
-  isFirst,
   id,
   sender,
   message,
   time,
-  isRead,
+  isread,
+  isfirst,
 }) {
   return (
     <NotificationItemWrapper
-      isRead={isRead}
-      isFirst={isFirst}
+      isread={isread}
+      isfirst={isfirst}
       href={`/notifications/:${id}`}
     >
       <ProfileWrapper>
@@ -30,13 +30,13 @@ export default function NotificationItem({
 }
 
 const NotificationItemWrapper = styled(Link)`
-  ${({ isRead, isFirst }) => css`
+  ${({ isread, isfirst }) => css`
     display: flex;
     justify-content: flex-start;
-    margin-top: ${isFirst ? 0 : 5}px;
+    margin-top: ${isfirst ? 0 : 5}px;
     height: 80px;
-    color: ${isRead ? "white" : "black"};
-    background-color: ${isRead ? "gray" : "#00c923"};
+    color: ${isread ? "white" : "black"};
+    background-color: ${isread ? "gray" : "#00c923"};
     border-radius: 10px;
 
     :hover {
@@ -73,10 +73,18 @@ const ContentsWrapper = styled.div`
 
 const Sender = styled.h3``;
 
-const Message = styled.div``;
+const Message = styled.div`
+  padding-right: 10px;
+  max-width: 305px;
+  max-height: 18px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+`;
 
 const Time = styled.div`
   display: flex;
   justify-content: flex-end;
+  padding-top: 5px;
   width: 100%;
 `;
