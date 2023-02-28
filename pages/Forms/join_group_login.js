@@ -4,7 +4,7 @@ import { userService } from '../services/authorization'
 import { LAMBDA_RESP } from '../lib/constants';
 
 
-export default function PageWithJSbasedForm() {
+export default function JoinGroupSignIn({groupId}) {
     let router = useRouter();
     const handleSubmit = async (event) => {
       event.preventDefault();
@@ -34,8 +34,7 @@ export default function PageWithJSbasedForm() {
       }
 
 
-      const {status, token, attempsLeft} = await userService.authenticateCredentials(data.email, data.password);
-      console.log(status);
+      const {status, token} = await userService.authenticateCredentials(data.email, data.password);
 
         if (status == LAMBDA_RESP.ERROR || status == LAMBDA_RESP.INVALID_TOKEN) {
           alert("Failed to validate signup attempt, please try again later");
@@ -43,26 +42,18 @@ export default function PageWithJSbasedForm() {
         }
         if (status == LAMBDA_RESP.INVALID) {
           const element = document.querySelector("#incorrect");
-          if (attempsLeft != undefined &&  attempsLeft <= 0) {
-            element.children[0].innerHTML = "Email or Password is incorrect. </br>Attempts Left : " + attempsLeft;
-            localStorage.setItem('timeout', new Date(Date.now() + 3600000));
-          } else {
-            element.children[0].innerHTML = "Email or Password is incorrect.";
-          }
           const inputs = document.querySelectorAll('input');
           inputs[0].style = "outline: 1px solid #ff0101;";
           inputs[1].style = "outline: 1px solid #ff0101;";
           inputs[1].value = "";
           element.style = "display:block";
-          console.log(attempsLeft);
+          localStorage.setItem('timeout', new Date(Date.now() + 3600000));
         } else {
           localStorage.removeItem('timeout');
-          console.log(token);
           //add to local storage because I don't have WIFI to install cookies
           localStorage.setItem('token', token);
           
-          //placeholder until home page is done
-          router.push('/Groups/1');
+          router.push("/Groups/" + groupId);
         }
     }
 
@@ -104,7 +95,7 @@ export default function PageWithJSbasedForm() {
     return (
 <>
     <div id="incorrect" className={styles.incorrect_box}>
-      <p></p>
+      <p>Email or Password is incorrect</p>
     </div>
     <div className={styles.signup_form}>
         <form onSubmit={handleSubmit} method="post">
