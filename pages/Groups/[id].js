@@ -8,7 +8,6 @@ import { LAMBDA_RESP } from '../lib/constants'
 export async function getServerSideProps({req, res}) {
     //check if user is signed in
     const {email, token} = userService.getEmailFromToken({res, req});
-
     if (email == null) {
         return {
             props:{},
@@ -378,7 +377,6 @@ export default function Group ({groupName, groupId, members, expenseHistory, use
         view.children[0].setAttribute("index", event.target.getAttribute("index"));
         view.style = "display:block";
     }
-    
     async function handleExpenseSubmit() {
         const form = document.querySelector('#transaction_input');
         const inputs = form.querySelectorAll('input');

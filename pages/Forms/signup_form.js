@@ -5,6 +5,7 @@ import { LAMBDA_RESP } from '../lib/constants';
 
 
 export default function PageWithJSbasedForm() {
+    const user = userService.user;
     let router = useRouter();
     const handleSubmit = async (event) => {
       event.preventDefault();
@@ -32,7 +33,6 @@ export default function PageWithJSbasedForm() {
         field_check.elms[0].focus();
         return;
       }
-
 
       const {status, token, attempsLeft} = await userService.authenticateCredentials(data.email, data.password);
       console.log(status);
