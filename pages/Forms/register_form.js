@@ -52,46 +52,6 @@ export default function Register() {
         }
       }
 
-    const response = await fetch(endpoint, options);
-    if (response.status == 400) {
-      alert("Unable to find form fields");
-      return;
-    }
-
-        let regex = /[a-zA-z0-9]@[a-zA-z0-9.]/g;
-        if (target.email == "" || target.email.search(regex) == -1) {
-          output.elms.push(document.querySelector('#email'));
-          output.messages.push("Invalid Email");
-        }        
-        // if (target.remail == "" || target.email != target.remail || target.remail.search(regex) == -1) {
-        //   output.elms.push(document.querySelector('#remail'));
-        //   output.messages.push("Invalid Email");
-        // }
-        if (target.email != target.remail) {
-          output.elms.push(document.querySelector('#remail'));
-          output.messages.push("Emails must match");
-        }
-        let message = "";        
-        if (target.password.search(/(?=(.*[a-z]){3,})/g) == -1) {
-          message = "Must have at least 3 lower case letters";
-        }
-        if (target.password.search(/(?=(.*[A-Z]){3,})/g) == -1) {
-          message = "Must have at least 3 upper case letters";
-        }
-        if (target.password.search(/(?=(.*[0-9]){3,})/g) == -1) {
-          message = "Must have at least 3 numbers";
-        }
-        if (target.password.search(/(?=(.*[?#@!*()])+)/g) == -1) {
-          message = "Must have at least 1 special character ? # @ ! * ( )";
-        }
-        if (target.password == "" || target.password.length < 10) {
-          message = "Password must be at least 10 characters in length";
-        }
-        if (message != "") {
-          output.elms.push(document.querySelector('#password'));
-          output.messages.push(message);
-        }
-
   const checkFields = (target) => {
     let output = { valid: true, elms: [], messages: [] };
     if (target.fname == "") {

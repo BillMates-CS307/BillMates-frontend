@@ -9,7 +9,7 @@ import { userService } from './services/authorization'
 const inter = Inter({ subsets: ['latin'] })
 
 export async function getServerSideProps({req, res}) {
-  const {email, token} = userService.getUserFromToken({req, res});
+  const {email, token} = userService.getEmailFromToken({req, res});
   if (email != null) {
     return {props : {},
             redirect : {permanent: false,

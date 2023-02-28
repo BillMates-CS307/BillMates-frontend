@@ -7,7 +7,7 @@ import { LAMBDA_RESP } from '../lib/constants'
 
 export async function getServerSideProps({req, res}) {
     //check if user is signed in
-    const {email, token} = userService.getUserFromToken({res, req});
+    const {email, token} = userService.getEmailFromToken({res, req});
     if (email == null) {
         return {
             props:{},
@@ -17,12 +17,21 @@ export async function getServerSideProps({req, res}) {
     }
     const group_id = req.url.match("[0-9a-z\-]+$")[0];
 
-    const group_data = await groupService.getGroup(group_id);
-    console.log(group_data);
+    const result = await groupService.getGroup(group_id, email);
+
+    if (result == null || !result.token_success || !result.get_success) {
+        return {
+            props:{},
+            redirect : {permanent: false,
+                destination: "/home"}
+        }
+    }
+
+    console.log(result);
 
     const groupInformation = {
-        groupName : "Baller Mates",
-        members : {"a@gmail.com" : "Logan Cover", "b@gmail.com" : "Ben Lilley", "c@gmail.com" : "Ryan Rittner"},
+        groupName : "Aad",
+        members : result.members,
         id : group_id
     }
 
@@ -66,12 +75,13 @@ export async function getServerSideProps({req, res}) {
 
         return {
             props : {
-                groupName : groupInformation.groupName,
+                groupName : result.name,
                 groupId : group_id,
-                members : groupInformation.members,
-                history : transactionHistory,
+                members : result.members,
+                expenseHistory : result.expenses,
                 userId : email,
-                pendingApproval : pendingApproval
+                pendingApproval : pendingApproval,
+                relative : result.balance
             }
         }
 }
@@ -157,11 +167,11 @@ function sumMemberExpenses(expense, owner) {
     for (let user in expense) {
         total += parseFloat(expense[user]);
     }
-    total -= expense[owner];
+    //total -= expense[owner];
     return total.toFixed(2);
 }
 
-function GroupHeading({name, members, amount}) {
+function GroupHeading({name, members, amount, groupId}) {
     let hex = (amount == 0) ? "var(--neutral-background)" : (amount < 0) ? "var(--red-background)" : "var(--green-background)";
 
     return (
@@ -176,6 +186,12 @@ function GroupHeading({name, members, amount}) {
                     <p style={{color:hex}} >${((amount < 0) ? amount * -1 : amount * 1).toFixed(2)}</p>
                 </div>
             </div>
+            <div className={styles.group_info}>
+                <div className={styles.names_members}>
+                    <p>Join Link</p>
+                    <p className={styles.word_break_all}>https://localhost/JoinGroup/{groupId}</p>
+                </div>
+            </div>
             <div className={styles.banner}>
                     <p>EXPENSES</p>
             </div>
@@ -184,7 +200,7 @@ function GroupHeading({name, members, amount}) {
     );
 }
 
-export default function Group ({groupName, groupId, members, history, userId, pendingApproval}) {
+export default function Group ({groupName, groupId, members, expenseHistory, userId, pendingApproval, relative}) {
     let relative_amount = 0;
     let history_num = -1;
     let pending_num = -1;
@@ -207,12 +223,12 @@ export default function Group ({groupName, groupId, members, history, userId, pe
                                 <p>{trans.title}</p>
                             </div>
                             <div className={styles.transaction_owner_date}>
-                                <p>{members[trans.expenses.who]}</p>
+                                <p>{members[trans.users]}</p>
                                 <p>{trans.date}</p>
                             </div>
                         </div>
                         <div className={styles.relative_amount}>
-                            <p>${trans.expenses.amount}</p>
+                            <p>${trans.users.amount}</p>
                         </div>
                     </div>
                     )
@@ -222,21 +238,21 @@ export default function Group ({groupName, groupId, members, history, userId, pe
                 })
             }
             {  
-                history.map( (trans) => {
+                expenseHistory.map( (trans) => {
                     history_num++;
                     let isOwner = ( trans.owner == userId );
-                    let relative = ( isOwner ) ? sumMemberExpenses(trans.expenses, userId)  : ((parseFloat(trans.expenses[userId]) || 0.00).toFixed(2));
-                    relative_amount += parseFloat(((isOwner) ? relative : relative * -1));
+                    let relative = ( isOwner ) ?  sumMemberExpenses(trans.users) : ((parseFloat(trans.users[userId]) || 0.00).toFixed(2));
+                    //relative_amount += parseFloat(((isOwner) ? relative : relative * -1));
                     return (
                         <div index={history_num} className={`${styles.transaction_container} ${(relative == 0)? styles.neutral  : ( (isOwner) ? styles.positive : styles.negative)}`} key={history_num} onClick={(e) => makeTransactionView(e)}>
                         <div className={styles.transaction_info}>
                             <div className={styles.transaction_name_amount}>
                                 <p>{trans.title}</p>
-                                <p>${trans.total}</p>
+                                <p>${trans.amount.toFixed(2)}</p>
                             </div>
                             <div className={styles.transaction_owner_date}>
                                 <p>{members[trans.owner]}</p>
-                                <p>{trans.date}</p>
+                                <p>{trans.request_time}</p>
                             </div>
                         </div>
                         <div className={styles.relative_amount}>
@@ -248,7 +264,7 @@ export default function Group ({groupName, groupId, members, history, userId, pe
             }
             <div className={styles.buffer_block}></div>
         </div>
-        <GroupHeading name={groupName} members={Object.keys(members).length} amount={relative_amount.toFixed(2)}></GroupHeading>
+        <GroupHeading name={groupName} members={Object.keys(members).length} amount={relative} groupId={groupId}></GroupHeading>
     </main>
     <Footer callback={showTransactionInput} args = {""}></Footer>
 
@@ -326,18 +342,19 @@ export default function Group ({groupName, groupId, members, history, userId, pe
     </>
     );
 
-
     function makeTransactionView(event) {
-        const expense = history[event.target.getAttribute("index")];
+        const expense = expenseHistory[event.target.getAttribute("index")];
+        console.log(expenseHistory);
+        console.log(event.target.getAttribute("index"));
         const heading = document.querySelector('#view_item_info');
         heading.children[0].textContent = expense.title;
-        heading.children[1].textContent = "$" + expense.total;
+        heading.children[1].textContent = "$" + expense.amount.toFixed(2);
         heading.children[2].textContent = members[expense.owner];
         const people_view = document.querySelector('#view_transaction_people');
         let children_string = "";
-        for (let person in expense.expenses) {
-            let amt_remaining = parseFloat(expense.expenses[person]);
-            if (amt_remaining == 0 || person == expense.owner) {
+        for (let person in expense.users) {
+            let amt_remaining = parseFloat(expense.users[person]);
+            if (amt_remaining == 0) {
                 continue;
             }
             children_string += `<div class="${styles.person} ${styles.person_view}"><p>${members[person]}</p><p>$${amt_remaining.toFixed(2)}</p></div>`;
@@ -360,7 +377,6 @@ export default function Group ({groupName, groupId, members, history, userId, pe
         view.children[0].setAttribute("index", event.target.getAttribute("index"));
         view.style = "display:block";
     }
-
     async function handleExpenseSubmit() {
         const form = document.querySelector('#transaction_input');
         const inputs = form.querySelectorAll('input');
@@ -368,7 +384,7 @@ export default function Group ({groupName, groupId, members, history, userId, pe
             title : "",
             total : "",
             owner : userId,
-            breakdown : {}
+            expense : {}
         }
         let running_sum = 0;
         loooping:
@@ -386,15 +402,15 @@ export default function Group ({groupName, groupId, members, history, userId, pe
                     inputs[i].addEventListener('keydown', function () {
                         this.style = "";
                     }, {once : true});
-                    format.breakdown = "";
+                    format.expense = "";
                     break loooping;
                     } else {
-                        format.breakdown[inputs[i].getAttribute("email")] = inputs[i].value;
+                        format.expense[inputs[i].getAttribute("email")] = inputs[i].value;
                         running_sum += parseFloat(inputs[i].value) || 0;
                     }
             }
         }
-
+    
         if (format.title == "") {
             inputs[0].nextElementSibling.textContent = "Cannot be blank";
             inputs[0].style = "outline: 2px solid var(--red-background);";
@@ -404,7 +420,7 @@ export default function Group ({groupName, groupId, members, history, userId, pe
                 this.nextElementSibling.style = "";
           }, {once : true});
         }
-
+    
         if (format.total == "" || parseFloat(format.total) <= 0) {
             inputs[1].nextElementSibling.textContent = "Cannot be blank";
             inputs[1].style = "outline: 2px solid var(--red-background);";
@@ -428,12 +444,19 @@ export default function Group ({groupName, groupId, members, history, userId, pe
             elm.textContent = "Amount Difference: $" + (Math.round((parseFloat(format.total) - running_sum) * 100) / 100);
             format.total = "";
         }
-
-        if (format.title == "" || format.total == "" || format.breakdown == "") {
+    
+        if (format.title == "" || format.total == "" || format.expense == "") {
             return;
         } else {
             console.log(format);
-
+            format.total = (Math.trunc((parseFloat(format.total) * 100)) / 100) - (Math.trunc(((parseFloat(format.expense[userId]) || 0) * 100)) / 100);
+            delete format.expense[userId];
+            format.group_id = "my_uuid";
+            format.request_time = "now";
+            format.due_date = "later";
+            for (let user in format.expense) {
+                format.expense[user] = parseFloat(format.expense[user]);
+            }
             const result = await groupService.submitExpense(format);
             console.log(result);
             if (result == LAMBDA_RESP.SUCCESS) {
@@ -447,26 +470,26 @@ export default function Group ({groupName, groupId, members, history, userId, pe
             }
         }
     }
-
+    
     function showFulfillExpense(event) {
         const index = event.target.getAttribute("index");
-        if (history[index].expenses[userId] == undefined) {
+        if (expenseHistory[index].users[userId] == undefined) {
             alert("You do not have any debts here")
             return;
         }
         const elm = document.querySelector("#submit_expense");
         console.log(elm);
-        if (history[index].owner == userId) {
+        if (expenseHistory[index].owner == userId) {
             elm.children[0].children[2].children[0].textContent = "Would you like to clear this debt?";
-            elm.children[0].children[2].children[1].value = sumMemberExpenses(history[index].expenses, userId);
+            elm.children[0].children[2].children[1].value = sumMemberExpenses(expenseHistory[index].users, userId);
         } else {
-            elm.children[0].children[2].children[0].textContent = "Original Amount: " + history[index].expenses[userId];
-            elm.children[0].children[2].children[1].value = history[index].expenses[userId];
+            elm.children[0].children[2].children[0].textContent = "Original Amount: " + expenseHistory[index].users[userId].toFixed(2);
+            elm.children[0].children[2].children[1].value = expenseHistory[index].users[userId].toFixed(2);
         }
         elm.children[0].children[3].setAttribute("index", index);
         elm.style = "display:block";
     }
-
+    
     //when BillMe button is pushed to pay out an existing debt
     async function handleExpensePay(event) {
         const index = event.target.getAttribute("index");
@@ -478,9 +501,9 @@ export default function Group ({groupName, groupId, members, history, userId, pe
             }, {once : true});
         } else {
             const value = parseFloat(input.value);
-            console.log(history[index].expenses);
-
-            const result = await groupService.payDebt(userId, value, history[index].expenses);
+            console.log(expenseHistory[index].users);
+    
+            const result = await groupService.payDebt(userId, value, expenseHistory[index].users);
             console.log(result);
             if (result == LAMBDA_RESP.SUCCESS) {
                 location.reload();
@@ -490,7 +513,7 @@ export default function Group ({groupName, groupId, members, history, userId, pe
             } else if (result == LAMBDA_RESP.ERROR || result == LAMBDA_RESP.INVALID_TOKEN) {
                 alert("Something went wrong please try again later");
             }
-
+    
         }
     }
     //when accept or reject is pushed to accept/reject a pending request
@@ -506,7 +529,7 @@ export default function Group ({groupName, groupId, members, history, userId, pe
             console.log(expense);
             console.log("Will be Denied");
         }
-
+    
         const result = await groupService.updatePendingState(expense, userId, accepted);
         if (result == LAMBDA_RESP.SUCCESS) {
             location.reload();

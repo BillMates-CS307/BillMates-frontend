@@ -35,8 +35,7 @@ async function submitExpense(expenseRequest) {
         if (!result.token_success) {
           return "token";
         }
-        //temp name
-        if (!result.submit_sucess) {
+        if (!result.submit_success) {
           return "invalid";
         }
           return "success";
@@ -124,11 +123,11 @@ async function payDebt(id, amount, expense) {
 }
 
 //getServiceSideProps call only
-async function getGroup(groupId) {
+async function getGroup(groupId, email) {
     if (typeof window === "undefined") {
-        const body_json = {uuid: groupId};
-        //const url = 'https://jujezuf56ybwzdn7edily3gu6a0dcdir.lambda-url.us-east-2.on.aws/';
-        const url = "aaaaa";
+        const body_json = {group_id: "my_uuid", email: "test@test.test"};
+        const url = 'https://jujezuf56ybwzdn7edily3gu6a0dcdir.lambda-url.us-east-2.on.aws/';
+        //const url = "aaaaa";
         const options = {
             method: 'POST',
             mode : 'cors',
