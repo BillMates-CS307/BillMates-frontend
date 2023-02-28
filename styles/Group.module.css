@@ -25,7 +25,7 @@
     width: 90%;
     display: grid;
     grid-template-columns: 1fr min-content;
-    margin: auto;
+    margin: 5px auto;
     padding: 10px;
     border: 1px solid var(--main-background-font-color);
     border-radius: 5px;
@@ -41,7 +41,9 @@
 .names_members {
     overflow-x: hidden;
 }
-
+.word_break_all {
+    word-break: break-all;
+}
 .group_amount {
     display: flex;
     align-items: center;
@@ -52,7 +54,7 @@
 }
 .banner {
     width: 100%;
-    margin-top: 15px;
+    /* margin-top: 15px; */
     background-color: var(--green-background);
     text-align: center;
     padding: 5px 0;
@@ -90,10 +92,17 @@
     background-color: var(--green-background);
 }
 .negative {
-    background-color: var(--red-background);
+    background-color: var(--red-background) !important;
 }
 .neutral {
     background-color: var(--neutral-background);
+}
+.pending {
+    background-color: #00DBFF;
+    font-style: italic;
+}
+.pending_larger_p {
+    font-size: 1.2rem !important;
 }
 
 .transaction_container > div {
@@ -269,11 +278,13 @@
     padding: 10px;
     text-align: center;
     margin-top: 20px;
+    cursor: pointer;
   }
   .submit_expense_container p {
     color : #FFF;
     font-size: 1.5rem;
     cursor: pointer;
+    pointer-events: none;
   }
 
 
@@ -282,3 +293,32 @@
     font-style: italic;
     color : var(--neutral-background);
   }
+
+
+.expense_payment_form input {
+    width: 100%;
+    font-size: 1.5rem;
+    line-height: 1.5;
+    border: none;
+    border-bottom: 1px solid var(--neutral-background);
+    outline: none;
+}
+
+.payment_method {
+    margin: 10px 0;
+}
+.payment_method button {
+    padding: 0.25rem 0.5rem;
+    line-height: 2;
+    font-size: 1rem;
+    background-color: var(--neutral-background);
+    color: var(--main-background-font-color);
+    width: 50%;
+    border : none;
+    cursor: pointer;
+}
+
+.selected_method {
+    background-color: var(--green-background) !important;
+    color : var(--opposite-background-font-color) !important;
+}
