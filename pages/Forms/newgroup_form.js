@@ -61,7 +61,7 @@ export default function Register() {
         } else {
           router.push('/')
         }
-      }
+      } 
 
       const checkFields = (target) => {
         let output = {valid : true, elms : [], messages : []}
@@ -84,8 +84,11 @@ export default function Register() {
             </empty>
             <span></span>
             </div>
-
+    
             <button type="submit">Create Group</button>
+            <p>
+                <a href="home">Go Back</a>
+            </p>
         </form>
     </div>
 </>
