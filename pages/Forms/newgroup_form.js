@@ -74,24 +74,24 @@ export default function Register() {
       }
 
     return(
-<>
-<div className={styles.signup_form}>
-        <form onSubmit={handleSubmit} method="post">
-            <div>
-            <label htmlFor="groupname">Group Name:</label>
-            <empty>
-            <input type="text" id="groupname" name="groupname" />
-            </empty>
-            <span></span>
+        <>
+            <div className={styles.signup_form}>
+                <form onSubmit={handleSubmit} method="post">
+                    <div>
+                    <label htmlFor="groupname">Group Name:</label>
+                    <empty>
+                    <input type="text" id="groupname" name="groupname" />
+                    </empty>
+                    <span></span>
+                    </div>
+            
+                    <button type="submit">Create Group</button>
+                    
+                    <a href="home">Go Back</a>
+                    
+                </form>
             </div>
-    
-            <button type="submit">Create Group</button>
-            <p>
-                <a href="home">Go Back</a>
-            </p>
-        </form>
-    </div>
-</>
+        </>
     );
 
 }
