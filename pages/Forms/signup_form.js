@@ -62,7 +62,7 @@ export default function PageWithJSbasedForm() {
           localStorage.setItem('token', token);
           
           //placeholder until home page is done
-          router.push('/Groups/1');
+          router.push('/home/');
         }
     }
 

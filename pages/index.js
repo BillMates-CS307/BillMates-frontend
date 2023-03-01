@@ -13,7 +13,7 @@ export async function getServerSideProps({req, res}) {
   if (email != null) {
     return {props : {},
             redirect : {permanent: false,
-            destination: "../Groups/1"} }
+            destination: "/home"} }
   }
   return {props: {}}
 }
