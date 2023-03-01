@@ -16,11 +16,11 @@ export async function getServerSideProps({req, res}) {
                 destination: "/"}
         }
     }
-    const group_id = req.url.match("[0-9a-z\-]+$")[0];
-
+    //const group_id = req.url.match("[0-9a-z\-]+$")[0];
+    const group_id = "my_uuid";
     const result = await groupService.getGroup(group_id, email);
-
-    if (result == null || !result.token_success || !result.get_success) {
+    console.log(result);
+    if (result == null || !result.token_success || !result.get_success || result.members[email] == undefined) {
         return {
             props:{},
             redirect : {permanent: false,
@@ -30,50 +30,6 @@ export async function getServerSideProps({req, res}) {
 
     console.log(result);
 
-    const groupInformation = {
-        groupName : "Aad",
-        members : result.members,
-        id : group_id
-    }
-
-    const transactionHistory = [
-        {
-            owner : "a@gmail.com",
-            total : "50.00",
-            title : "Testing",
-            date : "02/24/2023",
-            expenses : {
-                "a@gmail.com" : "20.00",
-                "b@gmail.com" : "20.00",
-                "c@gmail.com" : "10.00"
-            }
-        },
-        {
-            owner : "b@gmail.com",
-            total : "10.00",
-            title : "Testing",
-            date : "02/23/2023",
-            expenses : {
-                "a@gmail.com" : "2.00",
-                "b@gmail.com" : "8.00",
-                "c@gmail.com" : "0.00"
-            }
-        }
-    ]
-
-    const pendingApproval = [
-        {
-            owner : "a@gmail.com",
-            total : "50.00",
-            title : "Testing",
-            date : "02/24/2023",
-            expenses : {
-                who :"b@gmail.com",
-                amount : "20.00"
-            }
-        }
-    ]
-
         return {
             props : {
                 groupName : result.name,
@@ -81,7 +37,7 @@ export async function getServerSideProps({req, res}) {
                 members : result.members,
                 expenseHistory : result.expenses,
                 userId : email,
-                pendingApproval : pendingApproval,
+                pendingApproval : result.pending,
                 relative : result.balance
             }
         }
@@ -202,7 +158,6 @@ function GroupHeading({name, members, amount, groupId}) {
 }
 
 export default function Group ({groupName, groupId, members, expenseHistory, userId, pendingApproval, relative}) {
-    let relative_amount = 0;
     let history_num = -1;
     let pending_num = -1;
 
@@ -510,7 +465,7 @@ export default function Group ({groupName, groupId, members, expenseHistory, use
             const value = parseFloat(input.value);
             console.log(expenseHistory[index].users);
     
-            const result = await groupService.payDebt(userId, value, expenseHistory[index].users);
+            const result = await groupService.payDebt(userId, expenseHistory[index]._id, value);
             console.log(result);
             if (result == LAMBDA_RESP.SUCCESS) {
                 location.reload();
@@ -537,7 +492,7 @@ export default function Group ({groupName, groupId, members, expenseHistory, use
             console.log("Will be Denied");
         }
     
-        const result = await groupService.updatePendingState(expense, userId, accepted);
+        const result = await groupService.updatePendingState(isAccepted, expense._id);
         if (result == LAMBDA_RESP.SUCCESS) {
             location.reload();
         } else if (result == LAMBDA_RESP.INVALID) {

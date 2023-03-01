@@ -8,52 +8,9 @@ export const userService = {
     authenticateCredentials,
     register,
     getEmailFromToken,
-    addUserToGroup,
     deleteJwtToken
 };
 
-//server side function only
-async function addUserToGroup(email, groupId) {
-  if (typeof window === "undefined") {
-    const data = {
-      email : email,
-      group_id : groupId
-    };
-    const JSONdata = JSON.stringify(data);
-    const endpoint = 'lamba_URL'
-  
-    // Form the request for sending data to the server.
-    const options = {
-      method: 'POST',
-      mode : 'cors',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSONdata
-    }
-      return "invalid";
-      return await fetch(endpoint, options).then( (response) => {
-      if (response.status == 400) {
-        console.log("400 error");
-        return "error";
-      }
-      return response.json();
-      })
-      .then( (result) => {
-        if (!result.token_success) {
-          return "token";
-        }
-        //temp name
-        if (!result.submit_sucess) {
-          return "invalid";
-        }
-          return "success";
-      })
-      .catch( (error) => {console.log(error); return "error"} );
-  } else {
-    return "error";
-  }
-}
 
 function deleteJwtToken() {
   deleteCookie('JWT_Token', {path : "/", domain : "localhost"});
@@ -136,7 +93,7 @@ async function authenticateCredentials(e, p) {
         return {status : "token", token : null, attempsLeft : undefined};
       }
       if (!result.login_success) {
-        return {status : "invalid", token : null, attempsLeft : 3 - result.user_data.attempts};
+        return {status : "invalid", token : null, attempsLeft : 2 - ((result.user_data.attempts - 1) % 3)};
       }
       setCookie('JWT_Token', result.token ,{maxAge: 60 * 60 * 24 * 7});
       return {status : "success", token : result.token, attempsLeft : 3};

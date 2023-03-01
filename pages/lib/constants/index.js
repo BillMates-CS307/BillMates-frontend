@@ -19,5 +19,6 @@ export const NOTIFICATION_PREFERENCE = {
     EMAIL_TAKEN : "email",
     ERROR : "error",
     INVALID : "invalid",
-    INVALID_TOKEN : "token"    
+    INVALID_TOKEN : "token",
+    NO_SUCH_GROUP : "group"    
   }

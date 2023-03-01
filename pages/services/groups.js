@@ -5,6 +5,7 @@ export const groupService = {
     payDebt,
     updatePendingState,
     submitExpense,
+    addUserToGroup,
     getGroup
 }
 
@@ -43,12 +44,11 @@ async function submitExpense(expenseRequest) {
       .catch( (error) => {console.log(error); return "error"} );
 }
 
-async function updatePendingState(expense, amount, isAccepted) {
+async function updatePendingState(isAccepted, expenseId) {
     //if (!authenticateToken) maybe later
   const data = {
-    isAccepted: isAccepted,
-    amountPaying : amount,
-    expense : expense
+    accepted: isAccepted,
+    expense_id : expenseId
   };
   const JSONdata = JSON.stringify(data);
   const endpoint = '/api/pending'
@@ -73,8 +73,7 @@ async function updatePendingState(expense, amount, isAccepted) {
       if (!result.token_success) {
         return "token";
       }
-      //temp name
-      if (!result.pending_success) {
+      if (!result.handle_success) {
         return "invalid";
       }
         return "success";
@@ -82,12 +81,12 @@ async function updatePendingState(expense, amount, isAccepted) {
     .catch( (error) => {console.log(error); return "error"} );
 }
 
-async function payDebt(id, amount, expense) {
+async function payDebt(id, expenseId, amount) {
   //if (!authenticateToken) maybe later
   const data = {
-    userId: id,
-    amountPaying : amount,
-    expense : expense
+    email: id,
+    amount : amount,
+    expense_id : expenseId
   };
   const JSONdata = JSON.stringify(data);
   const endpoint = '/api/fulfill_expense'
@@ -114,7 +113,7 @@ async function payDebt(id, amount, expense) {
         return "token";
       }
       //temp name
-      if (!result.pay_sucess) {
+      if (!result.pay_success) {
         return "invalid";
       }
         return "success";
@@ -125,7 +124,7 @@ async function payDebt(id, amount, expense) {
 //getServiceSideProps call only
 async function getGroup(groupId, email) {
     if (typeof window === "undefined") {
-        const body_json = {group_id: "my_uuid", email: "test@test.test"};
+        const body_json = {group_id: groupId, email: email};
         const url = 'https://jujezuf56ybwzdn7edily3gu6a0dcdir.lambda-url.us-east-2.on.aws/';
         //const url = "aaaaa";
         const options = {
@@ -148,4 +147,48 @@ async function getGroup(groupId, email) {
         console.log("here");
         return null;
     }
+}
+
+//server side function only
+async function addUserToGroup(email, groupId) {
+  if (typeof window === "undefined") {
+    const data = {
+      email : email,
+      uuid : groupId
+    };
+    const JSONdata = JSON.stringify(data);
+    const endpoint = 'https://cxt3kig2ocrigm3mvzm7ql3m6u0plfwd.lambda-url.us-east-2.on.aws/'
+  
+    // Form the request for sending data to the server.
+    const options = {
+      method: 'POST',
+      mode : 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSONdata
+    }
+      return await fetch(endpoint, options).then( (response) => {
+        if (response.status == 400) {
+          console.log("400 error");
+          return "error";
+        }
+      return response.json();
+      })
+      .then( (result) => {
+        if (result.ERROR == "No such group") {
+          return "error";
+        }
+        if (!result.token_success) {
+          return "token";
+        }
+        if (!result.group_add_success) {
+          return "invalid";
+        }
+          return "success";
+      })
+      .catch( (error) => {console.log(error); return "error"} );
+  } else {
+    return "error";
+  }
 }
