@@ -19,7 +19,7 @@ export default async function handler(req, res) {
   
       //make request to Lambda
       const body_json = {name : groupname};
-      //const url = 'https://jwfjuifdunib5gmornhrs4nm4a0pitnm.lambda-url.us-east-2.on.aws/';
+      const url = 'https://cxt3kig2ocrigm3mvzm7ql3m6u0plfwd.lambda-url.us-east-2.on.aws/';
       const options = {
         method: 'POST',
         mode : 'cors',

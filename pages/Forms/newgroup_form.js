@@ -58,7 +58,7 @@ export default function Register() {
         // const result = await response.json();
 
         //TEST RESULT
-        var result = {token_success: true, creategroup_success: true, groupID: "9"}
+        //var result = {token_success: true, creategroup_success: true, groupID: "9"}
 
         if (!result.token_success) {
           alert("Failed to create a new group. Please try again.");
