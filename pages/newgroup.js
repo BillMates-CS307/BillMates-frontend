@@ -3,9 +3,20 @@ import Image from 'next/image'
 import { Inter } from '@next/font/google'
 import styles from '@/styles/Home.module.css'
 import Creategroup from './Forms/newgroup_form'
+import { userService } from './services/authorization'
 import Header from './Globals/Header'
 
 const inter = Inter({ subsets: ['latin'] })
+
+export async function getServerSideProps({req, res}) {
+  const {email, token} = userService.getEmailFromToken({req, res});
+  if (email == null) {
+    return {props : {},
+            redirect : {permanent: false,
+            destination: "/"} }
+  }
+  return {props: {}}
+}
 
 export default function Home() {
       

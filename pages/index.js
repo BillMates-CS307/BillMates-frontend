@@ -18,9 +18,8 @@ export async function getServerSideProps({req, res}) {
   return {props: {}}
 }
 
-export default function Home() {
-  
-  
+//change funct name from Home
+export default function Signup() {
   
   return (
     <>

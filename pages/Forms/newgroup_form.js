@@ -1,7 +1,10 @@
 import styles from '@/styles/Home.module.css'
 import { useRouter } from 'next/router'
+import { userService } from '../services/authorization'
+import { LAMBDA_RESP } from '../lib/constants';
 
 export default function Register() {
+    const user = userService.user;
     let router = useRouter();
     const handleSubmit = async (event) => {
         event.preventDefault()
@@ -23,9 +26,19 @@ export default function Register() {
           field_check.elms[0].focus();
           return;
         }
+        
+        //const {status, token} = await userService.authenticateCredentials(data.email);
+        //console.log(status)
+
         data["name"] = data.groupname;
+
+        // if (status == LAMBDA_RESP.ERROR || status == LAMBDA_RESP.INVALID_TOKEN) {
+        //   alert("Please try again later");
+        //   return;
+        // }
         const JSONdata = JSON.stringify(data)
-        const endpoint = '/api/newgroup_api' //newgroup API endpoint
+        console.log(JSONdata)
+        const endpoint = '/api/newGroup_api' //newgroup API endpoint
         const options = {
           method: 'POST',
           mode : 'no-cors',
@@ -36,13 +49,16 @@ export default function Register() {
         }
 
     
-        const response = await fetch(endpoint, options);
-        if (response.status == 400) {
-          alert("Unable to find form fields");
-          return;
-        }
+        // const response = await fetch(endpoint, options);
+        // if (response.status == 400) {
+        //   alert("Unable to find form fields");
+        //   return;
+        // }
+        
+        // const result = await response.json();
 
-        const result = await response.json();
+        //TEST RESULT
+        var result = {token_success: true, creategroup_success: true, groupID: "9"}
 
         if (!result.token_success) {
           alert("Failed to create a new group. Please try again.");
@@ -59,7 +75,7 @@ export default function Register() {
           groupname.parentElement.nextElementSibling.style = "display:block";
           groupname.focus();
         } else {
-          router.push('/')
+          router.push('/Groups/'+[result.groupID])
         }
       } 
 
