@@ -22,6 +22,7 @@ function NewGroupButton() {
 export default function Homeheading(name) {
   return ( 
     <>
+    
     <Header></Header>
     <main className={styles.main}>
         <div className={styles.group_info}>  
