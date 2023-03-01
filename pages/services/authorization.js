@@ -31,7 +31,7 @@ async function addUserToGroup(email, groupId) {
       },
       body: JSONdata
     }
-      return "success";
+      return "invalid";
       return await fetch(endpoint, options).then( (response) => {
       if (response.status == 400) {
         console.log("400 error");

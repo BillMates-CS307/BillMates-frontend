@@ -31,9 +31,7 @@ export async function getServerSideProps({req, res}) {
         }
     } else if (result == LAMBDA_RESP.INVALID || result == LAMBDA_RESP.ERROR) {
         return {
-            props: {
-                groupId : null
-            }
+            notFound: true
         }
     }
 
