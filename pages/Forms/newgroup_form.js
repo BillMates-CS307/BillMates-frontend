@@ -3,13 +3,14 @@ import { useRouter } from 'next/router'
 import { userService } from '../services/authorization'
 import { LAMBDA_RESP } from '../lib/constants';
 
-export default function Register() {
-    const user = userService.user;
+export default function CreateGroup(user) {
     let router = useRouter();
     const handleSubmit = async (event) => {
         event.preventDefault()
+        const inputs = event.target.querySelector("input")
         const data = {
-          groupname : event.target.groupname.value ,
+          groupname : inputs.value ,
+          manager : user
         }
 
         const field_check = checkFields(data);
@@ -26,9 +27,6 @@ export default function Register() {
           field_check.elms[0].focus();
           return;
         }
-        
-        //const {status, token} = await userService.authenticateCredentials(data.email);
-        //console.log(status)
 
         data["name"] = data.groupname;
 
@@ -47,39 +45,42 @@ export default function Register() {
           },
           body: JSONdata,
         }
-
-    
-        // const response = await fetch(endpoint, options);
-        // if (response.status == 400) {
-        //   alert("Unable to find form fields");
-        //   return;
-        // }
+        const lambda_response = await fetch(endpoint, options);
         
-        // const result = await response.json();
+        const result = await lambda_response.json(); //const
 
-        //TEST RESULT
+        //TEST RESULT ------------------------------------------
         //var result = {token_success: true, creategroup_success: true, groupID: "9"}
-
-        if (!result.token_success) {
+        
+        //const {status} = await userService.authenticateToken(data.groupname);
+        
+        if (result.token_success == false) {
           alert("Failed to create a new group. Please try again.");
           return;
         }
-        if (!result.creategroup_success) {
+        if (result.token_success == true && result.make_group_success == false ) {
           const groupname = document.querySelector('#groupname');
           groupname.style = "outline: 1px solid var(--red-background);";
           groupname.addEventListener('keydown', function () {
             this.style = "";
             this.parentElement.nextElementSibling.style = "";
           }, {once : true});
-          groupname.parentElement.nextElementSibling.textContent = "Group name already in use";
+          groupname.parentElement.nextElementSibling.textContent = "Group already exists";
+          groupname.parentElement.nextElementSibling.style = "display:block";
+          groupname.focus();
+        } else if (result.ERROR == "Malformed Body") {
+          alert("Payload doesn't have the correct fields");
+          groupname.parentElement.nextElementSibling.textContent = "Payload doesn't have the correct fields";
           groupname.parentElement.nextElementSibling.style = "display:block";
           groupname.focus();
         } else {
-          router.push('/Groups/'+[result.groupID])
+          router.push('/Groups/'+[data.groupname]);
         }
+        
       } 
 
       const checkFields = (target) => {
+        console.log(target)
         let output = {valid : true, elms : [], messages : []}
         if (target.groupname.trim() == "") { //or   .value.trim()
           output.elms.push(document.querySelector('#groupname'));

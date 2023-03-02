@@ -15,10 +15,10 @@ export async function getServerSideProps({req, res}) {
             redirect : {permanent: false,
             destination: "/"} }
   }
-  return {props: {}}
+  return {props: {user : email}}
 }
 
-export default function Home() {
+export default function Home({user}) {
       
   return (
     <> 
@@ -32,7 +32,7 @@ export default function Home() {
         <main className = {styles.main}>
         <Header></Header>
             <div className= {styles.position_box}>
-            <Creategroup></Creategroup>
+            <Creategroup user={user}></Creategroup>
 
             </div>
 

@@ -307,7 +307,7 @@ export default function Group ({groupName, groupId, members, expenseHistory, use
             <span></span>
             <div className={styles.submit_expense_container} onClick={handleExpenseSubmit}><p>Submit</p></div>
         </div>
-        </div>
+    </div>
 
         <div className={styles.transaction_background} id = "transaction_view">
             <div className={styles.transaction_large}>

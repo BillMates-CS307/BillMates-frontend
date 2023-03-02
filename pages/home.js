@@ -38,7 +38,10 @@ export default function Homeheading(name) {
     <div className={styles.banner}>
                 <p>MY GROUPS</p>
     </div>
+
+    
     <NewGroupButton />
+
     </>
   )
 }
