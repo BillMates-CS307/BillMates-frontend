@@ -10,6 +10,7 @@ export const userService = {
     getEmailFromToken,
     addUserToGroup,
     deleteJwtToken,
+    deleteJwtTokenServerSide,
     getUserData
 };
 
@@ -110,7 +111,12 @@ async function addUserToGroup(email, groupId) {
 }
 
 function deleteJwtToken() {
-  deleteCookie('JWT_Token', {path : "/", domain : "localhost"});
+  console.log("being called");
+  deleteCookie('JWT_Token');
+}
+
+function deleteJwtTokenServerSide({req, res}) {
+  deleteCookie('JWT_Token', {req, res});
 }
 
 //server side function only

@@ -147,7 +147,7 @@ function GroupHeading({name, members, amount, groupId}) {
             <div className={styles.group_info}>
                 <div className={styles.names_members}>
                     <p>Join Link</p>
-                    <p className={styles.word_break_all}>https://localhost/JoinGroup/{groupId}</p>
+                    <p className={styles.word_break_all}>localhost:8000/JoinGroup/{groupId}</p>
                 </div>
             </div>
             <div className={styles.banner}>

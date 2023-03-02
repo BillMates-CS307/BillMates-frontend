@@ -29,10 +29,10 @@ export async function getServerSideProps({req, res}) {
     destination: "/"} }
   }
   if (status == LAMBDA_RESP.INVALID) {
-    userService.deleteJwtToken();
+    userService.deleteJwtTokenServerSide({req, res});
     return {props : {},
     redirect : {permanent: false,
-    destination: "/"} }
+      destination: "/"}}
   }
   if (status == LAMBDA_RESP.SUCCESS) {
     return {
@@ -81,7 +81,7 @@ export default function Homeheading({userData}) {
       <div className={styles.group_heading}>  
         <div className={styles.yourNameTotalContainer}>
           <span className={styles.yourNameTotalContainer1}>
-            <p className={styles.yourName}>{userData.sender}</p>
+            <p className={styles.yourName}>{userData.name}</p>
             <p className={styles.totalDebt2250}>Total debt: ${sumDebts(userData.groups)}</p>
           </span>
         </div>
