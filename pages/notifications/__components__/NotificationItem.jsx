@@ -4,7 +4,7 @@ import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 
 export default function NotificationItem({
-  id,
+  _id,
   sender,
   message,
   time,
@@ -15,7 +15,7 @@ export default function NotificationItem({
     <NotificationItemWrapper
       isread={isread}
       isfirst={isfirst}
-      href={`/notifications/:${id}`}
+      href={`/notifications/${_id}`}
     >
       <ProfileWrapper>
         <Profile />
