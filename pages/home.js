@@ -63,14 +63,10 @@ export default function Homeheading({userData}) {
   }
   function GroupTemplate({groupName, debtOwed, groupId}) {
     return (
-      <>
-      
       <div className={styles.groupTemplate} onClick={() => {goToGroup(groupId)}}>
-        <p className={styles.groupNameP}>{groupName}</p>
-        <p className={styles.debtInGroupP}>${debtOwed}</p>
+          <p className={styles.groupNameP}>{groupName}</p>
+          <p className={styles.debtInGroupP}>${debtOwed}</p>
       </div>
-  
-      </>
     );
   }
   return ( 
@@ -80,7 +76,7 @@ export default function Homeheading({userData}) {
     <main className={styles.main}>
       <div className={styles.group_heading}>  
         <div className={styles.yourNameTotalContainer}>
-          <span className={styles.yourNameTotalContainer1}>
+          <span>
             <p className={styles.yourName}>{userData.name}</p>
             <p className={styles.totalDebt2250}>Total debt: ${sumDebts(userData.groups)}</p>
           </span>
