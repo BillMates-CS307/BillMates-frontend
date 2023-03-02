@@ -22,7 +22,6 @@ export async function getServerSideProps({req, res}) {
     const result = await groupService.getGroup(group_id, email);
     console.log(result);
     if (result == null || !result.token_success || !result.get_success || result.members[email] == undefined) {
-        console.log(result.members[email]);
         return {
             props:{},
             redirect : {permanent: false,
@@ -192,7 +191,7 @@ export default function Group ({groupName, groupId, members, expenseHistory, use
                             </div>
                         </div>
                         <div className={styles.relative_amount}>
-                            <p>${trans.amount_paid}</p>
+                            <p>${trans.amount_paid.toFixed(2)}</p>
                         </div>
                     </div>
                     )
@@ -226,6 +225,7 @@ export default function Group ({groupName, groupId, members, expenseHistory, use
                     )
                 })
             }
+            <button className={styles.delete_group_button} onClick={deleteGroup}>DELETE GROUP</button>
             <div className={styles.buffer_block}></div>
         </div>
         <GroupHeading name={groupName} members={Object.keys(members).length} amount={relative} groupId={groupId}></GroupHeading>
@@ -332,7 +332,7 @@ export default function Group ({groupName, groupId, members, expenseHistory, use
         const heading = document.querySelector('#pending_item_info');
         heading.children[0].textContent = expense.title;
         heading.children[1].textContent = members[expense.paid_by];
-        heading.nextElementSibling.children[0].textContent = "Amount Paying: $" + expense.amount_paid;
+        heading.nextElementSibling.children[0].textContent = "Amount Paying: $" + expense.amount_paid.toFixed(2);
         // const people_view = document.querySelector('#pending_transaction_people');
         // let children_string = "";
         // people_view.innerHTML = children_string;
@@ -507,6 +507,21 @@ export default function Group ({groupName, groupId, members, expenseHistory, use
             alert("Something went wrong please try again later");
         }
     }
+    async function deleteGroup() {
+        let name = prompt("Retype the name of the group to delete");
+        if (name == null) {alert("Sorry, we could not process that right now");return;}
+        if (name == groupName) {
+            let result = await groupService.deleteGroup(groupId);
+            if (result == LAMBDA_RESP.ERROR || result == LAMBDA_RESP.INVALID || result == LAMBDA_RESP.INVALID_TOKEN) {
+                alert("Sorry, we could not process that right now");
+                return;
+            }
+            location.reload();
+        } else {
+return;
+        }
+        return;
+    }
 }
 
 function toggleBillVenmo(event, isVenmo) {
@@ -517,3 +532,5 @@ function toggleBillVenmo(event, isVenmo) {
     }
     event.target.className = `${styles.selected_method}`;
 }
+
+

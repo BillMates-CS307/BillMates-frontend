@@ -6,7 +6,8 @@ export const groupService = {
     updatePendingState,
     submitExpense,
     addUserToGroup,
-    getGroup
+    getGroup,
+    deleteGroup
 }
 
 
@@ -191,4 +192,42 @@ async function addUserToGroup(email, groupId) {
   } else {
     return "error";
   }
+}
+
+//user function only
+async function deleteGroup(groupId) {
+  const data = {
+    group_id : groupId
+  };
+  const JSONdata = JSON.stringify(data);
+  const endpoint = '/api/delete_group'
+
+  // Form the request for sending data to the server.
+  const options = {
+    method: 'POST',
+    mode : 'no-cors',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSONdata
+  }
+
+  return await fetch(endpoint, options).then( (response) => {
+    if (response.status == 400) {
+      alert("Unable to find form fields");
+      return "error";
+    }
+    return response.json();
+    })
+    .then( (result) => {
+      if (!result.token_success) {
+        return "token";
+      }
+      //temp name
+      if (!result.delete_success) {
+        return "invalid";
+      }
+        return "success";
+    })
+    .catch( (error) => {console.log(error); return "error"} );
 }
