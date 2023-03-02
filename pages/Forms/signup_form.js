@@ -42,8 +42,40 @@ export default function PageWithJSbasedForm() {
         field_check.elms[i].parentElement.nextElementSibling.style =
           "display:block";
       }
-      field_check.elms[0].focus();
-      return;
+
+      const { status, token, attempsLeft } =
+        await userService.authenticateCredentials(data.email, data.password);
+      console.log(status);
+
+      if (status == LAMBDA_RESP.ERROR || status == LAMBDA_RESP.INVALID_TOKEN) {
+        alert("Failed to validate signup attempt, please try again later");
+        return;
+      }
+      if (status == LAMBDA_RESP.INVALID) {
+        const element = document.querySelector("#incorrect");
+        if (attempsLeft != undefined && attempsLeft <= 0) {
+          element.children[0].innerHTML =
+            "Email or Password is incorrect. </br>Attempts Left : " +
+            attempsLeft;
+          localStorage.setItem("timeout", new Date(Date.now() + 3600000));
+        } else {
+          element.children[0].innerHTML = "Email or Password is incorrect.";
+        }
+        const inputs = document.querySelectorAll("input");
+        inputs[0].style = "outline: 1px solid #ff0101;";
+        inputs[1].style = "outline: 1px solid #ff0101;";
+        inputs[1].value = "";
+        element.style = "display:block";
+        console.log(attempsLeft);
+      } else {
+        localStorage.removeItem("timeout");
+        console.log(token);
+        //add to local storage because I don't have WIFI to install cookies
+        localStorage.setItem("token", token);
+
+        //placeholder until home page is done
+        router.push("/home/");
+      }
     }
 
     const { status, token } = await userService.authenticateCredentials(

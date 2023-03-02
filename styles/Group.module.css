@@ -25,7 +25,7 @@
     width: 90%;
     display: grid;
     grid-template-columns: 1fr min-content;
-    margin: auto;
+    margin: 5px auto;
     padding: 10px;
     border: 1px solid var(--main-background-font-color);
     border-radius: 5px;
@@ -41,7 +41,9 @@
 .names_members {
     overflow-x: hidden;
 }
-
+.word_break_all {
+    word-break: break-all;
+}
 .group_amount {
     display: flex;
     align-items: center;
@@ -52,7 +54,7 @@
 }
 .banner {
     width: 100%;
-    margin-top: 15px;
+    /* margin-top: 15px; */
     background-color: var(--green-background);
     text-align: center;
     padding: 5px 0;

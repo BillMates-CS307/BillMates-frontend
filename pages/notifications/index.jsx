@@ -58,7 +58,7 @@ export default function Notifications() {
     };
 
     getAllNotifications(JSONdata); // run it, run it
-  });
+  }, []);
 
   return (
     <>
