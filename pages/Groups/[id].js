@@ -5,6 +5,7 @@ import { userService } from '../services/authorization.js';
 import { groupService } from '../services/groups.js';
 import { LAMBDA_RESP } from '../lib/constants'
 import Head from 'next/head'
+import { PAYMENT_PREFERENCE } from "@/lib/constants";
 
 export async function getServerSideProps({req, res}) {
     //check if user is signed in
@@ -17,10 +18,10 @@ export async function getServerSideProps({req, res}) {
         }
     }
     const group_id = req.url.match("[0-9a-z\-]+$")[0];
-
+    //const group_id = "my_uuid";
     const result = await groupService.getGroup(group_id, email);
-
-    if (result == null || !result.token_success || !result.get_success) {
+    console.log(result);
+    if (result == null || !result.token_success || !result.get_success || result.members[email] == undefined) {
         return {
             props:{},
             redirect : {permanent: false,
@@ -30,50 +31,6 @@ export async function getServerSideProps({req, res}) {
 
     console.log(result);
 
-    const groupInformation = {
-        groupName : "Aad",
-        members : result.members,
-        id : group_id
-    }
-
-    const transactionHistory = [
-        {
-            owner : "a@gmail.com",
-            total : "50.00",
-            title : "Testing",
-            date : "02/24/2023",
-            expenses : {
-                "a@gmail.com" : "20.00",
-                "b@gmail.com" : "20.00",
-                "c@gmail.com" : "10.00"
-            }
-        },
-        {
-            owner : "b@gmail.com",
-            total : "10.00",
-            title : "Testing",
-            date : "02/23/2023",
-            expenses : {
-                "a@gmail.com" : "2.00",
-                "b@gmail.com" : "8.00",
-                "c@gmail.com" : "0.00"
-            }
-        }
-    ]
-
-    const pendingApproval = [
-        {
-            owner : "a@gmail.com",
-            total : "50.00",
-            title : "Testing",
-            date : "02/24/2023",
-            expenses : {
-                who :"b@gmail.com",
-                amount : "20.00"
-            }
-        }
-    ]
-
         return {
             props : {
                 groupName : result.name,
@@ -81,8 +38,8 @@ export async function getServerSideProps({req, res}) {
                 members : result.members,
                 expenseHistory : result.expenses,
                 userId : email,
-                pendingApproval : pendingApproval,
-                relative : result.balance
+                pendingApproval : result.pending,
+                relative : result.balance.toFixed(2)
             }
         }
 }
@@ -190,7 +147,7 @@ function GroupHeading({name, members, amount, groupId}) {
             <div className={styles.group_info}>
                 <div className={styles.names_members}>
                     <p>Join Link</p>
-                    <p className={styles.word_break_all}>https://localhost/JoinGroup/{groupId}</p>
+                    <p className={styles.word_break_all}>localhost:8000/JoinGroup/{groupId}</p>
                 </div>
             </div>
             <div className={styles.banner}>
@@ -202,7 +159,6 @@ function GroupHeading({name, members, amount, groupId}) {
 }
 
 export default function Group ({groupName, groupId, members, expenseHistory, userId, pendingApproval, relative}) {
-    let relative_amount = 0;
     let history_num = -1;
     let pending_num = -1;
 
@@ -221,7 +177,7 @@ export default function Group ({groupName, groupId, members, expenseHistory, use
              {
                 pendingApproval.map( (trans) => {
                     pending_num++;
-                    if (trans.owner == userId) {
+                    if (trans.paid_to == userId) {
                     return (
                         <div index={pending_num} className={`${styles.transaction_container} ${styles.pending}`} key={pending_num} onClick={(e) => makePendingView(e)}>
                         <div className={styles.transaction_info}>
@@ -230,12 +186,12 @@ export default function Group ({groupName, groupId, members, expenseHistory, use
                                 <p>{trans.title}</p>
                             </div>
                             <div className={styles.transaction_owner_date}>
-                                <p>{members[trans.users]}</p>
+                                <p>{members[trans.paid_by]}</p>
                                 <p>{trans.date}</p>
                             </div>
                         </div>
                         <div className={styles.relative_amount}>
-                            <p>${trans.users.amount}</p>
+                            <p>${trans.amount_paid.toFixed(2)}</p>
                         </div>
                     </div>
                     )
@@ -269,6 +225,7 @@ export default function Group ({groupName, groupId, members, expenseHistory, use
                     )
                 })
             }
+            <button className={styles.delete_group_button} onClick={deleteGroup}>DELETE GROUP</button>
             <div className={styles.buffer_block}></div>
         </div>
         <GroupHeading name={groupName} members={Object.keys(members).length} amount={relative} groupId={groupId}></GroupHeading>
@@ -338,7 +295,7 @@ export default function Group ({groupName, groupId, members, expenseHistory, use
     <div className={styles.transaction_background} id = "submit_expense">
         <div className={styles.transaction_large}>
             <div className={styles.x_button} onClick={(e) => hide(e.nativeEvent.target.parentNode.parentNode)}></div>
-            <div className={styles.payment_method}><button className={styles.selected_method}>BillMates</button><button>Venmo</button></div> 
+            <div className={styles.payment_method} ><button onClick={(e) => toggleBillVenmo(e,false)}>BillMates</button><button onClick={(e) => toggleBillVenmo(e,true)}>Venmo</button></div> 
             <div className={styles.expense_payment_form}>
                 <p>Original Amount : </p>
                 <input type="text" id = "expense_paying" placeholder='00.00'></input>
@@ -361,7 +318,7 @@ export default function Group ({groupName, groupId, members, expenseHistory, use
         let children_string = "";
         for (let person in expense.users) {
             let amt_remaining = parseFloat(expense.users[person]);
-            if (amt_remaining == 0) {
+            if (amt_remaining.toFixed(2) == 0) {
                 continue;
             }
             children_string += `<div class="${styles.person} ${styles.person_view}"><p>${members[person]}</p><p>$${amt_remaining.toFixed(2)}</p></div>`;
@@ -374,8 +331,8 @@ export default function Group ({groupName, groupId, members, expenseHistory, use
         const expense = pendingApproval[event.target.getAttribute("index")];
         const heading = document.querySelector('#pending_item_info');
         heading.children[0].textContent = expense.title;
-        heading.children[1].textContent = members[expense.expenses.who];
-        heading.nextElementSibling.children[0].textContent = "Amount Paying: $" + expense.expenses.amount;
+        heading.children[1].textContent = members[expense.paid_by];
+        heading.nextElementSibling.children[0].textContent = "Amount Paying: $" + expense.amount_paid.toFixed(2);
         // const people_view = document.querySelector('#pending_transaction_people');
         // let children_string = "";
         // people_view.innerHTML = children_string;
@@ -389,9 +346,10 @@ export default function Group ({groupName, groupId, members, expenseHistory, use
         const inputs = form.querySelectorAll('input');
         let format = {
             title : "",
-            total : "",
+            total : 0.00,
             owner : userId,
-            expense : {}
+            expense : {},
+            group_id : groupId
         }
         let running_sum = 0;
         loooping:
@@ -458,7 +416,7 @@ export default function Group ({groupName, groupId, members, expenseHistory, use
             console.log(format);
             format.total = (Math.trunc((parseFloat(format.total) * 100)) / 100) - (Math.trunc(((parseFloat(format.expense[userId]) || 0) * 100)) / 100);
             delete format.expense[userId];
-            format.group_id = "my_uuid";
+            format.total = parseFloat(format.total);
             format.request_time = "now";
             format.due_date = "later";
             for (let user in format.expense) {
@@ -490,6 +448,8 @@ export default function Group ({groupName, groupId, members, expenseHistory, use
             elm.children[0].children[2].children[0].textContent = "Would you like to clear this debt?";
             elm.children[0].children[2].children[1].value = sumMemberExpenses(expenseHistory[index].users, userId);
         } else {
+            elm.children[0].children[1].children[ (JSON.parse(localStorage.getItem('payment_preference')) == PAYMENT_PREFERENCE.VENMO) ? 1 : 0].className = `${styles.selected_method}`
+            elm.children[0].children[1].children[ (JSON.parse(localStorage.getItem('payment_preference')) == PAYMENT_PREFERENCE.VENMO) ? 0 : 1].className = ""
             elm.children[0].children[2].children[0].textContent = "Original Amount: " + expenseHistory[index].users[userId].toFixed(2);
             elm.children[0].children[2].children[1].value = expenseHistory[index].users[userId].toFixed(2);
         }
@@ -510,7 +470,7 @@ export default function Group ({groupName, groupId, members, expenseHistory, use
             const value = parseFloat(input.value);
             console.log(expenseHistory[index].users);
     
-            const result = await groupService.payDebt(userId, value, expenseHistory[index].users);
+            const result = await groupService.payDebt(userId, expenseHistory[index]._id, value);
             console.log(result);
             if (result == LAMBDA_RESP.SUCCESS) {
                 location.reload();
@@ -537,7 +497,7 @@ export default function Group ({groupName, groupId, members, expenseHistory, use
             console.log("Will be Denied");
         }
     
-        const result = await groupService.updatePendingState(expense, userId, accepted);
+        const result = await groupService.updatePendingState(isAccepted, expense.expense_id);
         if (result == LAMBDA_RESP.SUCCESS) {
             location.reload();
         } else if (result == LAMBDA_RESP.INVALID) {
@@ -547,4 +507,30 @@ export default function Group ({groupName, groupId, members, expenseHistory, use
             alert("Something went wrong please try again later");
         }
     }
+    async function deleteGroup() {
+        let name = prompt("Retype the name of the group to delete");
+        if (name == null) {alert("Sorry, we could not process that right now");return;}
+        if (name == groupName) {
+            let result = await groupService.deleteGroup(groupId);
+            if (result == LAMBDA_RESP.ERROR || result == LAMBDA_RESP.INVALID || result == LAMBDA_RESP.INVALID_TOKEN) {
+                alert("Sorry, we could not process that right now");
+                return;
+            }
+            location.reload();
+        } else {
+return;
+        }
+        return;
+    }
 }
+
+function toggleBillVenmo(event, isVenmo) {
+    if (isVenmo) {
+        event.target.previousElementSibling.className="";
+    } else {
+        event.target.nextElementSibling.className="";
+    }
+    event.target.className = `${styles.selected_method}`;
+}
+
+

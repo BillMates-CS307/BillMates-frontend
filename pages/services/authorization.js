@@ -10,6 +10,7 @@ export const userService = {
     getEmailFromToken,
     addUserToGroup,
     deleteJwtToken,
+    deleteJwtTokenServerSide,
     getUserData
 };
 
@@ -110,7 +111,12 @@ async function addUserToGroup(email, groupId) {
 }
 
 function deleteJwtToken() {
-  deleteCookie('JWT_Token', {path : "/", domain : "localhost"});
+  console.log("being called");
+  deleteCookie('JWT_Token');
+}
+
+function deleteJwtTokenServerSide({req, res}) {
+  deleteCookie('JWT_Token', {req, res});
 }
 
 //server side function only
@@ -190,7 +196,7 @@ async function authenticateCredentials(e, p) {
         return {status : "token", token : null, attempsLeft : undefined};
       }
       if (!result.login_success) {
-        return {status : "invalid", token : null, attempsLeft : 3 - result.user_data.attempts};
+        return {status : "invalid", token : null, attempsLeft : 2 - ((result.user_data.attempts - 1) % 3)};
       }
       setCookie('JWT_Token', result.token ,{maxAge: 60 * 60 * 24 * 7});
       return {status : "success", token : result.token, attempsLeft : 3};

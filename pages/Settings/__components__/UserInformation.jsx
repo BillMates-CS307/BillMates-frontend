@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import { useDispatch } from "react-redux";
-import { settingsDataAction } from "@/lib/store/settingsData.slice";
+import { userDataAction } from "@/lib/store/userData.slice";
 import BulletLayout from "./BulletLayout";
 
 export default function UserInformation() {
@@ -23,7 +23,7 @@ export default function UserInformation() {
       return;
     }
 
-    dispatch(settingsDataAction.setName({ name: e.currentTarget.value }));
+    dispatch(userDataAction.setName({ name: e.currentTarget.value }));
     setIsWrongName(false);
   };
 
@@ -47,7 +47,9 @@ export default function UserInformation() {
     }
 
     dispatch(
-      settingsDataAction.setPassword({ password: e.currentTarget.value })
+      userDataAction.setChangedPassword({
+        changedPassword: e.currentTarget.value,
+      })
     );
     setIsWrongPassword(false);
   };

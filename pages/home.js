@@ -29,10 +29,10 @@ export async function getServerSideProps({req, res}) {
     destination: "/"} }
   }
   if (status == LAMBDA_RESP.INVALID) {
-    userService.deleteJwtToken();
+    userService.deleteJwtTokenServerSide({req, res});
     return {props : {},
     redirect : {permanent: false,
-    destination: "/"} }
+      destination: "/"}}
   }
   if (status == LAMBDA_RESP.SUCCESS) {
     return {
