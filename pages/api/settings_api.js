@@ -4,7 +4,12 @@ export default async function handler(req, res) {
 
   // Guard clause checks for first and last name,
   // and returns early if they are not found
-  if (!req_body.name || !req_body.password || req_body.notification) {
+  if (
+    !req_body.name ||
+    !req_body.oldPassword ||
+    !req_body.newPassword ||
+    !req_body.notification
+  ) {
     // Sends a HTTP bad request error code
     return res
       .status(400)
@@ -15,12 +20,7 @@ export default async function handler(req, res) {
   // Sends a HTTP success code
 
   //make request to Lambda
-  const body_json = {
-    email: req_body.email,
-    name: req_body.name,
-    password: req_body.password,
-    notification: req_body.notification,
-  };
+  const body_json = { ...req_body };
   const url =
     "https://yimbhwmzyzeikdbjqylkdonwoy0czhwq.lambda-url.us-east-2.on.aws/";
   const options = {

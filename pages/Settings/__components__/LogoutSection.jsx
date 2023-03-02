@@ -1,49 +1,26 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { useSelector } from "react-redux";
-import { selectUserData } from "@/lib/store/userData.slice";
+import { useRouter } from "next/router";
+import { useDispatch } from "react-redux";
+import { userDataAction } from "@/lib/store/userData.slice";
+import { userService } from "@/pages/services/authorization";
 
 export default function LogoutSection() {
-  const { name, changedPassword, notiPref } = useSelector(selectUserData);
+  const router = useRouter();
+  const dispatch = useDispatch();
 
   // TODO: change to logout api
-  const onClickSubmitHandler = async (e) => {
+  const onClickLogoutHandler = async (e) => {
     e.preventDefault();
-    // TODO: should fix this later to connect with redux
-    const email = "test@test.test";
-    const data = {
-      email,
-      name,
-      password: changedPassword,
-      notiPref,
-    };
-
-    const JSONdata = JSON.stringify(data);
-    const endpoint = "/api/settings_api";
-
-    // Form the request for sending data to the server.
-    const options = {
-      method: "POST",
-      mode: "no-cors",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSONdata,
-    };
-    const response = await fetch(endpoint, options);
-
-    if (response.status == 400) {
-      alert("Failed ");
-      return;
-    }
-
-    const result = await response.json();
-    console.log(result);
+    dispatch(userDataAction.clear());
+    localStorage.removeItem("token");
+    userService.deleteJwtToken();
+    router.push("/register");
   };
 
   return (
     <LogoutSectionWrapper>
-      <LogoutButton onClick={onClickSubmitHandler}>logout</LogoutButton>
+      <LogoutButton onClick={onClickLogoutHandler}>logout</LogoutButton>
     </LogoutSectionWrapper>
   );
 }

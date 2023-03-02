@@ -4,21 +4,27 @@ import { useSelector } from "react-redux";
 import { selectUserData } from "@/lib/store/userData.slice";
 
 export default function SubmitButton() {
-  const { name, changedPassword, notiPref } = useSelector(selectUserData);
+  const {
+    name,
+    oldPassword,
+    newPassword,
+    settings: { notification },
+  } = useSelector(selectUserData);
   const onClickSubmitHandler = async (e) => {
     e.preventDefault();
     // TODO: should fix this later to connect with redux
-    const email = "test@test.test";
+    const email = "gsegura@purdue.edu";
     const data = {
       email,
       name,
-      password: changedPassword,
-      notiPref,
+      oldPassword,
+      newPassword,
+      notification,
     };
-
+    console.log(data);
     const JSONdata = JSON.stringify(data);
     const endpoint = "/api/settings_api";
-
+    // console.log(JSONdata);
     // Form the request for sending data to the server.
     const options = {
       method: "POST",
