@@ -16,7 +16,6 @@ export default async function handler(req, res) {
 
   //make request to Lambda
   const body_json = {
-    email: req_body.email,
     name: req_body.name,
     password: req_body.password,
     notification: req_body.notification,

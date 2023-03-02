@@ -5,24 +5,18 @@ import Notification from "./__components__/Notification";
 import PaymentPreference from "./__components__/PaymentPreference";
 import SubmitButton from "./__components__/SubmitButton";
 import Theme from "./__components__/Theme";
-import Header from "../Globals/Header";
-import Footer from "../Globals/Footer";
 
 export default function Settings() {
   return (
-    <>
-      <Header />
-      <SettingsWrapper>
-        <SettingsForm>
-          <UserInformation />
-          <Notification />
-          <PaymentPreference />
-          <Theme />
-          <SubmitButton />
-        </SettingsForm>
-      </SettingsWrapper>
-      <Footer />
-    </>
+    <SettingsWrapper>
+      <SettingsForm>
+        <UserInformation />
+        <Notification />
+        <PaymentPreference />
+        <Theme />
+        <SubmitButton />
+      </SettingsForm>
+    </SettingsWrapper>
   );
 }
 

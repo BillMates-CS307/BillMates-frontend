@@ -23,7 +23,7 @@ export default function UserInformation() {
       return;
     }
 
-    dispatch(settingsDataAction.setName({ name: e.currentTarget.value }));
+    dispatch(settingsDataAction.setName({ name: e.target.value }));
     setIsWrongName(false);
   };
 
@@ -46,9 +46,7 @@ export default function UserInformation() {
       return;
     }
 
-    dispatch(
-      settingsDataAction.setPassword({ password: e.currentTarget.value })
-    );
+    dispatch(settingsDataAction.setPassword({ password: e.target.value }));
     setIsWrongPassword(false);
   };
 

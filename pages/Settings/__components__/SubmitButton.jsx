@@ -7,10 +7,8 @@ export default function SubmitButton() {
   const { name, password, notiPref } = useSelector(selectsettingsData);
   const onClickSubmitHandler = async (e) => {
     e.preventDefault();
-    // TODO: should fix this later to connect with redux
-    const email = "test@test.test";
+    // Get data from the form.
     const data = {
-      email,
       name,
       password,
       notiPref,
