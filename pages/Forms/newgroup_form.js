@@ -3,14 +3,13 @@ import { useRouter } from 'next/router'
 import { userService } from '../services/authorization'
 import { LAMBDA_RESP } from '../lib/constants';
 
-export default function CreateGroup(user) {
+export default function CreateGroup({user}) {
     let router = useRouter();
     const handleSubmit = async (event) => {
         event.preventDefault()
         const inputs = event.target.querySelector("input")
         const data = {
-          groupname : inputs.value ,
-          manager : user
+          groupname : inputs.value
         }
 
         const field_check = checkFields(data);
@@ -28,7 +27,7 @@ export default function CreateGroup(user) {
           return;
         }
 
-        data["name"] = data.groupname;
+        data["manager"] = user;
 
         // if (status == LAMBDA_RESP.ERROR || status == LAMBDA_RESP.INVALID_TOKEN) {
         //   alert("Please try again later");
@@ -45,9 +44,8 @@ export default function CreateGroup(user) {
           },
           body: JSONdata,
         }
-        const lambda_response = await fetch(endpoint, options);
-        
-        const result = await lambda_response.json(); //const
+        const response = await fetch(endpoint, options);
+        const result = await response.json(); //const
 
         //TEST RESULT ------------------------------------------
         //var result = {token_success: true, creategroup_success: true, groupID: "9"}
@@ -74,7 +72,7 @@ export default function CreateGroup(user) {
           groupname.parentElement.nextElementSibling.style = "display:block";
           groupname.focus();
         } else {
-          router.push('/Groups/'+[data.groupname]);
+          router.push('/home');
         }
         
       } 
@@ -85,6 +83,7 @@ export default function CreateGroup(user) {
         if (target.groupname.trim() == "") { //or   .value.trim()
           output.elms.push(document.querySelector('#groupname'));
           output.messages.push("Invalid group name");
+          output.valid = false;
         }        
 
         return output;

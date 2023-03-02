@@ -9,8 +9,62 @@ export const userService = {
     register,
     getEmailFromToken,
     addUserToGroup,
-    deleteJwtToken
+    deleteJwtToken,
+    getUserData
 };
+
+//server side function only
+async function getUserData(email) {
+  let response_body = {
+    user : null,
+    status : "error"
+  }
+  if (typeof window === "undefined") {
+
+    const data = {
+      email : email
+    };
+    const JSONdata = JSON.stringify(data);
+    console.log(data);
+    const endpoint = 'https://spdzmxp6xdfjiwptqdabqgcy4q0rmcwt.lambda-url.us-east-2.on.aws/'
+  
+    // Form the request for sending data to the server.
+    const options = {
+      method: 'POST',
+      mode : 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+        'token' : 'zpdkwA.2_kLU@zg'
+      },
+      body: JSONdata
+    }
+    return await fetch(endpoint, options).then( (response) => {
+      if (response.status == 400) {
+        console.log("400 error");
+        return response_body;
+      }
+      return response.json();
+      })
+      .then( (result) => {
+        console.log(result);
+        if (!result.token_success) {
+          response_body.status = "token";
+          return response_body;
+        }
+        if (result.user == null) {
+          response_body.status = "invalid";
+          return response_body;
+        }
+          response_body.status = "success";
+          response_body.user = result.user;
+          return response_body;
+      })
+      .catch( (error) => {console.log(error); return response_body} );
+
+  } else {
+    return response_body;
+  }
+}
 
 //server side function only
 async function addUserToGroup(email, groupId) {

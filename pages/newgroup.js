@@ -19,7 +19,7 @@ export async function getServerSideProps({req, res}) {
 }
 
 export default function Home({user}) {
-      
+      console.log(user);
   return (
     <> 
             <Head>
