@@ -166,6 +166,7 @@ async function addUserToGroup(email, groupId) {
       mode : 'cors',
       headers: {
         'Content-Type': 'application/json',
+        'token' : 'zpdkwA.2_kLU@zg'
       },
       body: JSONdata
     }

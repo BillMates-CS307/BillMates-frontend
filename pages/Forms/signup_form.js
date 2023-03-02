@@ -5,7 +5,6 @@ import { LAMBDA_RESP } from '../lib/constants';
 
 
 export default function PageWithJSbasedForm() {
-    const user = userService.user;
     let router = useRouter();
     const handleSubmit = async (event) => {
       event.preventDefault();

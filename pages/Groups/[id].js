@@ -17,8 +17,8 @@ export async function getServerSideProps({req, res}) {
                 destination: "/"}
         }
     }
-    //const group_id = req.url.match("[0-9a-z\-]+$")[0];
-    const group_id = "my_uuid";
+    const group_id = req.url.match("[0-9a-z\-]+$")[0];
+    //const group_id = "my_uuid";
     const result = await groupService.getGroup(group_id, email);
     console.log(result);
     if (result == null || !result.token_success || !result.get_success || result.members[email] == undefined) {
