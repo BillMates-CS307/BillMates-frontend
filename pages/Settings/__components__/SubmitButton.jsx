@@ -15,6 +15,7 @@ export default function SubmitButton() {
     // TODO: should fix this later to connect with redux
     const email = "gsegura@purdue.edu";
     const data = {
+      email,
       name,
       oldPassword,
       newPassword,
