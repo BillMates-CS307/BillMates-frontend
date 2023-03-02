@@ -76,17 +76,15 @@ export default function Homeheading({userData}) {
     <main className={styles.main}>
       <div className={styles.group_heading}>  
         <div className={styles.yourNameTotalContainer}>
-          <span>
             <p className={styles.yourName}>{userData.name}</p>
-            <p className={styles.totalDebt2250}>Total debt: ${sumDebts(userData.groups)}</p>
-          </span>
+            <p className={styles.individualDebt}>Total debt: ${sumDebts(userData.groups)}</p>
         </div>
         <div className={styles.banner}>
           <p>MY GROUPS</p>
         </div> 
       </div>
     <div className={styles.myGroupsListContainer}>
-      {
+      {  
         userData.groups.map( (group) => {
           //groupId not working. Don't know how backend is formatting this data
           return <GroupTemplate groupName={group.name} debtOwed={group.balance.toFixed(2)} groupId={group.group_id}></GroupTemplate>;
@@ -95,8 +93,6 @@ export default function Homeheading({userData}) {
     </div>
         
     </main>
-
-
     
     <Footer callback={handleClick}></Footer>
 
