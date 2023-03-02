@@ -2,34 +2,35 @@ import styles from '@/styles/Home.module.css'
 import Head from 'next/head'
 import Image from 'next/image'
 import { userService } from '../services/authorization.js';
+import { groupService } from '../services/groups.js';
 import { LAMBDA_RESP } from '../lib/constants'
 import FORM from '../Forms/join_group_login'
 
 export async function getServerSideProps({req, res}) {
-    
-    const {email, token} = userService.getEmailFromToken({req, res});
     const group_id = req.url.match("[0-9a-z\-]+$")[0];
-    if (email == null || group_id == "") {
+    const {email, token} = userService.getEmailFromToken({req, res});
+    if (group_id.trim() == "") {
         return {
-            props:{
-                groupId : group_id
-            },
+            props:{},
             redirect : {permanent: false,
-                destination: "/"}
-        }
+                destination: "/home"}
+        }  
     }
-
-    const result = await userService.addUserToGroup(email, group_id);
-    if (result == LAMBDA_RESP.SUCCESS) {
-        // return {
-        //     props:{},
-        //     redirect : {permanent: false,
-        //         destination: "../Groups/" + group_id}
-        // }
-        return {
-            props : { groupId : group_id }
+    if (email == null) {
+        return {props:{
+                groupId : group_id
+            }
         }
-    } else if (result == LAMBDA_RESP.INVALID || result == LAMBDA_RESP.ERROR) {
+    } 
+    const result = await groupService.addUserToGroup(email, group_id);
+    console.log(result);
+    if (result == LAMBDA_RESP.SUCCESS || result == LAMBDA_RESP.INVALID) {
+        return {
+            props:{},
+            redirect : {permanent: false,
+                destination: "/Groups/" + group_id}
+        }
+    } else if (result == LAMBDA_RESP.ERROR) {
         return {
             notFound: true
         }

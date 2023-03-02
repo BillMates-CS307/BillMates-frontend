@@ -33,28 +33,33 @@ export default function JoinGroupSignIn({groupId}) {
         return;
       }
 
-
-      const {status, token} = await userService.authenticateCredentials(data.email, data.password);
-
-        if (status == LAMBDA_RESP.ERROR || status == LAMBDA_RESP.INVALID_TOKEN) {
-          alert("Failed to validate signup attempt, please try again later");
-          return;
-        }
-        if (status == LAMBDA_RESP.INVALID) {
-          const element = document.querySelector("#incorrect");
-          const inputs = document.querySelectorAll('input');
-          inputs[0].style = "outline: 1px solid #ff0101;";
-          inputs[1].style = "outline: 1px solid #ff0101;";
-          inputs[1].value = "";
-          element.style = "display:block";
-          localStorage.setItem('timeout', new Date(Date.now() + 3600000));
+      const {status, token, attempsLeft} = await userService.authenticateCredentials(data.email, data.password);
+      if (status == LAMBDA_RESP.ERROR || status == LAMBDA_RESP.INVALID_TOKEN) {
+        alert("Failed to validate signup attempt, please try again later");
+        return;
+      }
+      if (status == LAMBDA_RESP.INVALID) {
+        const element = document.querySelector("#incorrect");
+        if (attempsLeft != undefined) {
+          element.children[0].innerHTML = "Email or Password is incorrect. </br>Attempts Left : " + attempsLeft;
+          if (attempsLeft == 0) {
+            localStorage.setItem('timeout', new Date(Date.now() + 3600000));
+          }
         } else {
-          localStorage.removeItem('timeout');
-          //add to local storage because I don't have WIFI to install cookies
-          localStorage.setItem('token', token);
-          
-          router.push("/Groups/" + groupId);
+          element.children[0].innerHTML = "Email or Password is incorrect.";
         }
+        const inputs = document.querySelectorAll('input');
+        inputs[0].style = "outline: 1px solid #ff0101;";
+        inputs[1].style = "outline: 1px solid #ff0101;";
+        inputs[1].value = "";
+        element.style = "display:block";
+      } else {
+        localStorage.removeItem('timeout');
+        //add to local storage because I don't have WIFI to install cookies
+        //localStorage.setItem('token', token);
+      
+        router.push('/Groups/' + groupId);
+      }
     }
 
     const checkFields = (target) => {

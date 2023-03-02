@@ -5,11 +5,11 @@ export default async function handler(req, res) {
     }
   
       // Get data submitted in request's body.
-      const {isAccepted, amountPaying, expense} = JSON.parse(req.body);
+      const {email, expense_id, amount} = JSON.parse(req.body);
     
       // Guard clause checks for first and last name,
       // and returns early if they are not found
-      if (!isAccepted || !amountPaying || !expense) {
+      if (!email || !expense_id || !amount) {
         // Sends a HTTP bad request error code
         return res.status(400).json({ data: 'acceptance, amount, or expense not found' })
       }
@@ -19,11 +19,11 @@ export default async function handler(req, res) {
   
       //make request to Lambda
       const body_json = {    
-          isAccepted: isAccepted,
-          amountPaying : amount,
-          expense : expense
+        email : email,
+        expense_id : expense_id,
+        amount : amount
       };
-      const url = '';
+      const url = 'https://q6dj43wfjfvztvxbhdyqogvn2y0gfcro.lambda-url.us-east-2.on.aws/';
       const options = {
         method: 'POST',
         mode : 'cors',
@@ -36,10 +36,6 @@ export default async function handler(req, res) {
   
       const lambda_resp = await fetch(url, options);
       const lambda_data = await lambda_resp.json();
-      if (lambda_data.token_success && lambda_data.data_sucess) {
-        //lambda_data["token"] = jwt.sign({ email: email}, serverRuntimeConfig.JWT_TOKEN, { expiresIn: '7d' });
-      }
   
       return res.status(200).json(lambda_data);
-  
     }

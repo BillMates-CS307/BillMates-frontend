@@ -7,6 +7,7 @@ import SubmitButton from "./__components__/SubmitButton";
 import Theme from "./__components__/Theme";
 import Header from "../Globals/Header";
 import Footer from "../Globals/Footer";
+import LogoutSection from "./__components__/LogoutSection";
 
 export default function Settings() {
   return (
@@ -20,6 +21,7 @@ export default function Settings() {
           <Theme />
           <SubmitButton />
         </SettingsForm>
+        <LogoutSection />
       </SettingsWrapper>
       <Footer />
     </>
