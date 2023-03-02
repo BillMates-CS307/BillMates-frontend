@@ -2,20 +2,16 @@ import styles from "@/styles/Home.module.css";
 import { useRouter } from "next/router";
 import { userService } from "../services/authorization";
 import { LAMBDA_RESP } from "../lib/constants";
-import { userDataAction } from "@/lib/store/userData.slice";
-import { useDispatch } from "react-redux";
 
 export default function PageWithJSbasedForm() {
-  const user = userService.user;
   let router = useRouter();
-  const dispatch = useDispatch();
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (
       localStorage.getItem("timeout") != null &&
       Date.parse(localStorage.getItem("timeout")) >= Date.now()
     ) {
+      alert("You have been timed out for 1 hour");
       return;
     }
 
@@ -42,71 +38,38 @@ export default function PageWithJSbasedForm() {
         field_check.elms[i].parentElement.nextElementSibling.style =
           "display:block";
       }
-
-      const { status, token, attempsLeft } =
-        await userService.authenticateCredentials(data.email, data.password);
-      console.log(status);
-
-      if (status == LAMBDA_RESP.ERROR || status == LAMBDA_RESP.INVALID_TOKEN) {
-        alert("Failed to validate signup attempt, please try again later");
-        return;
-      }
-      if (status == LAMBDA_RESP.INVALID) {
-        const element = document.querySelector("#incorrect");
-        if (attempsLeft != undefined && attempsLeft <= 0) {
-          element.children[0].innerHTML =
-            "Email or Password is incorrect. </br>Attempts Left : " +
-            attempsLeft;
-          localStorage.setItem("timeout", new Date(Date.now() + 3600000));
-        } else {
-          element.children[0].innerHTML = "Email or Password is incorrect.";
-        }
-        const inputs = document.querySelectorAll("input");
-        inputs[0].style = "outline: 1px solid #ff0101;";
-        inputs[1].style = "outline: 1px solid #ff0101;";
-        inputs[1].value = "";
-        element.style = "display:block";
-        console.log(attempsLeft);
-      } else {
-        localStorage.removeItem("timeout");
-        console.log(token);
-        //add to local storage because I don't have WIFI to install cookies
-        localStorage.setItem("token", token);
-
-        //placeholder until home page is done
-        router.push("/home/");
-      }
+      field_check.elms[0].focus();
+      return;
     }
 
-    const { status, token } = await userService.authenticateCredentials(
-      data.email,
-      data.password
-    );
-    console.log(status);
-
+    const { status, token, attempsLeft } =
+      await userService.authenticateCredentials(data.email, data.password);
     if (status == LAMBDA_RESP.ERROR || status == LAMBDA_RESP.INVALID_TOKEN) {
       alert("Failed to validate signup attempt, please try again later");
       return;
     }
     if (status == LAMBDA_RESP.INVALID) {
       const element = document.querySelector("#incorrect");
+      if (attempsLeft != undefined) {
+        element.children[0].innerHTML =
+          "Email or Password is incorrect. </br>Attempts Left : " + attempsLeft;
+        if (attempsLeft == 0) {
+          localStorage.setItem("timeout", new Date(Date.now() + 3600000));
+        }
+      } else {
+        element.children[0].innerHTML = "Email or Password is incorrect.";
+      }
       const inputs = document.querySelectorAll("input");
       inputs[0].style = "outline: 1px solid #ff0101;";
       inputs[1].style = "outline: 1px solid #ff0101;";
       inputs[1].value = "";
       element.style = "display:block";
-      localStorage.setItem("timeout", new Date(Date.now() + 3600000));
     } else {
       localStorage.removeItem("timeout");
-      console.log(token);
       //add to local storage because I don't have WIFI to install cookies
-      localStorage.setItem("token", token);
+      //localStorage.setItem('token', token);
 
-      // TODO: Fix it later Server fix
-      // should bring data from response
-      dispatch(userDataAction.setEmail({ email: data.email }));
-      //placeholder until home page is done
-      router.push("/Groups/1");
+      router.push("/home");
     }
   };
 
@@ -148,7 +111,7 @@ export default function PageWithJSbasedForm() {
   return (
     <>
       <div id="incorrect" className={styles.incorrect_box}>
-        <p>Email or Password is incorrect</p>
+        <p></p>
       </div>
       <div className={styles.signup_form}>
         <form onSubmit={handleSubmit} method="post">
