@@ -1,18 +1,24 @@
 import React, { useState } from "react";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
+import { useTheme } from "next-themes";
+import { THEME } from "@/lib/constants";
 import { useDispatch } from "react-redux";
 import { userDataAction } from "@/lib/store/userData.slice";
 import BulletLayout from "./BulletLayout";
 
 export default function UserInformation() {
   const dispatch = useDispatch();
+  const { theme } = useTheme();
   const [isWrongName, setIsWrongName] = useState(false);
   const [isNameClicked, setIsNameClicked] = useState(false);
   const [nameDescription, setNameDescription] = useState("");
-  const [isWrongPassword, setIsWrongPassword] = useState(false);
-  const [isPasswordClicked, setIsPasswordClicked] = useState(false);
-  const [passwordDescription, setPasswordDescription] = useState("");
+  const [isWrongOldPassword, setIsWrongOldPassword] = useState(false);
+  const [isOldPasswordClicked, setOldIsPasswordClicked] = useState(false);
+  const [oldPasswordDescription, setOldPasswordDescription] = useState("");
+  const [isWrongNewPassword, setIsWrongNewPassword] = useState(false);
+  const [isNewPasswordClicked, setNewIsPasswordClicked] = useState(false);
+  const [newPasswordDescription, setNewPasswordDescription] = useState("");
 
   const onNameBlurHandler = (e) => {
     setIsNameClicked(false);
@@ -31,8 +37,8 @@ export default function UserInformation() {
     setIsNameClicked(true);
   };
 
-  const onPasswordBlurHandler = (e) => {
-    setIsPasswordClicked(false);
+  const onOldPasswordBlurHandler = (e) => {
+    setOldIsPasswordClicked(false);
     if (
       e.currentTarget.value.search(/(?=(.*[a-z]){3,})/g) == -1 ||
       e.currentTarget.value.search(/(?=(.*[A-Z]){3,})/g) == -1 ||
@@ -41,26 +47,53 @@ export default function UserInformation() {
       e.currentTarget.value == "" ||
       e.currentTarget.value.length < 5
     ) {
-      setIsWrongPassword(true);
-      setPasswordDescription("wrong password");
+      setIsWrongOldPassword(true);
+      setOldPasswordDescription("wrong password");
       return;
     }
 
     dispatch(
-      userDataAction.setChangedPassword({
-        changedPassword: e.currentTarget.value,
+      userDataAction.setOldPassword({
+        oldPassword: e.currentTarget.value,
       })
     );
-    setIsWrongPassword(false);
+    setIsWrongOldPassword(false);
   };
 
-  const onPasswordClickHandler = (e) => {
-    setIsPasswordClicked(true);
+  const onOldPasswordClickHandler = (e) => {
+    setOldIsPasswordClicked(true);
+  };
+
+  const onNewPasswordBlurHandler = (e) => {
+    setNewIsPasswordClicked(false);
+    if (
+      e.currentTarget.value.search(/(?=(.*[a-z]){3,})/g) == -1 ||
+      e.currentTarget.value.search(/(?=(.*[A-Z]){3,})/g) == -1 ||
+      e.currentTarget.value.search(/(?=(.*[0-9]){3,})/g) == -1 ||
+      e.currentTarget.value.search(/(?=(.*[?#@!*()])+)/g) == -1 ||
+      e.currentTarget.value == "" ||
+      e.currentTarget.value.length < 5
+    ) {
+      setIsWrongNewPassword(true);
+      setNewPasswordDescription("wrong password");
+      return;
+    }
+
+    dispatch(
+      userDataAction.setNewPassword({
+        newPassword: e.currentTarget.value,
+      })
+    );
+    setIsWrongOldPassword(false);
+  };
+
+  const onNewPasswordClickHandler = (e) => {
+    setNewIsPasswordClicked(true);
   };
 
   return (
-    <UserInformationWrapper>
-      <UserInformationTitleWrapper>
+    <UserInformationWrapper theme={theme}>
+      <UserInformationTitleWrapper theme={theme}>
         <UserInformationTitle>User Information</UserInformationTitle>
       </UserInformationTitleWrapper>
 
@@ -84,19 +117,38 @@ export default function UserInformation() {
         </UserInformationInputWrapper>
       </UserInformationInputSectionWrapper>
       <UserInformationInputSectionWrapper marginTop={5}>
-        <UserInformationInputLabel>password</UserInformationInputLabel>
+        <UserInformationInputLabel>old password</UserInformationInputLabel>
         <UserInformationInputWrapper>
           <UserInformationInput
             type="text"
-            name="password"
+            name="oldPassword"
             required
             minlength="1"
             maxlength="20"
-            onBlur={onPasswordBlurHandler}
-            onClick={onPasswordClickHandler}
+            onBlur={onOldPasswordBlurHandler}
+            onClick={onOldPasswordClickHandler}
           />
-          {isWrongPassword && !isPasswordClicked ? (
-            <BulletLayout description={passwordDescription} />
+          {isWrongOldPassword && !isOldPasswordClicked ? (
+            <BulletLayout description={oldPasswordDescription} />
+          ) : (
+            <SpaceBetween />
+          )}
+        </UserInformationInputWrapper>
+      </UserInformationInputSectionWrapper>
+      <UserInformationInputSectionWrapper marginTop={5}>
+        <UserInformationInputLabel>new password</UserInformationInputLabel>
+        <UserInformationInputWrapper>
+          <UserInformationInput
+            type="text"
+            name="newPassword"
+            required
+            minlength="1"
+            maxlength="20"
+            onBlur={onNewPasswordBlurHandler}
+            onClick={onNewPasswordClickHandler}
+          />
+          {isWrongNewPassword && !isNewPasswordClicked ? (
+            <BulletLayout description={newPasswordDescription} />
           ) : (
             <SpaceBetween />
           )}
@@ -107,22 +159,26 @@ export default function UserInformation() {
 }
 
 const UserInformationWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: 5px;
-  border-radius: 10px;
-  box-shadow: 1px 2px 3px 0 #949494;
-  color: black;
-  overflow: hidden;
+  ${({ theme }) => css`
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 5px;
+    border-radius: 10px;
+    box-shadow: 1px 2px 3px 0 #949494;
+    color: ${theme === THEME.LIGHT ? "black" : "white"};
+    overflow: hidden;
+  `}
 `;
 
 const UserInformationTitleWrapper = styled.div`
-  padding: 10px;
-  width: 100%;
-  background: #00c923;
-  color: white;
+  ${({ theme }) => css`
+    padding: 10px;
+    width: 100%;
+    background: #00c923;
+    color: ${theme === THEME.LIGHT ? "white" : "black"};
+  `}
 `;
 
 const UserInformationTitle = styled.h3``;
@@ -142,6 +198,7 @@ const UserInformationInputLabel = styled.div`
   display: flex;
   align-items: start;
   padding-top: 10px;
+  max-width: 67px;
 `;
 
 const UserInformationInputWrapper = styled.div`

@@ -1,22 +1,34 @@
 import React from "react";
 import styled from "@emotion/styled";
+import { css } from "@emotion/react";
+import { useTheme } from "next-themes";
+import { THEME } from "@/lib/constants";
 import { useSelector } from "react-redux";
 import { selectUserData } from "@/lib/store/userData.slice";
 
 export default function SubmitButton() {
-  const { name, changedPassword, notiPref } = useSelector(selectUserData);
+  const { theme, setTheme } = useTheme();
+  const {
+    name,
+    oldPassword,
+    newPassword,
+    settings: { notification },
+  } = useSelector(selectUserData);
   const onClickSubmitHandler = async (e) => {
     e.preventDefault();
-    // Get data from the form.
+    // TODO: should fix this later to connect with redux
+    const email = "gsegura@purdue.edu";
     const data = {
+      email,
       name,
-      password: changedPassword,
-      notiPref,
+      oldPassword,
+      newPassword,
+      notification,
     };
-
+    console.log(data);
     const JSONdata = JSON.stringify(data);
     const endpoint = "/api/settings_api";
-
+    // console.log(JSONdata);
     // Form the request for sending data to the server.
     const options = {
       method: "POST",
@@ -38,20 +50,22 @@ export default function SubmitButton() {
   };
 
   return (
-    <SubmitButtonWrapper onClick={onClickSubmitHandler}>
+    <SubmitButtonWrapper theme={theme} onClick={onClickSubmitHandler}>
       Submit
     </SubmitButtonWrapper>
   );
 }
 
 const SubmitButtonWrapper = styled.div`
-  text-align: center;
-  margin-top: 10px;
-  padding: 10px;
-  width: 100%;
-  border-radius: 10px;
-  box-shadow: 1px 2px 3px 0 #949494;
-  background: #00c923;
-  color: white;
-  font-weight: bold;
+  ${({ theme }) => css`
+    text-align: center;
+    margin-top: 10px;
+    padding: 10px;
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: 1px 2px 3px 0 #949494;
+    background: #00c923;
+    color: ${theme === THEME.LIGHT ? "white" : "black"};
+    font-weight: bold;
+  `}
 `;
