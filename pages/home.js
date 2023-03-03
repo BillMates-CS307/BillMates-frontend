@@ -47,6 +47,7 @@ export async function getServerSideProps({req, res}) {
 export default function Homeheading({userData}) {
   console.log(userData);
   let router = useRouter();
+  
   function handleClick() {
     router.push('/newgroup');
   }
@@ -57,6 +58,9 @@ export default function Homeheading({userData}) {
     }
     return (total / 100).toFixed(2);
   }
+  let hex = (sumDebts(userData.groups) == 0) ? "black" : (sumDebts(userData.groups) < 0) ? "var(--red-background)" : "var(--green-background)";
+  let hexBox = (sumDebts(userData.groups) == 0) ? "lightgray" : (sumDebts(userData.groups) < 0) ? "var(--red-background)" : "var(--green-background)";
+
   function goToGroup(groupId) {
     //console.log("/Groups/" + groupId);
     router.push("/Groups/" + groupId);
@@ -65,7 +69,9 @@ export default function Homeheading({userData}) {
     return (
       <div className={styles.groupTemplate} onClick={() => {goToGroup(groupId)}}>
           <p className={styles.groupNameP}>{groupName}</p>
-          <p className={styles.debtInGroupP}>${debtOwed}</p>
+          {/* <p className={styles.debtInGroupP}>${debtOwed}</p> */}
+          <p className={styles.debtInGroupP} style={{background:hexBox}} >${((debtOwed < 0) ? debtOwed * -1 : debtOwed * 1).toFixed(2)}</p>
+
       </div>
     );
   }
@@ -77,7 +83,8 @@ export default function Homeheading({userData}) {
       <div className={styles.group_heading}>  
         <div className={styles.yourNameTotalContainer}>
             <p className={styles.yourName}>{userData.name}</p>
-            <p className={styles.individualDebt}>Total debt: ${sumDebts(userData.groups)}</p>
+            {/* <p className={styles.individualDebt}>Total debt: ${sumDebts(userData.groups)}</p> */}
+            <p classname={styles.individualDebt} style={{color:hex}} >Total debt: ${((sumDebts(userData.groups) < 0) ? sumDebts(userData.groups) * -1 : sumDebts(userData.groups) * 1).toFixed(2)}</p>
         </div>
         <div className={styles.banner}>
           <p>MY GROUPS</p>
