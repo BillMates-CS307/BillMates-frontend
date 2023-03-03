@@ -100,8 +100,6 @@
 .pending {
     background-color: #00DBFF;
     font-style: italic;
-    grid-template-columns: min-content 1fr;
-    align-items: left;
 }
 .pending_larger_p {
     font-size: 1.2rem !important;
@@ -110,12 +108,22 @@
 .transaction_container > div {
     pointer-events: none;
 }
-
+/* sfdasd */
 .transaction_info div {
     display: grid;
     grid-template-columns: minmax(20%, 1fr) min-content;
     background-color: var(--neutral-background);
     padding: 0 5px;
+}
+.pending_transaction_info div {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    background-color: var(--neutral-background);
+    padding: 0 5px;
+    text-align: right;
+}
+.pending_transaction_info div p:first-of-type {
+    text-align: left;
 }
 
 .transaction_info div:first-of-type {

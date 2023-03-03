@@ -39,7 +39,8 @@ export async function getServerSideProps({req, res}) {
                 expenseHistory : result.expenses,
                 userId : email,
                 pendingApproval : result.pending,
-                relative : result.balance.toFixed(2)
+                relative : result.balance.toFixed(2),
+                manager : result.manager
             }
         }
 }
@@ -158,7 +159,7 @@ function GroupHeading({name, members, amount, groupId}) {
     );
 }
 
-export default function Group ({groupName, groupId, members, expenseHistory, userId, pendingApproval, relative}) {
+export default function Group ({groupName, groupId, members, expenseHistory, userId, pendingApproval, relative, manager}) {
     let history_num = -1;
     let pending_num = -1;
 
@@ -180,7 +181,7 @@ export default function Group ({groupName, groupId, members, expenseHistory, use
                     if (trans.paid_to == userId) {
                     return (
                         <div index={pending_num} className={`${styles.transaction_container} ${styles.pending}`} key={pending_num} onClick={(e) => makePendingView(e)}>
-                        <div className={styles.transaction_info}>
+                        <div className={styles.pending_transaction_info}>
                             <div className={styles.transaction_name_amount}>
                                 <p>Pending:</p>
                                 <p>{trans.title}</p>
@@ -509,6 +510,7 @@ export default function Group ({groupName, groupId, members, expenseHistory, use
     }
     async function deleteGroup() {
         let name = prompt("Retype the name of the group to delete");
+        if (userId != manager) {alert("You are not the group manager"); return;}
         if (name == null) {alert("Sorry, we could not process that right now");return;}
         if (name == groupName) {
             let result = await groupService.deleteGroup(groupId);
@@ -518,7 +520,7 @@ export default function Group ({groupName, groupId, members, expenseHistory, use
             }
             location.reload();
         } else {
-return;
+            return;
         }
         return;
     }
