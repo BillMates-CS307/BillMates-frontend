@@ -337,6 +337,17 @@
     cursor: pointer;
 }
 
+.delete_group_button {
+    font-size: 1.5rem;
+    background-color: var(--red-background);
+    color : var(--opposite-background-font-color);
+    padding: 15px;
+    margin: 5px auto;
+    display: block;
+    border : none;
+    cursor: pointer;
+}
+
 /* ---Home page--- */
 
 .yourNameTotalContainer {
