@@ -2,6 +2,7 @@
     width: 100vw;
     height: 90vh;
     background: var(--main-background);
+    font-family: Veranda, sans-serif;
     display: grid;
     grid-template-rows: min-content 1fr;
 }
@@ -108,12 +109,22 @@
 .transaction_container > div {
     pointer-events: none;
 }
-
+/* sfdasd */
 .transaction_info div {
     display: grid;
     grid-template-columns: minmax(20%, 1fr) min-content;
     background-color: var(--neutral-background);
     padding: 0 5px;
+}
+.pending_transaction_info div {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    background-color: var(--neutral-background);
+    padding: 0 5px;
+    text-align: right;
+}
+.pending_transaction_info div p:first-of-type {
+    text-align: left;
 }
 
 .transaction_info div:first-of-type {
@@ -332,4 +343,60 @@
     display: block;
     border : none;
     cursor: pointer;
+}
+
+.delete_group_button {
+    font-size: 1.5rem;
+    background-color: var(--red-background);
+    color : var(--opposite-background-font-color);
+    padding: 15px;
+    margin: 5px auto;
+    display: block;
+    border : none;
+    cursor: pointer;
+}
+
+/* ---Home page--- */
+
+.myGroupsListContainer {
+    max-height: 90vh;
+    overflow-y: scroll;
+}
+
+.yourNameTotalContainer {
+    background-color: #dedede;
+    padding: 20px;
+    margin: 10px;
+    border-radius: 5px;
+    font-size: 18px;
+    border: 1px solid black;
+}
+  
+.yourName {
+    font-weight: bold;
+}
+  
+.individualDebt {
+    margin-top: 10px;
+}
+
+.groupTemplate {
+    display: flex;
+    border: 1px solid black;
+    margin-bottom: 5px;
+}
+  
+.groupNameP {
+    background-color: lightgray;
+    /* color: white; */
+    font-weight: bold;
+    flex: 4;
+    padding: 10px;
+}
+  
+.debtInGroupP {
+    background-color: lightcoral;
+    /* color: white; */
+    flex: 1;
+    padding: 10px;
 }

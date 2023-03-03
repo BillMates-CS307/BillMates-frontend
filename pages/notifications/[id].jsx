@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styled from "@emotion/styled";
 import { useRouter } from "next/router";
-import Header from "../Globals/Header";
-import Footer from "../Globals/Footer";
+import Header from "../globals/Header";
+import Footer from "../globals/Footer";
 
 const NotificationDetail = () => {
   const router = useRouter();

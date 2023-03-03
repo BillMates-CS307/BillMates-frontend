@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
-import Header from "../Globals/Header";
-import Footer from "../Globals/Footer";
+import Header from "../globals/Header";
+import Footer from "../globals/Footer";
 import NotificationItem from "./__components__/NotificationItem";
 import { isEmpty, isUndefined } from "lodash";
 

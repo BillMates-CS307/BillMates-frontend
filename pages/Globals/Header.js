@@ -21,7 +21,7 @@ export default function Header() {
           <p>Bill</p>
           <p>Mates</p>
         </div>
-        <Link href="/settings">
+        <Link href="/Settings">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
             <path
               fill="currentColor"
