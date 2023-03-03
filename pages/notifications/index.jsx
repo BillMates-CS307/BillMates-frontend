@@ -66,6 +66,7 @@ export default function Notifications() {
               <NotificationItem key={noti._id} isfirst={i == 0} {...noti} />
             ))}
         </NotificationsList>
+        <Space />
       </NotificationsWrapper>
       <Footer />
     </>
@@ -85,4 +86,9 @@ const NotificationsList = styled.ul`
   display: flex;
   flex-direction: column;
   justify-content: center;
+`;
+
+const Space = styled.div`
+  width: 100%;
+  height: 40px;
 `;

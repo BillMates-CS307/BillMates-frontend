@@ -126,6 +126,7 @@ const NotificationDetail = () => {
         <DeleteButtonWrapper onClick={onClickDeleteHandler}>
           Delete
         </DeleteButtonWrapper>
+        <Space />
       </NotificationDetailWrapper>
       <Footer />
     </>
@@ -192,4 +193,9 @@ const DeleteButtonWrapper = styled.div`
   background: #00c923;
   color: white;
   font-weight: bold;
+`;
+
+const Space = styled.div`
+  width: 100%;
+  height: 40px;
 `;
