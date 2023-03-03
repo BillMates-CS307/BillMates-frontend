@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 import { userDataAction } from "@/lib/store/userData.slice";
 import BulletLayout from "./BulletLayout";
 
-export default function UserInformation() {
+export default function UserInformation({email}) {
   const dispatch = useDispatch();
   const { theme } = useTheme();
   const [isWrongName, setIsWrongName] = useState(false);
@@ -19,15 +19,25 @@ export default function UserInformation() {
   const [isWrongNewPassword, setIsWrongNewPassword] = useState(false);
   const [isNewPasswordClicked, setNewIsPasswordClicked] = useState(false);
   const [newPasswordDescription, setNewPasswordDescription] = useState("");
+  const [isWrongNewPasswordConfirm, setIsWrongNewPasswordConfirm] = useState(false);
+  const [isNewPasswordClickedConfirm, setNewIsPasswordClickedConfirm] = useState(false);
+  const [newPasswordDescriptionConfirm, setNewPasswordDescriptionConfirm] = useState("");
+
+
+  dispatch(
+    userDataAction.setEmail({
+      email: email,
+    })
+  );
 
   const onNameBlurHandler = (e) => {
     setIsNameClicked(false);
 
-    if (e.currentTarget.value.length < 1) {
-      setIsWrongName(true);
-      setNameDescription("wrong name");
-      return;
-    }
+    // if (e.currentTarget.value.length < 1) {
+    //   setIsWrongName(true);
+    //   setNameDescription("");
+    //   return;
+    // }
 
     dispatch(userDataAction.setName({ name: e.currentTarget.value }));
     setIsWrongName(false);
@@ -45,10 +55,10 @@ export default function UserInformation() {
       e.currentTarget.value.search(/(?=(.*[0-9]){3,})/g) == -1 ||
       e.currentTarget.value.search(/(?=(.*[?#@!*()])+)/g) == -1 ||
       e.currentTarget.value == "" ||
-      e.currentTarget.value.length < 5
+      e.currentTarget.value.length < 10
     ) {
       setIsWrongOldPassword(true);
-      setOldPasswordDescription("wrong password");
+      setOldPasswordDescription("password not strong enough");
       return;
     }
 
@@ -64,6 +74,32 @@ export default function UserInformation() {
     setOldIsPasswordClicked(true);
   };
 
+  const onNewPasswordBlurHandlerConfirm = (e) => {
+    setNewIsPasswordClickedConfirm(false);
+    if (
+      e.currentTarget.value.search(/(?=(.*[a-z]){3,})/g) == -1 ||
+      e.currentTarget.value.search(/(?=(.*[A-Z]){3,})/g) == -1 ||
+      e.currentTarget.value.search(/(?=(.*[0-9]){3,})/g) == -1 ||
+      e.currentTarget.value.search(/(?=(.*[?#@!*()])+)/g) == -1 ||
+      e.currentTarget.value == "" ||
+      e.currentTarget.value.length < 10
+    ) {
+      setIsWrongNewPasswordConfirm(true);
+      setNewPasswordDescriptionConfirm("password not strong enough");
+      return;
+    }
+
+    dispatch(
+      userDataAction.setNewPassword({
+        newPassword: e.currentTarget.value,
+      })
+    );
+    setIsWrongNewPasswordConfirm(false);
+  };
+
+  const onNewPasswordClickHandlerConfirm = (e) => {
+    setNewIsPasswordClickedConfirm(true);
+  };
   const onNewPasswordBlurHandler = (e) => {
     setNewIsPasswordClicked(false);
     if (
@@ -75,7 +111,7 @@ export default function UserInformation() {
       e.currentTarget.value.length < 5
     ) {
       setIsWrongNewPassword(true);
-      setNewPasswordDescription("wrong password");
+      setNewPasswordDescription("password not strong enough");
       return;
     }
 
@@ -84,13 +120,12 @@ export default function UserInformation() {
         newPassword: e.currentTarget.value,
       })
     );
-    setIsWrongOldPassword(false);
+    setIsWrongNewPassword(false);
   };
 
   const onNewPasswordClickHandler = (e) => {
     setNewIsPasswordClicked(true);
   };
-
   return (
     <UserInformationWrapper theme={theme}>
       <UserInformationTitleWrapper theme={theme}>
@@ -120,7 +155,7 @@ export default function UserInformation() {
         <UserInformationInputLabel>old password</UserInformationInputLabel>
         <UserInformationInputWrapper>
           <UserInformationInput
-            type="text"
+            type="password"
             name="oldPassword"
             required
             minlength="1"
@@ -139,7 +174,7 @@ export default function UserInformation() {
         <UserInformationInputLabel>new password</UserInformationInputLabel>
         <UserInformationInputWrapper>
           <UserInformationInput
-            type="text"
+            type="password"
             name="newPassword"
             required
             minlength="1"
@@ -149,6 +184,25 @@ export default function UserInformation() {
           />
           {isWrongNewPassword && !isNewPasswordClicked ? (
             <BulletLayout description={newPasswordDescription} />
+          ) : (
+            <SpaceBetween />
+          )}
+        </UserInformationInputWrapper>
+      </UserInformationInputSectionWrapper>
+      <UserInformationInputSectionWrapper marginTop={5}>
+        <UserInformationInputLabel>new password confirm</UserInformationInputLabel>
+        <UserInformationInputWrapper>
+          <UserInformationInput
+            type="password"
+            name="newPasswordConfirm"
+            required
+            minlength="1"
+            maxlength="20"
+            onBlur={onNewPasswordBlurHandlerConfirm}
+            onClick={onNewPasswordClickHandlerConfirm}
+          />
+          {isWrongNewPasswordConfirm && !isNewPasswordClickedConfirm ? (
+            <BulletLayout description={newPasswordDescriptionConfirm} />
           ) : (
             <SpaceBetween />
           )}

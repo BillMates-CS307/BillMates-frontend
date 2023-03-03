@@ -14,10 +14,13 @@ const NotificationDetail = () => {
     if (typeof window === "undefined") {
       return;
     }
-
+    if (id == undefined) {
+      return;
+    }
     const data = {
       object_id: id,
     };
+    
     const JSONdata = JSON.stringify(data);
 
     const getNotification = async (data) => {
@@ -39,6 +42,7 @@ const NotificationDetail = () => {
       }
 
       const result = await response.json();
+      console.log(result);
       setNotification(result.notification);
     };
 
@@ -56,6 +60,9 @@ const NotificationDetail = () => {
     const JSONdata = JSON.stringify(data);
 
     const readNotification = async (data) => {
+      if(data.object_id == undefined) {
+        return;
+      }
       const endpoint = "/api/read_notification";
       // Form the request for sending data to the server.
       const options = {

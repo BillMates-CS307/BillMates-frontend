@@ -4,15 +4,27 @@ import Header from "../globals/Header";
 import Footer from "../globals/Footer";
 import NotificationItem from "./__components__/NotificationItem";
 import { isEmpty, isUndefined } from "lodash";
+import { userService } from "../services/authorization";
 
-export default function Notifications() {
+export async function getServerSideProps({req, res}) {
+  const {email, token} = userService.getEmailFromToken({req, res});
+  if (email == null) {
+    return {props : {},
+            redirect : {permanent: false,
+            destination: "/"} }
+  }
+  return {props: {email : email}}
+}
+
+
+export default function Notifications({email}) {
   const [notifications, setNotifications] = useState([]);
   const [isEmptyNotifications, setIsEmptyNotifications] = useState(false);
 
   useEffect(() => {
     // TODO: should fix it later to bring email from redux
     const data = {
-      email: "benlilleydev@gmail.com",
+      email: email,
     };
     const JSONdata = JSON.stringify(data);
     console.log(JSONdata);
@@ -63,7 +75,7 @@ export default function Notifications() {
         <NotificationsList>
           {!isUndefined(notifications) &&
             notifications.map((noti, i) => (
-              <NotificationItem key={noti._id} isfirst={i == 0} {...noti} />
+              <NotificationItem key={noti._id} isfirst={i == 0} {...noti} index={i} />
             ))}
         </NotificationsList>
       </NotificationsWrapper>

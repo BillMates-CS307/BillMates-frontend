@@ -11,15 +11,27 @@ import Theme from "./__components__/Theme";
 import Header from "../globals/Header";
 import Footer from "../globals/Footer";
 import LogoutSection from "./__components__/LogoutSection";
+import { userService } from "../services/authorization";
 
-export default function Settings() {
+export async function getServerSideProps({req, res}) {
+  const {email, token} = userService.getEmailFromToken({req, res});
+  if (email == null) {
+    return {props : {},
+            redirect : {permanent: false,
+            destination: "/"} }
+  }
+  return {props: {email : email}}
+}
+
+export default function Settings({email}) {
   const { theme } = useTheme();
+  console.log(email);
   return (
     <>
       <Header />
       <SettingsWrapper theme={theme}>
         <SettingsForm>
-          <UserInformation />
+          <UserInformation email={email}/>
           <Notification />
           <PaymentPreference />
           <Theme />
@@ -36,6 +48,7 @@ const SettingsWrapper = styled.div`
   ${({ theme }) => css`
     max-width: 440px;
     margin: 0 auto;
+    margin-bottom: 50px;
     padding: 1rem;
     border-radius: 10px;
     box-shadow: 1px 2px 15px 0 #949494;
