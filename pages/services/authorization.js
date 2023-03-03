@@ -112,7 +112,7 @@ async function addUserToGroup(email, groupId) {
 
 function deleteJwtToken() {
   console.log("being called");
-  deleteCookie('JWT_Token');
+  deleteCookie('JWT_Token', {path : "/", domain : "localhost"});
 }
 
 function deleteJwtTokenServerSide({req, res}) {

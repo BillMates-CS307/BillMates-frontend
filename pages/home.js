@@ -59,13 +59,13 @@ export default function Homeheading({userData}) {
     return (total / 100).toFixed(2);
   }
   let hex = (sumDebts(userData.groups) == 0) ? "black" : (sumDebts(userData.groups) < 0) ? "var(--red-background)" : "var(--green-background)";
-  let hexBox = (sumDebts(userData.groups) == 0) ? "lightgray" : (sumDebts(userData.groups) < 0) ? "var(--red-background)" : "var(--green-background)";
 
   function goToGroup(groupId) {
     //console.log("/Groups/" + groupId);
     router.push("/Groups/" + groupId);
   }
   function GroupTemplate({groupName, debtOwed, groupId}) {
+    let hexBox = (debtOwed == 0) ? "lightgray" : (debtOwed < 0) ? "var(--red-background)" : "var(--green-background)";
     return (
       <div className={styles.groupTemplate} onClick={() => {goToGroup(groupId)}}>
           <p className={styles.groupNameP}>{groupName}</p>

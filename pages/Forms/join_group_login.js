@@ -2,6 +2,7 @@ import styles from '@/styles/Home.module.css'
 import { useRouter } from 'next/router'
 import { userService } from '../services/authorization'
 import { LAMBDA_RESP } from '../lib/constants';
+import { groupService } from '../services/groups';
 
 
 export default function JoinGroupSignIn({groupId}) {
@@ -57,8 +58,7 @@ export default function JoinGroupSignIn({groupId}) {
         localStorage.removeItem('timeout');
         //add to local storage because I don't have WIFI to install cookies
         //localStorage.setItem('token', token);
-      
-        router.push('/Groups/' + groupId);
+        location.reload();
       }
     }
 
