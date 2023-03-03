@@ -10,6 +10,7 @@ export const userService = {
     getEmailFromToken,
     addUserToGroup,
     deleteJwtToken,
+    deleteJwtTokenServerSide,
     getUserData
 };
 

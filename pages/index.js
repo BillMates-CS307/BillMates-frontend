@@ -2,7 +2,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { Inter } from '@next/font/google'
 import styles from '@/styles/Home.module.css'
-import JSSignInForm from './Forms/signup_form'
+import JSSignInForm from './forms/signup_form'
 import { userService } from './services/authorization'
 
 

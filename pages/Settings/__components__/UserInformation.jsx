@@ -5,7 +5,6 @@ import { useTheme } from "next-themes";
 import { THEME } from "@/lib/constants";
 import { useDispatch } from "react-redux";
 import { userDataAction } from "@/lib/store/userData.slice";
-import { userDataAction } from "@/lib/store/userData.slice";
 import BulletLayout from "./BulletLayout";
 
 export default function UserInformation() {
@@ -30,7 +29,6 @@ export default function UserInformation() {
       return;
     }
 
-    dispatch(userDataAction.setName({ name: e.currentTarget.value }));
     dispatch(userDataAction.setName({ name: e.currentTarget.value }));
     setIsWrongName(false);
   };

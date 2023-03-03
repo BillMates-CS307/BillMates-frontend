@@ -1,5 +1,5 @@
-import Footer from './Globals/Footer'
-import Header from './Globals/Header'
+import Footer from './globals/Footer'
+import Header from './globals/Header'
 import { Inter } from '@next/font/google'
 import styles from "@/styles/Group.module.css";
 import { useRouter } from 'next/router';
