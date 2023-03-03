@@ -116,40 +116,6 @@ a {
   text-decoration: none;
 }
 
-header {
-  width: 100vw;
-  padding: 10px;
-  border-bottom: 1px solid #000;
-  background-color: #FFF;
-  display: grid;
-  grid-template-columns: 30px 1fr 30px;
-  height: 10vh;
-  align-items: center;
-}
-
-header svg {
-  width: 30px;
-  height: 30px;
-}
-
-header div {
-  text-align: center;
-}
-
-header div p {
-  display: inline-block;
-  font-size: 2rem;
-  color: #20AD20;
-}
-
-header div p:first-of-type {
-  color: #000;
-}
-
-header svg {
-  color : #000;
-}
-
 footer {
   position: fixed;
   bottom: 0;
