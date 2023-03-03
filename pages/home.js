@@ -90,6 +90,7 @@ export default function Homeheading({userData}) {
           return <GroupTemplate groupName={group.name} debtOwed={group.balance.toFixed(2)} groupId={group.group_id}></GroupTemplate>;
         })
       }
+      <div className={styles.buffer_block}></div>
     </div>
         
     </main>
