@@ -5,6 +5,7 @@ export default async function handler(req, res) {
   // Guard clause checks for first and last name,
   // and returns early if they are not found
   if (
+    !req_body.email ||
     !req_body.name ||
     !req_body.oldPassword ||
     !req_body.newPassword ||

@@ -9,6 +9,7 @@ import { selectUserData } from "@/lib/store/userData.slice";
 export default function SubmitButton() {
   const { theme, setTheme } = useTheme();
   const {
+    email,
     name,
     oldPassword,
     newPassword,
@@ -16,15 +17,13 @@ export default function SubmitButton() {
   } = useSelector(selectUserData);
   const onClickSubmitHandler = async (e) => {
     e.preventDefault();
-    // TODO: should fix this later to connect with redux
-    const email = "gsegura@purdue.edu";
     const data = {
+      email,
       name,
       oldPassword,
       newPassword,
       notification,
     };
-    console.log(data);
     const JSONdata = JSON.stringify(data);
     const endpoint = "/api/settings_api";
     // console.log(JSONdata);

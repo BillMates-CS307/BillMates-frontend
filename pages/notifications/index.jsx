@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { isEmpty, isUndefined } from "lodash";
 import styled from "@emotion/styled";
 import Header from "../globals/Header";
 import Footer from "../globals/Footer";
 import NotificationItem from "./__components__/NotificationItem";
-import { isEmpty, isUndefined } from "lodash";
+import { selectUserData } from "@/lib/store/userData.slice";
 
 export default function Notifications() {
+  const { email } = useSelector(selectUserData);
   const [notifications, setNotifications] = useState([]);
   const [isEmptyNotifications, setIsEmptyNotifications] = useState(false);
 
   useEffect(() => {
-    // TODO: should fix it later to bring email from redux
     const data = {
-      email: "benlilleydev@gmail.com",
+      email,
     };
     const JSONdata = JSON.stringify(data);
     console.log(JSONdata);
