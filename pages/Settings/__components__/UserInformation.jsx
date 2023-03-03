@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
+import { useTheme } from "next-themes";
+import { THEME } from "@/lib/constants";
 import { useDispatch } from "react-redux";
 import { userDataAction } from "@/lib/store/userData.slice";
 import BulletLayout from "./BulletLayout";
 
 export default function UserInformation() {
   const dispatch = useDispatch();
+  const { theme } = useTheme();
   const [isWrongName, setIsWrongName] = useState(false);
   const [isNameClicked, setIsNameClicked] = useState(false);
   const [nameDescription, setNameDescription] = useState("");
@@ -89,8 +92,8 @@ export default function UserInformation() {
   };
 
   return (
-    <UserInformationWrapper>
-      <UserInformationTitleWrapper>
+    <UserInformationWrapper theme={theme}>
+      <UserInformationTitleWrapper theme={theme}>
         <UserInformationTitle>User Information</UserInformationTitle>
       </UserInformationTitleWrapper>
 
@@ -156,22 +159,26 @@ export default function UserInformation() {
 }
 
 const UserInformationWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: 5px;
-  border-radius: 10px;
-  box-shadow: 1px 2px 3px 0 #949494;
-  color: black;
-  overflow: hidden;
+  ${({ theme }) => css`
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 5px;
+    border-radius: 10px;
+    box-shadow: 1px 2px 3px 0 #949494;
+    color: ${theme === THEME.LIGHT ? "black" : "white"};
+    overflow: hidden;
+  `}
 `;
 
 const UserInformationTitleWrapper = styled.div`
-  padding: 10px;
-  width: 100%;
-  background: #00c923;
-  color: white;
+  ${({ theme }) => css`
+    padding: 10px;
+    width: 100%;
+    background: #00c923;
+    color: ${theme === THEME.LIGHT ? "white" : "black"};
+  `}
 `;
 
 const UserInformationTitle = styled.h3``;

@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import styled from "@emotion/styled";
-import { PAYMENT_PREFERENCE } from "@/lib/constants";
+import { css } from "@emotion/react";
+import { useTheme } from "next-themes";
+import { THEME, PAYMENT_PREFERENCE } from "@/lib/constants";
 
 export default function PaymentPreference() {
+  const { theme } = useTheme();
   const [paymentPref, setPaymentPref] = useState(null);
 
   useEffect(() => {
@@ -33,8 +36,8 @@ export default function PaymentPreference() {
   };
 
   return (
-    <PaymentPreferenceWrapper>
-      <PaymentPreferenceTitleWrapper>
+    <PaymentPreferenceWrapper theme={theme}>
+      <PaymentPreferenceTitleWrapper theme={theme}>
         <PaymentPreferenceTitle>Payment Preference</PaymentPreferenceTitle>
       </PaymentPreferenceTitleWrapper>
       <PaymentPreferenceRadioButtonWrapper>
@@ -62,23 +65,27 @@ export default function PaymentPreference() {
 }
 
 const PaymentPreferenceWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 10px;
-  padding-bottom: 10px;
-  border-radius: 10px;
-  box-shadow: 1px 2px 3px 0 #949494;
-  color: black;
-  overflow: hidden;
+  ${({ theme }) => css`
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    padding-bottom: 10px;
+    border-radius: 10px;
+    box-shadow: 1px 2px 3px 0 #949494;
+    color: ${theme === THEME.LIGHT ? "black" : "white"};
+    overflow: hidden;
+  `}
 `;
 
 const PaymentPreferenceTitleWrapper = styled.div`
-  padding: 10px;
-  width: 100%;
-  background: #00c923;
-  color: white;
+  ${({ theme }) => css`
+    padding: 10px;
+    width: 100%;
+    background: #00c923;
+    color: ${theme === THEME.LIGHT ? "white" : "black"};
+  `}
 `;
 
 const PaymentPreferenceTitle = styled.h3``;

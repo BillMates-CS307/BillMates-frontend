@@ -1,10 +1,13 @@
 import React from "react";
 import styled from "@emotion/styled";
+import { css } from "@emotion/react";
+import { useTheme } from "next-themes";
+import { THEME, NOTIFICATION_PREFERENCE } from "@/lib/constants";
 import { useSelector, useDispatch } from "react-redux";
 import { selectUserData, userDataAction } from "@/lib/store/userData.slice";
-import { NOTIFICATION_PREFERENCE } from "@/lib/constants";
 
 export default function Notification() {
+  const { theme } = useTheme();
   const dispatch = useDispatch();
   const {
     settings: { notification },
@@ -37,8 +40,8 @@ export default function Notification() {
   };
 
   return (
-    <NotificationWrapper>
-      <NotificationTitleWrapper>
+    <NotificationWrapper theme={theme}>
+      <NotificationTitleWrapper theme={theme}>
         <NotificationTitle>Notification</NotificationTitle>
       </NotificationTitleWrapper>
 
@@ -77,23 +80,27 @@ export default function Notification() {
 }
 
 const NotificationWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 10px;
-  padding-bottom: 10px;
-  border-radius: 10px;
-  box-shadow: 1px 2px 3px 0 #949494;
-  color: black;
-  overflow: hidden;
+  ${({ theme }) => css`
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    padding-bottom: 10px;
+    border-radius: 10px;
+    box-shadow: 1px 2px 3px 0 #949494;
+    color: ${theme === THEME.LIGHT ? "black" : "white"};
+    overflow: hidden;
+  `}
 `;
 
 const NotificationTitleWrapper = styled.div`
-  padding: 10px;
-  width: 100%;
-  background: #00c923;
-  color: white;
+  ${({ theme }) => css`
+    padding: 10px;
+    width: 100%;
+    background: #00c923;
+    color: ${theme === THEME.LIGHT ? "white" : "black"};
+  `}
 `;
 
 const NotificationTitle = styled.h3``;

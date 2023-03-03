@@ -1,9 +1,13 @@
 import React from "react";
 import styled from "@emotion/styled";
+import { css } from "@emotion/react";
+import { useTheme } from "next-themes";
+import { THEME } from "@/lib/constants";
 import { useSelector } from "react-redux";
 import { selectUserData } from "@/lib/store/userData.slice";
 
 export default function SubmitButton() {
+  const { theme, setTheme } = useTheme();
   const {
     name,
     oldPassword,
@@ -46,20 +50,22 @@ export default function SubmitButton() {
   };
 
   return (
-    <SubmitButtonWrapper onClick={onClickSubmitHandler}>
+    <SubmitButtonWrapper theme={theme} onClick={onClickSubmitHandler}>
       Submit
     </SubmitButtonWrapper>
   );
 }
 
 const SubmitButtonWrapper = styled.div`
-  text-align: center;
-  margin-top: 10px;
-  padding: 10px;
-  width: 100%;
-  border-radius: 10px;
-  box-shadow: 1px 2px 3px 0 #949494;
-  background: #00c923;
-  color: white;
-  font-weight: bold;
+  ${({ theme }) => css`
+    text-align: center;
+    margin-top: 10px;
+    padding: 10px;
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: 1px 2px 3px 0 #949494;
+    background: #00c923;
+    color: ${theme === THEME.LIGHT ? "white" : "black"};
+    font-weight: bold;
+  `}
 `;
