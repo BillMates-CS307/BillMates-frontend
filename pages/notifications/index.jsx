@@ -1,30 +1,13 @@
 import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
-import Header from "../Globals/Header";
-import Footer from "../Globals/Footer";
+import Header from "../globals/Header";
+import Footer from "../globals/Footer";
 import NotificationItem from "./__components__/NotificationItem";
-import { isUndefined } from "lodash";
+import { isEmpty, isUndefined } from "lodash";
 
 export default function Notifications() {
-  // TODO: server connection needed
   const [notifications, setNotifications] = useState([]);
-  // const notifications = [
-  //   {
-  //     id: "objectId1",
-  //     sender: "sender1",
-  //     message:
-  //       "some message1some message1some message1some message1some message1",
-  //     time: "Some Time?",
-  //     isread: false,
-  //   },
-  //   {
-  //     id: "objectId2",
-  //     sender: "sender2",
-  //     message: "some message2",
-  //     time: "Some Time?",
-  //     isread: true,
-  //   },
-  // ];
+  const [isEmptyNotifications, setIsEmptyNotifications] = useState(false);
 
   useEffect(() => {
     // TODO: should fix it later to bring email from redux
@@ -53,12 +36,25 @@ export default function Notifications() {
       }
 
       const result = await response.json();
-      console.log(result);
+      if (isEmpty(result.notifications)) {
+        setIsEmptyNotifications(true);
+      }
+
       setNotifications(result.notifications);
     };
 
     getAllNotifications(JSONdata); // run it, run it
   }, []);
+
+  if (isEmptyNotifications) {
+    return (
+      <>
+        <Header />
+        <NotificationsWrapper>No Notifications</NotificationsWrapper>
+        <Footer />
+      </>
+    );
+  }
 
   return (
     <>

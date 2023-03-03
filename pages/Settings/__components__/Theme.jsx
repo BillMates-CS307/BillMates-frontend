@@ -1,31 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import styled from "@emotion/styled";
+import { css } from "@emotion/react";
+import { useTheme } from "next-themes";
 import { THEME } from "@/lib/constants";
 
 export default function Theme() {
-  const [theme, setTheme] = useState(null);
-
-  useEffect(() => {
-    setTheme(JSON.parse(localStorage.getItem("theme")) ?? THEME.LIGHT);
-  }, [theme]);
+  const { theme, setTheme } = useTheme();
 
   const onThemeChangeHandler = (e) => {
     switch (e.target.value) {
       case THEME.DARK:
-        localStorage.setItem("theme", JSON.stringify(e.target.value));
         setTheme(THEME.DARK);
-
         break;
       case THEME.LIGHT:
-        localStorage.setItem("theme", JSON.stringify(e.target.value));
         setTheme(THEME.LIGHT);
         break;
     }
   };
 
   return (
-    <ThemeWrapper>
-      <ThemeTitleWrapper>
+    <ThemeWrapper theme={theme}>
+      <ThemeTitleWrapper theme={theme}>
         <ThemeTitle>Theme</ThemeTitle>
       </ThemeTitleWrapper>
       <ThemeRadioButtonWrapper>
@@ -53,23 +48,27 @@ export default function Theme() {
 }
 
 const ThemeWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 10px;
-  padding-bottom: 10px;
-  border-radius: 10px;
-  box-shadow: 1px 2px 3px 0 #949494;
-  color: black;
-  overflow: hidden;
+  ${({ theme }) => css`
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    padding-bottom: 10px;
+    border-radius: 10px;
+    box-shadow: 1px 2px 3px 0 #949494;
+    color: ${theme === THEME.LIGHT ? "black" : "white"};
+    overflow: hidden;
+  `}
 `;
 
 const ThemeTitleWrapper = styled.div`
-  padding: 10px;
-  width: 100%;
-  background: #00c923;
-  color: white;
+  ${({ theme }) => css`
+    padding: 10px;
+    width: 100%;
+    background: #00c923;
+    color: ${theme === THEME.LIGHT ? "white" : "black"};
+  `}
 `;
 
 const ThemeTitle = styled.h3``;

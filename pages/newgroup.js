@@ -2,9 +2,9 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { Inter } from '@next/font/google'
 import styles from '@/styles/Home.module.css'
-import Creategroup from './Forms/newgroup_form'
+import Creategroup from './forms/newgroup_form'
 import { userService } from './services/authorization'
-import Header from './Globals/Header'
+import Header from './globals/Header'
 
 const inter = Inter({ subsets: ['latin'] })
 

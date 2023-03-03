@@ -4,7 +4,7 @@ import Image from 'next/image'
 import { userService } from '../services/authorization.js';
 import { groupService } from '../services/groups.js';
 import { LAMBDA_RESP } from '../lib/constants'
-import FORM from '../Forms/join_group_login'
+import FORM from '../forms/join_group_login'
 
 export async function getServerSideProps({req, res}) {
     const group_id = req.url.match("[0-9a-z\-]+$")[0];
