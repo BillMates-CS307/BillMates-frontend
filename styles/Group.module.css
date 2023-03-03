@@ -358,6 +358,11 @@
 
 /* ---Home page--- */
 
+.myGroupsListContainer {
+    max-height: 90vh;
+    overflow-y: scroll;
+}
+
 .yourNameTotalContainer {
     background-color: #dedede;
     padding: 20px;
