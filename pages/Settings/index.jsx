@@ -26,6 +26,7 @@ export default function Settings() {
           <SubmitButton />
         </SettingsForm>
         <LogoutSection />
+        <Space />
       </SettingsWrapper>
       <Footer />
     </>
@@ -42,6 +43,11 @@ const SettingsWrapper = styled.div`
     color: ${theme === THEME.LIGHT ? "black" : "white"};
     background: ${theme === THEME.LIGHT ? "white" : "black"};
   `}
+`;
+
+const Space = styled.div`
+  width: 100%;
+  height: 40px;
 `;
 
 const SettingsForm = styled.form``;

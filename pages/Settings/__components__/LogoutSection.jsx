@@ -15,7 +15,7 @@ export default function LogoutSection() {
     dispatch(userDataAction.clear());
     localStorage.removeItem("token");
     userService.deleteJwtToken();
-    router.push("/register");
+    router.push("/");
   };
 
   return (
