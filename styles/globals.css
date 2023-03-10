@@ -42,6 +42,7 @@
   
   font-size: 15px;
   --green-background : #20AD20;
+  --green-muted-background : #79D88A;
   --red-background : #F00;
   --neutral-background : #adadad;
   --dark-neutral-background: #4D4D4D;
@@ -97,6 +98,10 @@ body {
   overflow-x: hidden;
 }
 
+button {
+  cursor: pointer;
+}
+
 /* body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
@@ -150,27 +155,24 @@ header svg {
   color : #000;
 }
 
-footer {
-  position: fixed;
-  bottom: 0;
-  width: 100vw;
-  display: grid;
-  grid-template-columns: 50px 1fr 50px;
-  padding: 5px 10px;
-  /*z-index: -1;*/
+main {
+  min-height: 90vh;
 }
 
-footer img {
+.footer_div img {
   transform: scale(70%);
 }
 
-footer div {
+.footer_div {
+  position: fixed;
+  bottom: 0;
   height: 50px;
+  width: 50px;
   border-radius: 50%;
   background-color: #D9D9D9;
   cursor: pointer;
-  position: relative;
-  z-index: 5;
+  z-index: 999;
+  margin: 10px;
 }
 
 footer div a {
@@ -178,8 +180,8 @@ footer div a {
   display: inline-block;
 }
 
-footer span {
-  pointer-events: none;
+#plus_button {
+  right : 0;
 }
 
 #plus_button:after {
@@ -202,6 +204,36 @@ footer span {
   background: #000;
   height: 35%;
   width: 3px;
+}
+
+#loading_circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  position: relative;
+}
+#loading_circle::before {
+    animation: 1.2s linear infinite loading;
+    border: solid 5px var(--neutral-background);
+    border-bottom-color: var(--green-background);
+    border-radius: 50%;
+    content: "";
+    height: 40px;
+    width: 40px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    will-change: transform;
+}
+
+@keyframes loading {
+  0% {
+    transform: translate3d(-50%, -50%, 0) rotate(0deg);
+  }
+  100% {
+    transform: translate3d(-50%, -50%, 0) rotate(360deg);
+  }
 }
 
 
