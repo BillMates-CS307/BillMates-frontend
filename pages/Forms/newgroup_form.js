@@ -1,7 +1,7 @@
 import styles from '@/styles/Home.module.css'
 import { useRouter } from 'next/router'
 import { userService } from '../services/authorization'
-import { LAMBDA_RESP } from '../lib/constants';
+import { LAMBDA_RESP } from '@/lib/constants';
 
 export default function CreateGroup({user}) {
     let router = useRouter();

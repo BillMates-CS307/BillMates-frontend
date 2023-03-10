@@ -4,7 +4,7 @@ import { Inter } from '@next/font/google'
 import styles from "@/styles/Group.module.css";
 import { useRouter } from 'next/router';
 import { userService } from './services/authorization';
-import { LAMBDA_RESP } from './lib/constants';
+import { LAMBDA_RESP } from '@/lib/constants';
 
 const inter = Inter({ subsets: ['latin'] })
 

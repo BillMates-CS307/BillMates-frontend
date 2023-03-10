@@ -1,6 +1,6 @@
 import styles from "@/styles/Home.module.css";
 import { useRouter } from "next/router";
-import { LAMBDA_RESP } from "../lib/constants";
+import { LAMBDA_RESP } from "@/lib/constants";
 import { userService } from "../services/authorization";
 
 export default function Register() {
