@@ -9,7 +9,7 @@ import PaymentPreference from "./__components__/PaymentPreference";
 import SubmitButton from "./__components__/SubmitButton";
 import Theme from "./__components__/Theme";
 import Header from "../globals/Header";
-import Footer from "../globals/Footer";
+import Footer from "../Refactored/Global_components/footer.jsx";
 import LogoutSection from "./__components__/LogoutSection";
 import { userService } from "../services/authorization";
 

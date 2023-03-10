@@ -122,32 +122,43 @@ async function payDebt(id, expenseId, amount) {
     .catch( (error) => {console.log(error); return "error"} );
 }
 
-//getServiceSideProps call only
 async function getGroup(groupId, email) {
-    if (typeof window === "undefined") {
-        const body_json = {group_id: groupId, email: email};
-        const url = 'https://jujezuf56ybwzdn7edily3gu6a0dcdir.lambda-url.us-east-2.on.aws/';
-        //const url = "aaaaa";
-        const options = {
-            method: 'POST',
-            mode : 'cors',
-            headers: {
-            'Content-Type': 'application/json',
-            'token' : 'zpdkwA.2_kLU@zg'
-            },
-            body: JSON.stringify(body_json),
-        }
+  const data = {
+    group_id : groupId,
+    email : email
+  };
+  const JSONdata = JSON.stringify(data);
+  const endpoint = '/api/get_group'
 
-        return fetch(url, options).then( (response) => {
-            return response.json()
-        })
-        .then( (data) => {
-            return data;
-        }).catch( (e) => {console.log(e); return null;} )
-    } else {
-        console.log("here");
-        return null;
+  // Form the request for sending data to the server.
+  const options = {
+    method: 'POST',
+    mode : 'no-cors',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSONdata
+  }
+
+  return await fetch(endpoint, options).then( (response) => {
+    if (response.status == 400) {
+      alert("Unable to find form fields");
+      return "error";
     }
+    console.log(response);
+    return response.json();
+    })
+    .then( (result) => {
+      if (!result.token_success) {
+        return "token";
+      }
+      //temp name
+      if (!result.get_success) {
+        return "invalid";
+      }
+        return "success";
+    })
+    .catch( (error) => {console.log(error); return "error"} );
 }
 
 //server side function only
