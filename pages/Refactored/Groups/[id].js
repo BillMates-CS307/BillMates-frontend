@@ -2,14 +2,24 @@ import styles from '@/styles/Group.module.css'
 import Header from '../Global_components/header.jsx'
 import Footer from '../Global_components/footer.jsx'
 import Head from 'next/head'
-import { PAYMENT_PREFERENCE } from "@/lib/constants";
 import LoadingCircle from '../Global_components/loading_circle.jsx';
-import { removeLoader } from '../Global_components/loading_circle.jsx';
+
+import { PAYMENT_PREFERENCE } from "@/lib/constants";
 import { groupService } from '@/pages/services/groups.js'
 import React, { useEffect, useState } from "react";
+import { useStore } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { groupDataAction } from '@/lib/store/groupData.slice';
+
+import GroupHeading from './_components_/group_heading.jsx';
+import TransactionInputView from './_components_/transaction_input.jsx';
+import ExpenseItem from './_components_/expense.jsx';
+import PendingItem from './_components_/pending.jsx';
+
 
 const showTransactionInput = () => {
-    return null;
+    const elm = document.querySelector("#transaction_input");
+    elm.style = "display:block";
 }
 
 // export async function getServerSideProps({res, req}) {
@@ -22,27 +32,75 @@ const showTransactionInput = () => {
 // }
 
 export default function Group() {
-    // let response_data = {
-    //     groupName : "",
-    //     groupId : "7d8bc5d5-d258-4ca5-9fee-00d32f9ad97f", //get from redux state
+    //get global store state from Redux
+    const store = useStore();
+    const dispatch = useDispatch();
+    const userId = "lcover@purdue.edu";
+    // let {groupName, groupId, members, userId, relative, expenseHistory} = {
+    //     groupName : "Something Different",
+    //     groupId : "", //get from redux state
     //     members : [],
     //     expenseHistory : [],
-    //     userId : "lcover@purdue.edu", //get from redux state
+    //     userId : "", //get from redux state
     //     pendingApproval : [],
     //     relative : 0.00,
     //     manager : ""
     // };
     //make API call and populate group information
-    const [response_data, setResponseData] = useState({});
+    let response_data = store.getState().groupData;
     const [loading, setLoading] = useState(false);
     useEffect(() => {
+        console.log(store);
+        console.log(store.getState());
       fetchData();
     }, []);
   
     const fetchData = () => {
       setLoading(true);
       setTimeout( ()=> {
+        response_data = {
+            name : "Something Different",
+            groupId : "", //get from redux state
+            members : {"a@a.com" : "Alpha", "b@b.com" : "Beta", "lcover@purdue.edu" : "Logan"},
+            expenseHistory : [
+                {
+                    title : "test1",
+                    owner : "lcover@purdue.edu",
+                    date : "today",
+                    amount : 10,
+                    users : {
+                        "a@a.com" : 5,
+                        "b@b.com" : 2,
+                    }
+                },
+                {
+                    title : "test2",
+                    owner : "a@a.com",
+                    date : "today",
+                    amount : 15,
+                    users : {
+                        "lcover@purdue.edu" : 10,
+                        "b@b.com" : 2,
+                    }
+                }
+            ],
+            pendingApproval : [],
+            relative : 0.00,
+            manager : ""
+        };
         setLoading(false);
+        dispatch(
+            groupDataAction.setGroupData(response_data)
+        );
+        // store.dispatch({type : "groupData/setGroupData", payload : {
+        //     name : "Something Different",
+        //     groupId : "", //get from redux state
+        //     members : [],
+        //     expenseHistory : [],
+        //     pendingApproval : [],
+        //     relative : 0.00,
+        //     manager : ""
+        // }}, )
       }, 5000 );
     //   fetch("https://api.github.com/users/jameshibbard")
     //     .then((response) => response.json())
@@ -72,6 +130,32 @@ export default function Group() {
         {(loading) ?
             <LoadingCircle additionalStyles={{margin : "15px auto"}}></LoadingCircle>
             :
+            response_data.pendingApproval.map( (item, index) => {
+                if (userId == item.paid_to) {
+                return (<PendingItem index={index} 
+                title={item.title} 
+                date={item.date} 
+                owner={response_data.members[item.owner]} 
+                amount={item.amount.toFixed(2)}
+                ></PendingItem>);
+                } else {
+                    return <></>
+                }
+            })
+        }
+        {(!loading) ? 
+            response_data.expenseHistory.map( (item, index) => {
+                console.log(item);
+                return (<ExpenseItem index={index} 
+                title={item.title} 
+                date={item.date} 
+                owner={response_data.members[item.owner]} 
+                amount={item.amount.toFixed(2)}
+                isOwner ={(userId == item.owner)}
+                userId={userId}
+                users={item.users}
+                ></ExpenseItem>);
+            }) :
             <></>
         }
              {/* {
@@ -100,35 +184,10 @@ export default function Group() {
                     }
                 })
             }
-            {  
-                expenseHistory.map( (trans) => {
-                    history_num++;
-                    let isOwner = ( trans.owner == userId );
-                    let relative = ( isOwner ) ?  sumMemberExpenses(trans.users) : ((parseFloat(trans.users[userId]) || 0.00).toFixed(2));
-                    //relative_amount += parseFloat(((isOwner) ? relative : relative * -1));
-                    return (
-                        <div index={history_num} className={`${styles.transaction_container} ${(relative == 0)? styles.neutral  : ( (isOwner) ? styles.positive : styles.negative)}`} key={history_num} onClick={(e) => makeTransactionView(e)}>
-                        <div className={styles.transaction_info}>
-                            <div className={styles.transaction_name_amount}>
-                                <p>{trans.title}</p>
-                                <p>${trans.amount.toFixed(2)}</p>
-                            </div>
-                            <div className={styles.transaction_owner_date}>
-                                <p>{members[trans.owner]}</p>
-                                <p>{trans.request_time}</p>
-                            </div>
-                        </div>
-                        <div className={styles.relative_amount}>
-                            <p>${relative}</p>
-                        </div>
-                    </div>
-                    )
-                })
-            }
             <button className={styles.delete_group_button} onClick={deleteGroup}>DELETE GROUP</button>
             <div className={styles.buffer_block}></div> */}
         </div>
-        {/* <GroupHeading name={groupName} members={Object.keys(members).length} amount={relative} groupId={groupId}></GroupHeading> */}
+        <GroupHeading></GroupHeading>
     </main>
 
 
@@ -205,7 +264,7 @@ export default function Group() {
             <div className={styles.submit_expense_container} onClick={(e) => {handleExpensePay(e)}}><p>Bill Me</p></div>
         </div>
     </div> */}
-
+        <TransactionInputView members={response_data.members} userId={userId}></TransactionInputView>
       <Footer callback={showTransactionInput} args = {""}></Footer>
     </>
       );

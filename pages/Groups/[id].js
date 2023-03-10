@@ -130,34 +130,7 @@ function sumMemberExpenses(expense, owner) {
     return total.toFixed(2);
 }
 
-function GroupHeading({name, members, amount, groupId}) {
-    let hex = (amount == 0) ? "var(--neutral-background)" : (amount < 0) ? "var(--red-background)" : "var(--green-background)";
 
-    return (
-        <>
-        <div className={styles.group_heading}>
-            <div className={styles.group_info}>
-                <div className={styles.names_members}>
-                    <p>{name}</p>
-                    <p>Members: {members}</p>
-                </div>
-                <div className={styles.group_amount}>
-                    <p style={{color:hex}} >${((amount < 0) ? amount * -1 : amount * 1).toFixed(2)}</p>
-                </div>
-            </div>
-            <div className={styles.group_info}>
-                <div className={styles.names_members}>
-                    <p>Join Link</p>
-                    <p className={styles.word_break_all}>localhost:8000/JoinGroup/{groupId}</p>
-                </div>
-            </div>
-            <div className={styles.banner}>
-                    <p>EXPENSES</p>
-            </div>
-        </div>
-        </>
-    );
-}
 
 export default function Group ({groupName, groupId, members, expenseHistory, userId, pendingApproval, relative, manager}) {
     let history_num = -1;
