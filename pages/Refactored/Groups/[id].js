@@ -1,198 +1,155 @@
+//Global HTML Imports
 import styles from '@/styles/Group.module.css'
 import Header from '../Global_components/header.jsx'
 import Footer from '../Global_components/footer.jsx'
 import Head from 'next/head'
 import LoadingCircle from '../Global_components/loading_circle.jsx';
-
+import { ButtonLock } from '../Global_components/button_lock.js';
+//BillMates services and constants
 import { PAYMENT_PREFERENCE } from "@/lib/constants";
 import { groupService } from '@/pages/services/groups.js'
+//React and Redux stuff
 import React, { useEffect, useState } from "react";
 import { useStore } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { groupDataAction } from '@/lib/store/groupData.slice';
-
+//Components
 import GroupHeading from './_components_/group_heading.jsx';
 import TransactionInputView from './_components_/transaction_input.jsx';
 import ExpenseItem from './_components_/expense.jsx';
 import PendingItem from './_components_/pending.jsx';
 
 
-const showTransactionInput = () => {
-    const elm = document.querySelector("#transaction_input");
-    elm.style = "display:block";
-}
-
-// export async function getServerSideProps({res, req}) {
-//     setTimeout(()=> {
-//         removeLoader();
-//     }, 5000);
-//     return {
-//         props: {}
-//     };
-// }
 
 export default function Group() {
+    //Defining functions
+    function showTransactionInput() {
+        if (!loading) {
+            const elm = document.querySelector("#transaction_input");
+            elm.style = "display:block";
+        }
+    }
+
+
     //get global store state from Redux
     const store = useStore();
     const dispatch = useDispatch();
-    const userId = "lcover@purdue.edu";
-    // let {groupName, groupId, members, userId, relative, expenseHistory} = {
-    //     groupName : "Something Different",
-    //     groupId : "", //get from redux state
-    //     members : [],
-    //     expenseHistory : [],
-    //     userId : "", //get from redux state
-    //     pendingApproval : [],
-    //     relative : 0.00,
-    //     manager : ""
-    // };
-    //make API call and populate group information
+    const userId = store.getState().userData.email || "lcover@purdue.edu";
+    ButtonLock.LockButton();
+
+    //API call and populate group information to trigger redraw
     let response_data = store.getState().groupData;
-    const [loading, setLoading] = useState(false);
-    useEffect(() => {
-        console.log(store);
-        console.log(store.getState());
-      fetchData();
-    }, []);
-  
     const fetchData = () => {
-      setLoading(true);
-      setTimeout( ()=> {
-        response_data = {
-            name : "Something Different",
-            groupId : "", //get from redux state
-            members : {"a@a.com" : "Alpha", "b@b.com" : "Beta", "lcover@purdue.edu" : "Logan"},
-            expenseHistory : [
-                {
-                    title : "test1",
-                    owner : "lcover@purdue.edu",
-                    date : "today",
-                    amount : 10,
-                    users : {
-                        "a@a.com" : 5,
-                        "b@b.com" : 2,
+        setTimeout(() => {
+            response_data = {
+                name: "Something Different",
+                groupId: "", //get from redux state
+                members: { "a@a.com": "Alpha", "b@b.com": "Beta", "lcover@purdue.edu": "Logan" },
+                expenseHistory: [
+                    {
+                        title: "test1",
+                        owner: "lcover@purdue.edu",
+                        date: "today",
+                        amount: 10,
+                        users: {
+                            "a@a.com": 5,
+                            "b@b.com": 2,
+                        }
+                    },
+                    {
+                        title: "test2",
+                        owner: "a@a.com",
+                        date: "today",
+                        amount: 15,
+                        users: {
+                            "lcover@purdue.edu": 10,
+                            "b@b.com": 2,
+                        }
                     }
-                },
-                {
-                    title : "test2",
-                    owner : "a@a.com",
-                    date : "today",
-                    amount : 15,
-                    users : {
-                        "lcover@purdue.edu" : 10,
-                        "b@b.com" : 2,
-                    }
-                }
-            ],
-            pendingApproval : [],
-            relative : 0.00,
-            manager : ""
-        };
-        setLoading(false);
-        dispatch(
-            groupDataAction.setGroupData(response_data)
-        );
-        // store.dispatch({type : "groupData/setGroupData", payload : {
-        //     name : "Something Different",
-        //     groupId : "", //get from redux state
-        //     members : [],
-        //     expenseHistory : [],
-        //     pendingApproval : [],
-        //     relative : 0.00,
-        //     manager : ""
-        // }}, )
-      }, 5000 );
-    //   fetch("https://api.github.com/users/jameshibbard")
-    //     .then((response) => response.json())
-    //     .then((data) => {
-    //         console.log(data);
-    //       setResponseData(data);
-    //       setLoading(false);
-    //     })
-    //     .catch((error) => {
-    //       console.log(error);
-    //       setLoading(false);
-    //     });
+                ],
+                pendingApproval: [],
+                relative: 0.00,
+                manager: ""
+            };
+            setLoading(false);
+            dispatch(
+                groupDataAction.setGroupData(response_data)
+            );
+        }, 5000);
+        //   fetch("https://api.github.com/users/jameshibbard")
+        //     .then((response) => response.json())
+        //     .then((data) => {
+        //         console.log(data);
+        //       setResponseData(data);
+        //       setLoading(false);
+        //     })
+        //     .catch((error) => {
+        //       console.log(error);
+        //       setLoading(false);
+        //     });
     };
 
-    return (
-    <>
-        <Head>
-        <title>Groups</title>
-        <meta name="description" content="Generated by create next app" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <Header></Header>
+    //define loading circle and refresh when loading is done
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+        fetchData(); //make the call
+    }, []);
 
-      <main className={styles.main}>
-        <div className={styles.transaction_history}>
-        {(loading) ?
-            <LoadingCircle additionalStyles={{margin : "15px auto"}}></LoadingCircle>
-            :
-            response_data.pendingApproval.map( (item, index) => {
-                if (userId == item.paid_to) {
-                return (<PendingItem index={index} 
-                title={item.title} 
-                date={item.date} 
-                owner={response_data.members[item.owner]} 
-                amount={item.amount.toFixed(2)}
-                ></PendingItem>);
-                } else {
-                    return <></>
-                }
-            })
-        }
-        {(!loading) ? 
-            response_data.expenseHistory.map( (item, index) => {
-                console.log(item);
-                return (<ExpenseItem index={index} 
-                title={item.title} 
-                date={item.date} 
-                owner={response_data.members[item.owner]} 
-                amount={item.amount.toFixed(2)}
-                isOwner ={(userId == item.owner)}
-                userId={userId}
-                users={item.users}
-                ></ExpenseItem>);
-            }) :
-            <></>
-        }
-             {/* {
-                pendingApproval.map( (trans) => {
-                    pending_num++;
-                    if (trans.paid_to == userId) {
-                    return (
-                        <div index={pending_num} className={`${styles.transaction_container} ${styles.pending}`} key={pending_num} onClick={(e) => makePendingView(e)}>
-                        <div className={styles.pending_transaction_info}>
-                            <div className={styles.transaction_name_amount}>
-                                <p>Pending:</p>
-                                <p>{trans.title}</p>
-                            </div>
-                            <div className={styles.transaction_owner_date}>
-                                <p>{members[trans.paid_by]}</p>
-                                <p>{trans.date}</p>
-                            </div>
-                        </div>
-                        <div className={styles.relative_amount}>
-                            <p>${trans.amount_paid.toFixed(2)}</p>
-                        </div>
-                    </div>
-                    )
-                    } else {
-                        return <></>
+    return (
+        <>
+            <Head>
+                <title>Groups</title>
+                <meta name="description" content="Generated by create next app" />
+                <meta name="viewport" content="width=device-width, initial-scale=1" />
+                <link rel="icon" href="/favicon.ico" />
+            </Head>
+            <Header></Header>
+
+            <main className={styles.main}>
+                <div className={styles.transaction_history}>
+                    {(loading) ?
+                        <LoadingCircle additionalStyles={{ margin: "15px auto" }}></LoadingCircle>
+                        :
+                        response_data.pendingApproval.map((item, index) => {
+                            if (userId == item.paid_to) {
+                                return (<PendingItem index={index}
+                                    title={item.title}
+                                    date={item.date}
+                                    owner={response_data.members[item.owner]}
+                                    amount={item.amount.toFixed(2)}
+                                ></PendingItem>);
+                            } else {
+                                return <></>
+                            }
+                        })
                     }
-                })
-            }
+                    {(!loading) ?
+                        response_data.expenseHistory.map((item, index) => {
+                            console.log(item);
+                            return (<ExpenseItem index={index} id={index}
+                                title={item.title}
+                                date={item.date}
+                                owner={response_data.members[item.owner]}
+                                amount={item.amount.toFixed(2)}
+                                isOwner={(userId == item.owner)}
+                                userId={userId}
+                                users={item.users}
+                            ></ExpenseItem>);
+                        }) :
+                        <></>
+                    }
+                    {
+            /*
             <button className={styles.delete_group_button} onClick={deleteGroup}>DELETE GROUP</button>
             <div className={styles.buffer_block}></div> */}
-        </div>
-        <GroupHeading></GroupHeading>
-    </main>
+                </div>
+                <GroupHeading></GroupHeading>
+                <div className={styles.buffer_block}></div>
+            </main>
 
 
 
-{/* 
+            {/* 
       <div className={styles.transaction_background} id = "transaction_input">
         <div className={styles.transaction_large}>
             <div className={styles.x_button} onClick={(e) => hide(e.nativeEvent.target.parentNode.parentNode, true)}></div>
@@ -264,9 +221,9 @@ export default function Group() {
             <div className={styles.submit_expense_container} onClick={(e) => {handleExpensePay(e)}}><p>Bill Me</p></div>
         </div>
     </div> */}
-        <TransactionInputView members={response_data.members} userId={userId}></TransactionInputView>
-      <Footer callback={showTransactionInput} args = {""}></Footer>
-    </>
-      );
+            <TransactionInputView members={response_data.members} userId={userId}></TransactionInputView>
+            <Footer callback={showTransactionInput} args={""}></Footer>
+        </>
+    );
 
 }

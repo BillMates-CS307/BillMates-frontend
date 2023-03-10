@@ -16,7 +16,7 @@ export default function ExpenseItem({id,index, title, date, owner, amount, isOwn
     let relative = ( isOwner ) ?  sumMemberExpenses(users) : ((parseFloat(users[userId]) || 0.00).toFixed(2));
     //relative_amount += parseFloat(((isOwner) ? relative : relative * -1));
     return (
-        <div index={index} key={index} className={`${styles.transaction_container} ${(relative == 0)? styles.neutral  : ( (isOwner) ? styles.positive : styles.negative)}`} onClick={() => makeTransactionView(index)}>
+        <div index={index} key={id} className={`${styles.transaction_container} ${(relative == 0)? styles.neutral  : ( (isOwner) ? styles.positive : styles.negative)}`} onClick={() => makeTransactionView(index)}>
         <div className={styles.transaction_info}>
             <div className={styles.transaction_name_amount}>
                 <p>{title}</p>
