@@ -4,7 +4,7 @@ import Header from '../Global_components/header.jsx'
 import Footer from '../Global_components/footer.jsx'
 import Head from 'next/head'
 import LoadingCircle from '../Global_components/loading_circle.jsx';
-import { ButtonLock } from '../Global_components/button_lock.js';
+//import { ButtonLock } from '../Global_components/button_lock.js';
 //BillMates services and constants
 import { PAYMENT_PREFERENCE } from "@/lib/constants";
 import { groupService } from '@/pages/services/groups.js'
@@ -18,28 +18,25 @@ import GroupHeading from './_components_/group_heading.jsx';
 import TransactionInputView from './_components_/transaction_input.jsx';
 import ExpenseItem from './_components_/expense.jsx';
 import PendingItem from './_components_/pending.jsx';
+import TransactionView from './_components_/transaction_view.jsx';
 
 
 
 export default function Group() {
-    //Defining functions
-    function showTransactionInput() {
-        if (!loading) {
-            const elm = document.querySelector("#transaction_input");
-            elm.style = "display:block";
-        }
-    }
-
+    //Defining state management
+    const [transactionInputVisible, setTransactionInputVisible] = useState(false);
+    const [currentTransactionView, setCurrentTransactionView] = useState(-1);
 
     //get global store state from Redux
     const store = useStore();
     const dispatch = useDispatch();
     const userId = store.getState().userData.email || "lcover@purdue.edu";
-    ButtonLock.LockButton();
+    const groupId = "1"; //get from url
 
     //API call and populate group information to trigger redraw
     let response_data = store.getState().groupData;
     const fetchData = () => {
+        console.log("fetching data");
         setTimeout(() => {
             response_data = {
                 name: "Something Different",
@@ -69,22 +66,23 @@ export default function Group() {
                 ],
                 pendingApproval: [],
                 relative: 0.00,
-                manager: ""
+                manager: "",
+                maxComment : 100
             };
             setLoading(false);
             dispatch(
                 groupDataAction.setGroupData(response_data)
             );
-        }, 5000);
+        }, 2000);
         //   fetch("https://api.github.com/users/jameshibbard")
         //     .then((response) => response.json())
         //     .then((data) => {
-        //         console.log(data);
+        //         //console.log(data);
         //       setResponseData(data);
         //       setLoading(false);
         //     })
         //     .catch((error) => {
-        //       console.log(error);
+        //       //console.log(error);
         //       setLoading(false);
         //     });
     };
@@ -125,7 +123,7 @@ export default function Group() {
                     }
                     {(!loading) ?
                         response_data.expenseHistory.map((item, index) => {
-                            console.log(item);
+                            //console.log(item);
                             return (<ExpenseItem index={index} id={index}
                                 title={item.title}
                                 date={item.date}
@@ -134,6 +132,7 @@ export default function Group() {
                                 isOwner={(userId == item.owner)}
                                 userId={userId}
                                 users={item.users}
+                                showExpense={setCurrentTransactionView}
                             ></ExpenseItem>);
                         }) :
                         <></>
@@ -221,8 +220,17 @@ export default function Group() {
             <div className={styles.submit_expense_container} onClick={(e) => {handleExpensePay(e)}}><p>Bill Me</p></div>
         </div>
     </div> */}
-            <TransactionInputView members={response_data.members} userId={userId}></TransactionInputView>
-            <Footer callback={showTransactionInput} args={""}></Footer>
+    { (currentTransactionView != -1) ?
+    <TransactionView members={response_data.members} expense={response_data.expenseHistory[currentTransactionView]} hideParent={setCurrentTransactionView}></TransactionView>
+    :
+    <></>
+    }
+            { (transactionInputVisible) ?
+            <TransactionInputView members={response_data.members} userId={userId} groupId={groupId} commentLength={response_data.maxComment} callback={setTransactionInputVisible} args={false}></TransactionInputView>
+                :
+                <></>
+            }
+            <Footer callback={setTransactionInputVisible} args={true} lockStatus={loading}></Footer>
         </>
     );
 

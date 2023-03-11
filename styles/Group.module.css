@@ -160,9 +160,9 @@
     position: absolute;
     top: 0;
     left: 0;
-    display: none;
-    z-index: 0;
-    cursor: pointer;
+    /* display: none; */
+    z-index: 999;
+    /* cursor: pointer; */
 }
 .transaction_background p {
     text-overflow: ellipsis;
@@ -294,6 +294,12 @@
     margin-top: 0.05rem;
     color: var(--red-background);
   }
+
+  .transaction_large span.comments_char_count {
+    display: block;
+    color: var(--neutral-background);
+    font-style: italic;
+}
 
 .submit_expense_container {
     background-color: var(--green-background);

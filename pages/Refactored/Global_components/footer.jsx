@@ -1,5 +1,5 @@
 import Image from 'next/image';
-export default function Footer({callback, args}) {
+export default function Footer({callback, args, lockStatus}) {
     return (
         <>
                 <div className="footer_div">
@@ -13,7 +13,7 @@ export default function Footer({callback, args}) {
                     ></Image>
                 </a>
                 </div>
-                <div id='plus_button' onClick={(args) => callback(args)} className="footer_div">
+                <div id='plus_button' onClick={() => {if (!lockStatus){ callback(args)} }} className="footer_div">
                 </div>
         </>
     );

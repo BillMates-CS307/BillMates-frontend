@@ -133,7 +133,6 @@ export default function SignIn () {
         </p>
         </div>
         </main>
-        <Footer></Footer>
         </>
     )
 }

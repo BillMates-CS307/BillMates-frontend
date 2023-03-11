@@ -171,7 +171,7 @@ main {
   border-radius: 50%;
   background-color: #D9D9D9;
   cursor: pointer;
-  z-index: 999;
+  z-index: 998;
   margin: 10px;
 }
 
