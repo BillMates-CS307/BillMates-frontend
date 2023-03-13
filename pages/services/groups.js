@@ -243,3 +243,7 @@ async function deleteGroup(groupId) {
     })
     .catch( (error) => {console.log(error); return "error"} );
 }
+
+export default function dumb() {
+  return <></>;
+}

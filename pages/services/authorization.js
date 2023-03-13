@@ -230,3 +230,7 @@ async function register(data) {
     return "success";
   }).catch( (e) => {console.log(e); return "error"} )  
 }
+
+export default function dumb() {
+  return <></>;
+}

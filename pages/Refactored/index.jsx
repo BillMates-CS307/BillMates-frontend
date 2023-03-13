@@ -2,15 +2,13 @@ import TextField from "./Register/_components_/input_label.jsx";
 import PasswordField from "./Register/_components_/password.jsx";
 import BareHeader from "./Global_components/bare_header.jsx";
 import styles from "@/styles/Home.module.css";
-import Head from 'next/head'
+import CustomHead from './Global_components/head.jsx'
 
-import { useRouter } from "next/router";
-import { LAMBDA_RESP } from "@/lib/constants";
-import { userService } from "@/pages/services/authorization";
 import { fieldData } from "./Register/index.jsx";
 import {ButtonLock} from "./Global_components/button_lock.js";
-import LoadingCircle from "./Global_components/loading_circle.jsx";
-import Footer from "./Global_components/footer.jsx";
+import { user_methods } from "@/lambda_service/userService.js";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router.js";
 
 
 fieldData.fname[2] = false;
@@ -19,8 +17,27 @@ fieldData.remail[2] = false;
 fieldData.rpassword[2] = false;
 
 export default function SignIn () {
-    const handleSubmit = (event) => {
+    const router = useRouter();
+    const [isAuthenticated, setAuthentication] = useState(false);
+    const check = async () => {
+        if (await user_methods.validateLoginJWT(false)) {
+            window.location.replace("http://localhost:8000/Refactored/Home");
+        } else if (!isAuthenticated){
+          setAuthentication(true);
+        }
+    }
+    useEffect(() => {
+        check();
+    }, []);
+    const handleSubmit = async (event) => {
         event.preventDefault();
+        if (
+            localStorage.getItem("timeout") != null &&
+            Date.parse(localStorage.getItem("timeout")) >= Date.now()
+          ) {
+            alert("You have been timed out for 1 hour");
+            return;
+          }
         if (!checkFieldData()) {return;}
         if (!ButtonLock.isLocked()) {
             ButtonLock.LockButton();
@@ -31,15 +48,33 @@ export default function SignIn () {
             event.target.children[2].style = "background-color : var(--green-muted-background)";
             
             //make API call
-
+            let response = await user_methods.validateLoginCredential(fieldData.email[0], fieldData.password[0], true);
+            console.log(response);
+            if (response.success) {
+                router.push("/Refactored/Home");
+            } else {
+                //check if no user or bad attempt
+                const element = document.querySelector("#incorrect");
+                if (response.attempsLeft != undefined) {
+                  element.children[0].innerHTML =
+                    "Email or Password is incorrect. </br>Attempts Left : " + response.attempsLeft;
+                  if (response.attempsLeft == 0) {
+                    localStorage.setItem("timeout", new Date(Date.now() + 3600000));
+                  }
+                } else {
+                  element.children[0].innerHTML = "Email or Password is incorrect.";
+                }
+                const inputs = document.querySelectorAll("input");
+                inputs[0].style = "outline: 1px solid #ff0101;";
+                inputs[1].style = "outline: 1px solid #ff0101;";
+                inputs[1].value = "";
+                element.style = "display:block";
+            }
             //on success, route to home where first Redux state is created
-            
             //default to test locking
-            setTimeout( () => {
-                ButtonLock.UnlockButton();
-                event.target.children[2].textContent = "Sign In";
+            ButtonLock.UnlockButton();
+            event.target.children[2].textContent = "Sign In";
             event.target.children[2].style = "";
-            }, 5000);
         } else {
             console.log("locked");
         }
@@ -55,36 +90,36 @@ export default function SignIn () {
                     fieldData[field][1] = document.querySelector(`#${field}`);
                 }
                 fieldData[field][0] = fieldData[field][1].value;
-                switch (field) {
-                    case "email":
-                        if (fieldData[field][0].trim() == "") {
-                            message = "Required";
-                        } else 
-                        if (fieldData[field][0].search(/[a-zA-z0-9]+@[a-zA-z0-9]+[.][a-zA-Z0-9]+/g) == -1) {
-                            message = "Invalid email format";
-                        }
-                        break;
-                    case "password": //prevent users from entering passwords not even possible
-                    if (fieldData[field][0].trim() == "") {
-                        message = "Required";
-                      } else 
-                        if (fieldData[field][0].search(/(?=(.*[a-z]){3,})/g) == -1) {
-                            message = "Must have at least 3 lower case letters";
-                          } else 
-                          if (fieldData[field][0].search(/(?=(.*[A-Z]){3,})/g) == -1) {
-                            message = "Must have at least 3 upper case letters";
-                          } else 
-                          if (fieldData[field][0].search(/(?=(.*[0-9]){3,})/g) == -1) {
-                            message = "Must have at least 3 numbers";
-                          } else 
-                          if (fieldData[field][0].search(/(?=(.*[?#@!*()])+)/g) == -1) {
-                            message = "Must have at least 1 special character ? # @ ! * ( )";
-                          }
+                // switch (field) {
+                //     case "email":
+                //         if (fieldData[field][0].trim() == "") {
+                //             message = "Required";
+                //         } else 
+                //         if (fieldData[field][0].search(/[a-zA-z0-9]+@[a-zA-z0-9]+[.][a-zA-Z0-9]+/g) == -1) {
+                //             message = "Invalid email format";
+                //         }
+                //         break;
+                //     case "password": //prevent users from entering passwords not even possible
+                //     if (fieldData[field][0].trim() == "") {
+                //         message = "Required";
+                //       } else 
+                //         if (fieldData[field][0].search(/(?=(.*[a-z]){3,})/g) == -1) {
+                //             message = "Must have at least 3 lower case letters";
+                //           } else 
+                //           if (fieldData[field][0].search(/(?=(.*[A-Z]){3,})/g) == -1) {
+                //             message = "Must have at least 3 upper case letters";
+                //           } else 
+                //           if (fieldData[field][0].search(/(?=(.*[0-9]){3,})/g) == -1) {
+                //             message = "Must have at least 3 numbers";
+                //           } else 
+                //           if (fieldData[field][0].search(/(?=(.*[?#@!*()])+)/g) == -1) {
+                //             message = "Must have at least 1 special character ? # @ ! * ( )";
+                //           }
                           
-                        break;
-                    default:
-                        break;
-                }
+                //         break;
+                //     default:
+                //         break;
+                // }
     
                 if (message != "") {
                     isValid = false;
@@ -107,14 +142,10 @@ export default function SignIn () {
         }
         return isValid;
     }
+    if (isAuthenticated) {
     return (
         <>
-        <Head>
-        <title>Sign In</title>
-        <meta name="description" content="Generated by create next app" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-        </Head>
+<CustomHead title={"Sign In"} description={"Sign in to your BillMates account"}></CustomHead>
         <BareHeader></BareHeader>
         <main className = {styles.main}>
         <div id="incorrect" className={styles.incorrect_box}>
@@ -135,4 +166,7 @@ export default function SignIn () {
         </main>
         </>
     )
+    } else {
+        return <></>
+    }
 }

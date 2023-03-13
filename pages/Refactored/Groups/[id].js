@@ -2,7 +2,7 @@
 import styles from '@/styles/Group.module.css'
 import Header from '../Global_components/header.jsx'
 import Footer from '../Global_components/footer.jsx'
-import Head from 'next/head'
+import CustomHead from '../Global_components/head.jsx'
 import LoadingCircle from '../Global_components/loading_circle.jsx';
 //import { ButtonLock } from '../Global_components/button_lock.js';
 //BillMates services and constants
@@ -15,223 +15,134 @@ import { useDispatch } from 'react-redux';
 import { groupDataAction } from '@/lib/store/groupData.slice';
 //Components
 import GroupHeading from './_components_/group_heading.jsx';
-import TransactionInputView from './_components_/transaction_input.jsx';
-import ExpenseItem from './_components_/expense.jsx';
-import PendingItem from './_components_/pending.jsx';
-import TransactionView from './_components_/transaction_view.jsx';
-
-
+import { TransactionInputView, TransactionView, PendingView } from './_components_/views.jsx'
+import { ExpenseItem, PendingItem } from './_components_/items.jsx';
+import { group_methods } from '@/lambda_service/groupService.js';
+import { user_methods } from '@/lambda_service/userService.js';
 
 export default function Group() {
+    const [isAuthenticated, setAuthentication] = useState(false);
+    async function check() {
+      let result = await user_methods.validateLoginJWT();
+      if (result.success) {
+        localStorage.setItem("tempId", result.payload.email);
+        setAuthentication(true);
+      }
+    }
+    useEffect(()=> {
+        if (!isAuthenticated) {
+            console.log("authenticating");
+            check();
+        }
+    },[isAuthenticated])
+
+    // if (typeof window !== "undefined" && !isAuthenticated) {
+    //     console.log("performing auth check");
+    //     check();
+    // }
+
+
     //Defining state management
     const [transactionInputVisible, setTransactionInputVisible] = useState(false);
     const [currentTransactionView, setCurrentTransactionView] = useState(-1);
+    const [currentPendingView, setCurrentPendingView] = useState(-1);
 
     //get global store state from Redux
     const store = useStore();
     const dispatch = useDispatch();
-    const userId = store.getState().userData.email || "lcover@purdue.edu";
-    const groupId = "1"; //get from url
-
+    const groupId = (isAuthenticated) ? window.location.href.match('[a-zA-Z0-9\-]*$')[0] : null;
+    const userId = (isAuthenticated) ? localStorage.getItem("tempId") : null;
     //API call and populate group information to trigger redraw
     let response_data = store.getState().groupData;
-    const fetchData = () => {
+    const fetchData = async () => {
         console.log("fetching data");
-        setTimeout(() => {
-            response_data = {
-                name: "Something Different",
-                groupId: "", //get from redux state
-                members: { "a@a.com": "Alpha", "b@b.com": "Beta", "lcover@purdue.edu": "Logan" },
-                expenseHistory: [
-                    {
-                        title: "test1",
-                        owner: "lcover@purdue.edu",
-                        date: "today",
-                        amount: 10,
-                        users: {
-                            "a@a.com": 5,
-                            "b@b.com": 2,
-                        }
-                    },
-                    {
-                        title: "test2",
-                        owner: "a@a.com",
-                        date: "today",
-                        amount: 15,
-                        users: {
-                            "lcover@purdue.edu": 10,
-                            "b@b.com": 2,
-                        }
-                    }
-                ],
-                pendingApproval: [],
-                relative: 0.00,
-                manager: "",
-                maxComment : 100
-            };
+        let response = await group_methods.getGroupInfo(groupId, userId);
+        if (response.errorType) {
+            console.log("An error occured, check logs");
+            return;
+        } else if (response.success) {
+            response_data = response;
+            response_data["groupId"] = groupId;
             setLoading(false);
             dispatch(
                 groupDataAction.setGroupData(response_data)
             );
-        }, 2000);
-        //   fetch("https://api.github.com/users/jameshibbard")
-        //     .then((response) => response.json())
-        //     .then((data) => {
-        //         //console.log(data);
-        //       setResponseData(data);
-        //       setLoading(false);
-        //     })
-        //     .catch((error) => {
-        //       //console.log(error);
-        //       setLoading(false);
-        //     });
-    };
+        } else {
+            console.log(response);
+        }
+    }
 
     //define loading circle and refresh when loading is done
     const [loading, setLoading] = useState(true);
     useEffect(() => {
-        fetchData(); //make the call
-    }, []);
+        if (isAuthenticated) {
+            fetchData(); //make the call
+        }
+    }, [isAuthenticated]);
 
-    return (
-        <>
-            <Head>
-                <title>Groups</title>
-                <meta name="description" content="Generated by create next app" />
-                <meta name="viewport" content="width=device-width, initial-scale=1" />
-                <link rel="icon" href="/favicon.ico" />
-            </Head>
-            <Header></Header>
+    if (isAuthenticated) {
+        return (
+            <>
+                <CustomHead title={"Group"} description={"A BillMates group"}></CustomHead>
+                <Header></Header>
 
-            <main className={styles.main}>
-                <div className={styles.transaction_history}>
-                    {(loading) ?
-                        <LoadingCircle additionalStyles={{ margin: "15px auto" }}></LoadingCircle>
-                        :
-                        response_data.pendingApproval.map((item, index) => {
-                            if (userId == item.paid_to) {
-                                return (<PendingItem index={index}
+                <main className={styles.main}>
+                    <div className={styles.transaction_history}>
+                        {(loading) ?
+                            <LoadingCircle additionalStyles={{ margin: "15px auto" }}></LoadingCircle>
+                            :
+                            response_data.pending.map((item, index) => {
+                                if (userId == item.paid_to) {
+                                    return (<PendingItem index={index}
+                                        title={item.title}
+                                        date={item.date}
+                                        owner={response_data.members[item.owner]}
+                                        amount={item.amount.toFixed(2)}
+                                        showView={setCurrentPendingView}
+                                    ></PendingItem>);
+                                } else {
+                                    return <></>
+                                }
+                            })
+                        }
+                        {(!loading) ?
+                            response_data.expenses.map((item, index) => {
+                                return (<ExpenseItem index={index} id={index}
                                     title={item.title}
                                     date={item.date}
                                     owner={response_data.members[item.owner]}
                                     amount={item.amount.toFixed(2)}
-                                ></PendingItem>);
-                            } else {
-                                return <></>
-                            }
-                        })
-                    }
-                    {(!loading) ?
-                        response_data.expenseHistory.map((item, index) => {
-                            //console.log(item);
-                            return (<ExpenseItem index={index} id={index}
-                                title={item.title}
-                                date={item.date}
-                                owner={response_data.members[item.owner]}
-                                amount={item.amount.toFixed(2)}
-                                isOwner={(userId == item.owner)}
-                                userId={userId}
-                                users={item.users}
-                                showExpense={setCurrentTransactionView}
-                            ></ExpenseItem>);
-                        }) :
-                        <></>
-                    }
-                    {
-            /*
-            <button className={styles.delete_group_button} onClick={deleteGroup}>DELETE GROUP</button>
-            <div className={styles.buffer_block}></div> */}
-                </div>
-                <GroupHeading></GroupHeading>
-                <div className={styles.buffer_block}></div>
-            </main>
-
-
-
-            {/* 
-      <div className={styles.transaction_background} id = "transaction_input">
-        <div className={styles.transaction_large}>
-            <div className={styles.x_button} onClick={(e) => hide(e.nativeEvent.target.parentNode.parentNode, true)}></div>
-            <div className={styles.transaction_heading}>
-                <input type="text" placeholder='Item Name' id = "input_item_name"></input>
-                <span></span>
-                <input type="text" placeholder='00.00' id = "input_item_total"></input>
-                <span></span>
-                <p>{members[userId]}</p>
-            </div>
-            <div className={styles.split_button_container}>
-                <button onClick={() => splitEven()}>Split Even</button>
-            </div>
-            <div className={styles.transaction_people} count = "0" id = "transaction_people">
-                {
-
-                Object.keys(members).map( (id) => {
-                    return (
-                    <div className={styles.person}>
-                        <div className={styles.radio} onClick={(e) => selectPerson(e)}></div>
-                        <p className={styles.person_name} onClick={(e) => selectPerson(e)}>{members[id]}</p>
-                        <input type="text" placeholder='00.00' email={id} onChange={ (e) => {e.target.parentNode.parentNode.nextElementSibling.style = "";} }></input>
+                                    isOwner={(userId == item.owner)}
+                                    userId={userId}
+                                    users={item.users}
+                                    showExpense={setCurrentTransactionView}
+                                ></ExpenseItem>);
+                            }) :
+                            <></>
+                        }
                     </div>
-                    )
-                })
-                
+                    <GroupHeading></GroupHeading>
+                    <div className={styles.buffer_block}></div>
+                </main>
+                {(currentPendingView != -1) ?
+                    <PendingView members={response_data.members} expense={response_data.pendingApproval[currentPendingView]} hideParent={setCurrentPendingView}></PendingView>
+                    :
+                    <></>
                 }
- 
-            </div>
-            <span></span>
-            <div className={styles.submit_expense_container} onClick={handleExpenseSubmit}><p>Submit</p></div>
-        </div>
-    </div>
-
-        <div className={styles.transaction_background} id = "transaction_view">
-            <div className={styles.transaction_large}>
-                <div className={styles.x_button} onClick={(e) => hide(e.nativeEvent.target.parentNode.parentNode)}></div>
-                <div className={styles.transaction_heading} id = "view_item_info">
-                    <p>PLACEHOLDER</p>
-                    <p>PLACEHOLDER</p>
-                    <p>PLACEHOLDER</p>
-                </div>
-                <div><p className={styles.debt_remaining_text}>Debts Remaining</p></div>
-                <div className={styles.transaction_people} id = "view_transaction_people">
-                </div>
-                <div className={styles.submit_expense_container} onClick={(e) => {hide(e.nativeEvent.target.parentNode.parentNode); showFulfillExpense(e)}}><p>Bill Me</p></div>
-            </div>
-        </div>
-        <div className={styles.transaction_background} id = "pending_view">
-            <div className={styles.transaction_large}>
-                <div className={styles.x_button} onClick={(e) => hide(e.nativeEvent.target.parentNode.parentNode)}></div>
-                <div className={styles.transaction_heading} id = "pending_item_info">
-                    <p>PLACEHOLDER</p>
-                    <p>PLACEHOLDER</p>
-                </div>
-                <div><p className={`${styles.debt_remaining_text} ${styles.pending_larger_p}`}>Amount Paying</p></div>
-                <div className={styles.submit_expense_container} onClick={(e) => {hide(e.nativeEvent.target.parentNode.parentNode); handlePendingPay(e, true)}}><p>Accept</p></div>
-                <div className={`${styles.submit_expense_container} ${styles.negative}`} onClick={(e) => {hide(e.nativeEvent.target.parentNode.parentNode); handlePendingPay(e, false)}}><p>Reject</p></div>
-            </div>
-        </div>
-    <div className={styles.transaction_background} id = "submit_expense">
-        <div className={styles.transaction_large}>
-            <div className={styles.x_button} onClick={(e) => hide(e.nativeEvent.target.parentNode.parentNode)}></div>
-            <div className={styles.payment_method} ><button onClick={(e) => toggleBillVenmo(e,false)}>BillMates</button><button onClick={(e) => toggleBillVenmo(e,true)}>Venmo</button></div> 
-            <div className={styles.expense_payment_form}>
-                <p>Original Amount : </p>
-                <input type="text" id = "expense_paying" placeholder='00.00'></input>
-            </div>
-            <div className={styles.submit_expense_container} onClick={(e) => {handleExpensePay(e)}}><p>Bill Me</p></div>
-        </div>
-    </div> */}
-    { (currentTransactionView != -1) ?
-    <TransactionView members={response_data.members} expense={response_data.expenseHistory[currentTransactionView]} hideParent={setCurrentTransactionView}></TransactionView>
-    :
-    <></>
+                {(currentTransactionView != -1) ?
+                    <TransactionView members={response_data.members} expense={response_data.expenseHistory[currentTransactionView]} hideParent={setCurrentTransactionView}></TransactionView>
+                    :
+                    <></>
+                }
+                {(transactionInputVisible) ?
+                    <TransactionInputView members={response_data.members} userId={userId} groupId={groupId} commentLength={response_data.maxComment} callback={setTransactionInputVisible} args={false}></TransactionInputView>
+                    :
+                    <></>
+                }
+                <Footer callback={setTransactionInputVisible} args={true} lockStatus={loading}></Footer>
+            </>
+        );
+    } else {
+        return <></>
     }
-            { (transactionInputVisible) ?
-            <TransactionInputView members={response_data.members} userId={userId} groupId={groupId} commentLength={response_data.maxComment} callback={setTransactionInputVisible} args={false}></TransactionInputView>
-                :
-                <></>
-            }
-            <Footer callback={setTransactionInputVisible} args={true} lockStatus={loading}></Footer>
-        </>
-    );
-
 }

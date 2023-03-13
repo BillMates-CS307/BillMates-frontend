@@ -27,12 +27,16 @@
 
 .incorrect_box {
   display: none;
+  margin-top: 5px;
 }
 
 .incorrect_box p {
-  background: #F008 !important;
+  background: var(--red-muted-background) !important;
   border: none !important;
   color : #900;
+  padding: 10px;
+  border-radius: 10px;
+  text-align: center;
 }
 
 .signup_form div {

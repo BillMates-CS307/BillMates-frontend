@@ -1,13 +1,8 @@
 import styles from "@/styles/Group.module.css";
 
-export default function PendingItem({id,index, title, date, owner, amount}) {
-    const makePendingView = (index) => {
-        console.log(index);
-        return;
-    }
-
+export default function PendingItem({id,index, title, date, owner, amount, showView}) {
     return (
-        <div index={index} className={`${styles.transaction_container} ${styles.pending}`} key={index} onClick={() => makePendingView(index)}>
+        <div index={index} className={`${styles.transaction_container} ${styles.pending}`} key={index} onClick={() => showView(index)}>
         <div className={styles.pending_transaction_info}>
             <div className={styles.transaction_name_amount}>
                 <p>Pending:</p>

@@ -3,7 +3,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { userService } from '../services/authorization.js';
 import { groupService } from '../services/groups.js';
-import { LAMBDA_RESP } from '../lib/constants'
+import { LAMBDA_RESP } from '@/lib/constants'
 import FORM from '../forms/join_group_login'
 
 export async function getServerSideProps({req, res}) {

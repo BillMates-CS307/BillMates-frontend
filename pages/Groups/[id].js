@@ -3,7 +3,7 @@ import Header from '../globals/Header.js'
 import Footer from '../globals/Footer.js'
 import { userService } from '../services/authorization.js';
 import { groupService } from '../services/groups.js';
-import { LAMBDA_RESP } from '../lib/constants'
+import { LAMBDA_RESP } from '@/lib/constants'
 import Head from 'next/head'
 import { PAYMENT_PREFERENCE } from "@/lib/constants";
 

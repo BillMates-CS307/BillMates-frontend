@@ -11,3 +11,8 @@ export const ButtonLock = {
         this.lockValue = false;
     }
   };
+
+
+export default function ButtonLockPage() {
+  return <></>;
+}
