@@ -88,6 +88,62 @@ async function updatePendingStatus() {
 async function submitExpense() {
     return;
 }
-async function addUserToGroup() {
-    return;
+async function addUserToGroup(email, groudId) {
+    let response_body = {
+        errorType : 0,
+        success : false
+    }
+    // if (email == null) {
+    //     response_body.errorType = LAMBDA_RESP.MALFORMED;
+    //     return response_body;
+    // }
+
+   let request_body = JSON.stringify(
+    {
+        email : email,
+        uuid : groudId
+    }
+   )
+
+   const path = '/api/join_group'
+
+   // Form the request for sending data to the server.
+   const options = {
+     method: 'POST',
+     mode : 'no-cors',
+     headers: {
+       'Content-Type': 'application/json',
+     },
+     body: request_body
+   }
+
+   return await fetch(path, options).then( (response) => {
+        if (response.status == 400 || response.status == 500) {
+            response_body.errorType = response.status;
+            return response_body;
+        }
+        return response.json();
+    }).then((result) => {
+        console.log(result);
+        if (result.errorType) {
+            response_body["errorMessage"] = "Received a " + result.errorType + " error";
+            return response_body;
+        } else if (result.ERROR == "No such group") {
+            response_body.errorType = LAMBDA_RESP.NO_SUCH_GROUP;
+            response_body["errorMessage"] = "This group does not exist";
+            return response_body;
+        } else if (!result.group_add_success) {
+            return response_body;
+        }
+        result = {
+            errorType : 0,
+            success : true,
+            ...result
+        }
+        return result;
+    }).catch( (error) => {
+        console.log(error);
+        response_body.errorType = LAMBDA_RESP.ERROR;
+        return response_body;
+    });
 }

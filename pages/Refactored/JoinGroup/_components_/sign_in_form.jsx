@@ -1,13 +1,12 @@
-import TextField from "./Register/_components_/input_label.jsx";
-import PasswordField from "./Register/_components_/password.jsx";
-import BareHeader from "./Global_components/bare_header.jsx";
+import TextField from "../../Register/_components_/input_label.jsx";
+import PasswordField from "../../Register/_components_/password.jsx";
+import BareHeader from "../../Global_components/bare_header.jsx";
 import styles from "@/styles/Home.module.css";
-import CustomHead from './Global_components/head.jsx'
+import CustomHead from '../../Global_components/head.jsx'
 
-import { fieldData } from "./Register/index.jsx";
-import {ButtonLock} from "./Global_components/button_lock.js";
+import { fieldData } from "../../Register/index.jsx";
+import {ButtonLock} from "../../Global_components/button_lock.js";
 import { user_methods } from "@/lambda_service/userService.js";
-import { useEffect, useState } from "react";
 import { useRouter } from "next/router.js";
 
 
@@ -16,19 +15,9 @@ fieldData.lname[2] = false;
 fieldData.remail[2] = false;
 fieldData.rpassword[2] = false;
 
-export default function SignIn () {
+export default function SignIn ({groupId}) {
     const router = useRouter();
-    const [isAuthenticated, setAuthentication] = useState(false);
-    const check = async () => {
-        if (await user_methods.validateLoginJWT(false)) {
-            window.location.replace("http://localhost:8000/Refactored/Home");
-        } else if (!isAuthenticated){
-          setAuthentication(true);
-        }
-    }
-    useEffect(() => {
-        check();
-    }, []);
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         if (
@@ -51,7 +40,7 @@ export default function SignIn () {
             let response = await user_methods.validateLoginCredential(fieldData.email[0], fieldData.password[0], true);
             console.log(response);
             if (response.success) {
-                router.push("/Refactored/Home");
+                router.reload();
             } else {
                 //check if no user or bad attempt
                 const element = document.querySelector("#incorrect");
@@ -142,10 +131,9 @@ export default function SignIn () {
         }
         return isValid;
     }
-    if (isAuthenticated) {
     return (
         <>
-<CustomHead title={"Sign In"} description={"Sign in to your BillMates account"}></CustomHead>
+        <CustomHead title={"Sign In"} description={"Sign in to your BillMates account"}></CustomHead>
         <BareHeader></BareHeader>
         <main className = {styles.main}>
         <div id="incorrect" className={styles.incorrect_box}>
@@ -160,13 +148,10 @@ export default function SignIn () {
             </form>
         </div>
         <p>
-        New to BillMates? <a href="./Refactored/Register">Create Account</a>
+        New to BillMates? <a href="/Refactored/Register">Create Account</a>
         </p>
         </div>
         </main>
         </>
     )
-    } else {
-        return <></>
-    }
 }
