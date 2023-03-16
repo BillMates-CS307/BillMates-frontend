@@ -277,8 +277,17 @@ export function TransactionInputView({ members, userId, groupId, commentLength, 
     );
 }
 
-export function TransactionView({members, expense, hideParent, showFulFill, hideFulFill}) {
+export function TransactionView({userId, members, expense, hideParent, showFulFill}) {
     console.log(expense);
+    const fulfillAction = () => {
+        if (userId == expense.owner) {
+            console.log("Would you like to void this expense?");
+            return;
+        } else {
+            hideParent(-1);showFulFill(expense);
+        }
+    }
+
     return (
         <div className={styles.transaction_background} id = "transaction_view">
         <div className={styles.transaction_large}>
@@ -304,14 +313,85 @@ export function TransactionView({members, expense, hideParent, showFulFill, hide
                     })
                 }
             </div>
-            <div className={styles.submit_expense_container} onClick={() => {hideParent(-1)}}><p>Bill Me</p></div>
+            { (expense.users[userId] == undefined && userId != expense.owner)?
+            <></>
+            :
+            <div className={styles.submit_expense_container} onClick={fulfillAction}><p>Bill Me</p></div>
+            }
+            
         </div>
     </div>
     );
 }
 
+export function FulFillView({userId, expense, defaultVenmo, hideParent}) {
+    let usingVenmo = defaultVenmo;
+    const toggle = (event, isVenmo) => {
+        const elm = event.target;
+        elm.style = "background:var(--green-background); color : #FFF";
+        usingVenmo = isVenmo;
+        if (isVenmo) {
+            elm.previousElementSibling.style = "";
+        } else {
+            elm.nextElementSibling.style = "";
+        }
+    }
+
+    const handleExpensePay = async (event) => {
+        if (!ButtonLock.isLocked()) {
+            ButtonLock.LockButton();
+            let container = event.target;
+            let originalText = container.firstChild.textContent;
+            //set button visually to be locked
+            container.firstChild.textContent = "Billing";
+            container.style = "background-color : var(--green-muted-background)";
+
+
+            if (usingVenmo) {
+                console.log("maybe later");
+            } else {
+                console.log("using billmates");
+                let result = await group_methods.fulfillExpense(userId, expense._id, expense.users[userId]);
+                if (result.errorType) {
+                    console.log(result.errorMessage);
+                    alert("Something went wrong, please try again later");
+                } else if (!result.success) {
+                    console.log("Unsuccessful (this should be impossible)");
+                } else {
+                    window.location.reload();
+                    return;
+                }
+            }
+
+            ButtonLock.UnlockButton();
+            container.firstChild.textContent = originalText;
+            container.style = "";
+        } else {
+            console.log("locked");
+        }
+    }
+
+    return (
+        <div className={styles.transaction_background} id = "submit_expense">
+        <div className={styles.transaction_large}>
+            <div className={styles.x_button} onClick={()=>{hideParent(null)}}></div>
+            { (defaultVenmo)?
+            <div className={styles.payment_method} ><button onClick={(e) => toggle(e,false)}>BillMates</button><button style={{background : "var(--green-background)", color : "#FFF"}} onClick={(e) => toggle(e,true)}>Venmo</button></div> 
+            :
+            <div className={styles.payment_method} ><button style={{background : "var(--green-background)", color : "#FFF"}} onClick={(e) => toggle(e,false)}>BillMates</button><button onClick={(e) => toggle(e,true)}>Venmo</button></div> 
+            }
+            <div className={styles.expense_payment_form}>
+                <p>Amount Paying: {expense.users[userId]}</p>
+            </div>
+            <div className={styles.submit_expense_container} onClick={(e) => {handleExpensePay(e)}}><p>Bill Me</p></div>
+        </div>
+    </div>
+    )
+}
+
 export function PendingView({members, expense, hideParent}) {
-    const handlePendingPay = (event, isAccept) => {
+    console.log(expense);
+    const handlePendingPay = async (event, isAccept) => {
         //make API call
         if (!ButtonLock.isLocked()) {
             ButtonLock.LockButton();
@@ -320,14 +400,20 @@ export function PendingView({members, expense, hideParent}) {
             //set button visually to be locked
             container.firstChild.textContent = (isAccept)? "Accepting" : "Rejecting";
             container.style = (isAccept)? "background-color : var(--green-muted-background)" : "background-color : var(--red-muted-background)";
-            //reload on success
-            //show error box else
-            setTimeout( () => {
-                ButtonLock.UnlockButton();
-                container.firstChild.textContent = originalText;
-                container.style = "";
-                hideParent(-1);
-            }, 10000);
+            
+            let result = await group_methods.updatePendingStatus(isAccept, expense.expense_id);
+            if (result.errorType) {
+               console.log(result.errorMessage);
+            } else if (!result.success) {
+                alert("Something went wrong");
+            } else { //went through and status has changed
+                window.location.reload();
+                return;
+            }
+            ButtonLock.UnlockButton();
+            container.firstChild.textContent = originalText;
+            container.style = "";
+            hideParent(-1);
         }
         return;
     }

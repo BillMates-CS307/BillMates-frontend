@@ -15,7 +15,7 @@ import { useDispatch } from 'react-redux';
 import { groupDataAction } from '@/lib/store/groupData.slice';
 //Components
 import GroupHeading from './_components_/group_heading.jsx';
-import { TransactionInputView, TransactionView, PendingView } from './_components_/views.jsx'
+import { TransactionInputView, TransactionView, PendingView, FulFillView } from './_components_/views.jsx'
 import { ExpenseItem, PendingItem } from './_components_/items.jsx';
 import { group_methods } from '@/lambda_service/groupService.js';
 import { user_methods } from '@/lambda_service/userService.js';
@@ -46,6 +46,7 @@ export default function Group() {
     const [transactionInputVisible, setTransactionInputVisible] = useState(false);
     const [currentTransactionView, setCurrentTransactionView] = useState(-1);
     const [currentPendingView, setCurrentPendingView] = useState(-1);
+    const [currentFulfillView, setCurrentFulfillView] = useState(null);
 
     //get global store state from Redux
     const store = useStore();
@@ -99,8 +100,8 @@ export default function Group() {
                                     return (<PendingItem index={index}
                                         title={item.title}
                                         date={item.date}
-                                        owner={response_data.members[item.owner]}
-                                        amount={item.amount.toFixed(2)}
+                                        amount={item.amount_paid.toFixed(2)}
+                                        owner={item.paid_by}
                                         showView={setCurrentPendingView}
                                     ></PendingItem>);
                                 } else {
@@ -134,13 +135,18 @@ export default function Group() {
                     <></>
                 }
                 {(currentTransactionView != -1) ?
-                    <TransactionView members={response_data.members} expense={response_data.expenses[currentTransactionView]} hideParent={setCurrentTransactionView}></TransactionView>
+                    <TransactionView userId={userId} members={response_data.members} expense={response_data.expenses[currentTransactionView]} hideParent={setCurrentTransactionView} showFulFill={setCurrentFulfillView}></TransactionView>
                     :
                     <></>
                 }
                 {(transactionInputVisible) ?
                     <TransactionInputView members={response_data.members} userId={userId} groupId={groupId} commentLength={response_data.maxComment} callback={setTransactionInputVisible} args={false}></TransactionInputView>
                     :
+                    <></>
+                }
+                {(currentFulfillView != null) ?
+                    <FulFillView userId={userId} expense={currentFulfillView} hideParent={setCurrentFulfillView}></FulFillView>
+                :
                     <></>
                 }
                 <Footer callback={setTransactionInputVisible} args={true} lockStatus={loading}></Footer>
