@@ -20,6 +20,7 @@ export function PendingItem({id,index, title, date, owner, amount, showView}) {
     )
 }
 export function ExpenseItem({id,index, title, date, owner, amount, isOwner, userId, users, showExpense}) {
+    console.log("here");
     const sumMemberExpenses = (expense, owner) => {
         let total = 0.00;
         for (let user in expense) {

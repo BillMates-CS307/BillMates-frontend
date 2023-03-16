@@ -57,6 +57,7 @@ export default function Group() {
     const fetchData = async () => {
         console.log("fetching data");
         let response = await group_methods.getGroupInfo(groupId, userId);
+        console.log(response);
         if (response.errorType) {
             console.log("An error occured, check logs");
             return;
@@ -81,6 +82,8 @@ export default function Group() {
     }, [isAuthenticated]);
 
     if (isAuthenticated) {
+        console.log(loading);
+        console.log(response_data);
         return (
             <>
                 <CustomHead title={"Group"} description={"A BillMates group"}></CustomHead>
@@ -107,6 +110,7 @@ export default function Group() {
                         }
                         {(!loading) ?
                             response_data.expenses.map((item, index) => {
+                                console.log(item);
                                 return (<ExpenseItem index={index} id={index}
                                     title={item.title}
                                     date={item.date}
@@ -125,12 +129,12 @@ export default function Group() {
                     <div className={styles.buffer_block}></div>
                 </main>
                 {(currentPendingView != -1) ?
-                    <PendingView members={response_data.members} expense={response_data.pendingApproval[currentPendingView]} hideParent={setCurrentPendingView}></PendingView>
+                    <PendingView members={response_data.members} expense={response_data.pending[currentPendingView]} hideParent={setCurrentPendingView}></PendingView>
                     :
                     <></>
                 }
                 {(currentTransactionView != -1) ?
-                    <TransactionView members={response_data.members} expense={response_data.expenseHistory[currentTransactionView]} hideParent={setCurrentTransactionView}></TransactionView>
+                    <TransactionView members={response_data.members} expense={response_data.expenses[currentTransactionView]} hideParent={setCurrentTransactionView}></TransactionView>
                     :
                     <></>
                 }

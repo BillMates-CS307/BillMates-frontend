@@ -1,3 +1,4 @@
+import { group_methods } from "@/lambda_service/groupService";
 import styles from "@/styles/Group.module.css";
 import { ButtonLock } from "../../Global_components/button_lock";
 
@@ -73,7 +74,7 @@ export function TransactionInputView({ members, userId, groupId, commentLength, 
         }
         return;
     }
-    const handleExpenseSubmit = () => {
+    const handleExpenseSubmit = async () => {
         if (!ButtonLock.isLocked()) {
             ButtonLock.LockButton();
             //grab the form and inputs
@@ -149,14 +150,26 @@ export function TransactionInputView({ members, userId, groupId, commentLength, 
             }
 
             if (format.title != "" && format.total != "" && format.expense != {}) {
-                format.total = (Math.round((parseFloat(format.total) * 100)) / 100) - (Math.round(((parseFloat(format.expense[userId]) || 0) * 100)) / 100);
+                //why are we subtracting what the owner paid from the grand total???
+                //format.total = (Math.round((parseFloat(format.total) * 100)) / 100) - (Math.round(((parseFloat(format.expense[userId]) || 0) * 100)) / 100);
                 delete format.expense[userId];
                 format.total = parseFloat(format.total);
                 format.request_time = "now";
                 format.due_date = "later";
-                //console.log(format);
+                console.log(format);
                 for (let user in format.expense) {
                     format.expense[user] = parseFloat(format.expense[user]);
+                }
+                const result = await group_methods.submitExpense(format);
+                if (result.errorType) {
+                    console.log(result.errorMessage);
+                    return;
+                } else if (result.success) {
+                    //window.location.reload();
+                    console.log("success");
+                    console.log(result);
+                } else {
+                    alert("invalid but not error");
                 }
                 // const result = await groupService.submitExpense(format);
                 // //console.log(result);
