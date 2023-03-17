@@ -84,10 +84,11 @@ async function fulfillExpense(email, expense_id, amount) {
         errorType : 0,
         success : false
     }
-    // if (email == null) {
-    //     response_body.errorType = LAMBDA_RESP.MALFORMED;
-    //     return response_body;
-    // }
+    if (email == null || expense_id == null || amount == null) {
+        response_body.errorType = LAMBDA_RESP.MALFORMED;
+        response_body.errorMessage = "Malformed body (null)"
+        return response_body;
+    }
 
    let request_body = JSON.stringify(
     {
@@ -96,6 +97,8 @@ async function fulfillExpense(email, expense_id, amount) {
         amount : amount
     }
    )
+
+   console.log(request_body);
 
    const path = '/api/fulfill_expense'
 

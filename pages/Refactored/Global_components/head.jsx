@@ -1,6 +1,12 @@
 import Head from "next/head"
 
 export default function CustomHead({title, description="BillMates Web Page"}) {
+    if (typeof window !== "undefined") {
+        const useDark = (localStorage.getItem("theme") == "dark");
+        if (useDark) {
+            document.documentElement.className = "dark";
+        }
+    }
     return (
         <Head>
         <title>{title}</title>

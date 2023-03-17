@@ -1,4 +1,5 @@
 import { group_methods } from "@/lambda_service/groupService";
+import { user_methods } from "@/lambda_service/userService";
 import styles from "@/styles/Group.module.css";
 import { ButtonLock } from "../../Global_components/button_lock";
 
@@ -165,9 +166,8 @@ export function TransactionInputView({ members, userId, groupId, commentLength, 
                     console.log(result.errorMessage);
                     return;
                 } else if (result.success) {
-                    //window.location.reload();
-                    console.log("success");
-                    console.log(result);
+                    window.location.reload();
+                    return;
                 } else {
                     alert("invalid but not error");
                 }
@@ -345,10 +345,47 @@ export function FulFillView({userId, expense, defaultVenmo, hideParent}) {
             //set button visually to be locked
             container.firstChild.textContent = "Billing";
             container.style = "background-color : var(--green-muted-background)";
+/*
 
+check if login was successful
+            - not : whatever form stuff
+check if 2 factor needed
+            call otp
+            check if secret expired (boolean returned)
+                - is : whatever form stuff
+                - not : show opt form
+
+loginwithcredentials {
+    error : int,
+    errorMessage : string
+    success : bool,
+    otpSecret : string or null,
+    deviceId : string or null
+}
+sendSms {
+    error : int,
+    errorMessage : string,
+    success : bool
+}
+
+*/
 
             if (usingVenmo) {
-                console.log("maybe later");
+                //check if login credentials work
+                let result = await user_methods.loginVenmoWithCredentials("coverlog555@gmail.com", "Logcov210117?");
+                if (result.error) {
+                    alert("We got an error");
+                    console.log(result.errorMessage);
+                } else if (!result.success) {
+                    console.log("invalid credentials");
+                } else if (result.otpSecret) {
+                    let smsResult = await user_methods.sendVenmoSms(result.deviceId, result.otpSecret);
+                    if (smsResult.success) {
+                        console.log("sent the text");
+                    } else {
+                        console.log("secret expired somehow");
+                    }
+                }
             } else {
                 console.log("using billmates");
                 let result = await group_methods.fulfillExpense(userId, expense._id, expense.users[userId]);
@@ -381,7 +418,7 @@ export function FulFillView({userId, expense, defaultVenmo, hideParent}) {
             <div className={styles.payment_method} ><button style={{background : "var(--green-background)", color : "#FFF"}} onClick={(e) => toggle(e,false)}>BillMates</button><button onClick={(e) => toggle(e,true)}>Venmo</button></div> 
             }
             <div className={styles.expense_payment_form}>
-                <p>Amount Paying: {expense.users[userId]}</p>
+                <p>Amount Paying: ${expense.users[userId].toFixed(2)}</p>
             </div>
             <div className={styles.submit_expense_container} onClick={(e) => {handleExpensePay(e)}}><p>Bill Me</p></div>
         </div>

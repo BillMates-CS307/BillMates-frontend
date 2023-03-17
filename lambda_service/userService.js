@@ -26,7 +26,137 @@ export const user_methods = {
     signOut,
     createGroup,
     getUserId,
+    loginVenmoWithCredentials,
+    sendVenmoSms
 }
+
+async function sendVenmoSms(device_id, secret) {
+    let response_body = {
+        errorType : 0,
+        success : false
+    }
+    if (device_id == null || secret == null) {
+        response_body.errorType = LAMBDA_RESP.MALFORMED;
+        return response_body;
+    }
+
+   let request_body = JSON.stringify(
+    {
+        secret : secret,
+        device_id : device_id
+    }
+   )
+
+   const path = '/api/venmo_send_text'
+
+   // Form the request for sending data to the server.
+   const options = {
+     method: 'POST',
+     mode : 'no-cors',
+     headers: {
+       'Content-Type': 'application/json',
+     },
+     body: request_body
+   }
+
+   return await fetch(path, options).then( (response) => {
+        if (response.status == 400 || response.status == 500) {
+            response_body.errorType = response.status;
+            return response_body;
+        }
+        return response.json();
+    }).then((result) => {
+        if (result.errorType) {
+            response_body["errorMessage"] = "Received a " + result.errorType + " error";
+            return response_body;
+        }
+        return result;
+    }).catch( (error) => {
+        console.log(error);
+        response_body.errorType = LAMBDA_RESP.ERROR;
+        return response_body;
+    });
+
+}
+
+async function loginVenmoWithCredentials(email, password) {
+    const TWO_FACTOR_ERROR_CODE = 81109;
+    const random_device_id = () => {
+
+    const BASE_DEVICE_ID = "88884260-05O3-8U81-58I1-2WA76F357GR9";
+    const letters = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","P","Q","R","S","T","U","V","W","X","Y","Z","O"];
+    let result = [];
+    for (let char in BASE_DEVICE_ID) {
+        const code = char.charCodeAt(0);
+        if ( code > 47 && code < 58) {
+            result.push( Math.trunc(Math.random() * 10).toString() );
+        } else if (code == 45) {
+            result.push('-');
+        }
+        else {
+            result.push( letters[ Math.trunc(Math.random() * 26) ] );
+        }
+    }
+    return result.join("");
+    }
+
+    let response_body = {
+        errorType : 0,
+        success : false
+    }
+    if (email == null || password == null) {
+        response_body.errorType = LAMBDA_RESP.MALFORMED;
+        return response_body;
+    }
+    const deviceId  = random_device_id();
+   let request_body = JSON.stringify(
+    {
+        email : email,
+        password : password,
+        device_id : deviceId
+    }
+   )
+
+   const path = '/api/venmo_login'
+
+   // Form the request for sending data to the server.
+   const options = {
+     method: 'POST',
+     mode : 'no-cors',
+     headers: {
+       'Content-Type': 'application/json',
+     },
+     body: request_body
+   }
+
+   return await fetch(path, options).then( (response) => {
+        if (response.status == 400 || response.status == 500) {
+            response_body.errorType = response.status;
+            return response_body;
+        }
+        return response.json();
+    }).then((result) => {
+        if (result.errorType) {
+            response_body["errorMessage"] = "Received a " + result.errorType + " error";
+            return response_body;
+        }
+        if (!result.validLogin) {
+            return response_body;
+        }
+        result = {
+            errorType : 0,
+            success : true,
+            ...result
+        }
+        return result;
+    }).catch( (error) => {
+        console.log(error);
+        response_body.errorType = LAMBDA_RESP.ERROR;
+        return response_body;
+    });
+
+}
+
 
 function getUserId() {
     let token = null;
