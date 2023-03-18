@@ -2,7 +2,6 @@ import { serverRuntimeConfig } from "@/next.config";
 import { LAMBDA_RESP } from "@/lib/constants";
 import jwt from 'jsonwebtoken';
 import { getCookies, setCookie, deleteCookie, hasCookie, getCookie } from 'cookies-next';
-import { useRouter } from "next/router";
 
 
 /*
@@ -27,9 +26,100 @@ export const user_methods = {
     createGroup,
     getUserId,
     loginVenmoWithCredentials,
-    sendVenmoSms
+    sendVenmoSms,
+    loginVenmoWithOtp
 }
 
+
+/*
+Attemps login with one time password sent via text
+
+params: 
+device_id : string (random string generated in loginVenmoWithCredentials)
+secret : string (returned from loginVenmoWithCredentials)
+otpCode : string (6 digit number sent to user via sendVenmoSms)
+
+return:
+{
+    errorType : int (number corresponding to error)
+    errorMessage : string
+    success : bool
+}
+
+Interpretation:
+    success true -> otp was accepted
+    success false -> otp expired or was wrong
+
+
+TODO : actually test this
+*/
+async function loginVenmoWithOtp(device_id, secret, otpCode) {
+    let response_body = {
+        errorType : 0,
+        success : false
+    }
+    if (device_id == null || secret == null || otpCode == null) {
+        response_body.errorType = LAMBDA_RESP.MALFORMED;
+        return response_body;
+    }
+
+   let request_body = JSON.stringify(
+    {
+        secret : secret,
+        device_id : device_id,
+        otp_code : otpCode
+    }
+   )
+
+   const path = '/api/venmo_otp_login'
+
+   // Form the request for sending data to the server.
+   const options = {
+     method: 'POST',
+     mode : 'no-cors',
+     headers: {
+       'Content-Type': 'application/json',
+     },
+     body: request_body
+   }
+
+   return await fetch(path, options).then( (response) => {
+        if (response.status == 400 || response.status == 500) {
+            response_body.errorType = response.status;
+            return response_body;
+        }
+        return response.json();
+    }).then((result) => {
+        if (result.errorType) {
+            response_body["errorMessage"] = "Received a " + result.errorType + " error";
+            return response_body;
+        }
+        return result;
+    }).catch( (error) => {
+        console.log(error);
+        response_body.errorType = LAMBDA_RESP.ERROR;
+        return response_body;
+    });  
+}
+/*
+Sends otp via sms
+
+params: 
+device_id : string (random string generated in loginVenmoWithCredentials)
+secret : string (returned from loginVenmoWithCredentials)
+
+return:
+{
+    errorType : int (number corresponding to error)
+    errorMessage : string
+    success : bool
+}
+
+Interpretation:
+    success true -> sms was sent
+    success false -> secret has expired
+
+*/
 async function sendVenmoSms(device_id, secret) {
     let response_body = {
         errorType : 0,
@@ -78,7 +168,25 @@ async function sendVenmoSms(device_id, secret) {
     });
 
 }
+/*
+Attempts login with username and password to Venmo
 
+params: 
+email : string
+password : string
+
+return:
+{
+    errorType : int (number corresponding to error)
+    errorMessage : string
+    success : bool
+}
+
+Interpretation:
+    success true -> user credentials accepted and needs 2-factor
+    success false -> invalid credentials
+
+*/
 async function loginVenmoWithCredentials(email, password) {
     const TWO_FACTOR_ERROR_CODE = 81109;
     const random_device_id = () => {
@@ -262,10 +370,10 @@ async function createGroup(email, name) {
             response_body["errorMessage"] = "Received a " + result.errorType + " error";
             return response_body;
         }
+        console.log(result);
         result = {
             errorType : 0,
-            success : true,
-            ...result
+            success : result.make_group_success,
         }
         return result;
     }).catch( (error) => {
@@ -345,14 +453,15 @@ async function validateLoginCredential (email, password, createJWT=false) {
     });
 }
 
-async function validateLoginJWT(pushSignIn=true){
+async function validateLoginJWT(router=null){
     //check if cookie is assigned and valid
     let token = null;
     if (!hasCookie("JWT_Token")) { //no cookie, check localStorage
         if (!(token = localStorage.getItem("token"))) {
-            if (pushSignIn) {
+            if (router) {
                 console.log("Before");
-                window.location.href = "http://localhost:8000/Refactored/";
+                //window.location.href = "http://localhost:8000/Refactored/";
+                router.replace("/Refactored/");
                 return false;
             }
             return false;
@@ -517,5 +626,7 @@ function deleteJWT(){
     return;
 }
 async function signOut(){
+    localStorage.clear();
+    deleteCookie("JWT_Token");
     return;
 }

@@ -1,11 +1,9 @@
-import Image from 'next/image'
-
+import Image from 'next/image';
 export default function Footer({callback, args}) {
     return (
         <>
-            <footer>
-                <div>
-                <a href='./'>
+                <div className="footer_div">
+                <a href='/Refactored/Home'>
                     <Image
                     src = "/billmates_logo_person_trans.png"
                     alt={"Billmates Logo"}
@@ -15,10 +13,6 @@ export default function Footer({callback, args}) {
                     ></Image>
                 </a>
                 </div>
-                <span></span>
-                <div id='plus_button' onClick={(args) => callback(args)}>
-                </div>
-            </footer>
         </>
     );
 }

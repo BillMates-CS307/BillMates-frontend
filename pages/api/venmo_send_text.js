@@ -1,6 +1,3 @@
-import jwt from 'jsonwebtoken';
-import { serverRuntimeConfig } from '@/next.config';
-
 export default async function handler(req, res) {
 
   if (req.method !== "POST")  {

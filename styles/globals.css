@@ -52,7 +52,8 @@
   --main-background-font-color : #000;
   --opposite-background-font-color : #FFF;
   --opposite-background : #000;
-  --background-hide-color : #000000AA
+  --background-hide-color : #000000AA;
+  --body-background : #D0D0D0;
 }
 
 /* @media (prefers-color-scheme: dark) {
@@ -119,31 +120,17 @@ body {
   max-width: 100vw;
   overflow-x: hidden;
   font-family: 'Signika Negative', sans-serif;
+  background: var(--body-background);
 }
 
 button {
   cursor: pointer;
 }
 
-/* body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
-} */
-
-
 #__next {
   display: grid;
   grid-template-rows: max-content 1fr;
   height: 100svh;
-}
-
-body {
-  background-color: rgb(204, 204, 204);
 }
 
 a {
@@ -277,7 +264,8 @@ footer div a {
   --main-background-font-color : #FFF;
   --opposite-background-font-color : #000;
   --opposite-background : #ddd;
-  --background-hide-color : #343434AA
+  --background-hide-color : #343434AA;
+  --body-background : #222222;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -285,13 +273,50 @@ footer div a {
     color-scheme: dark;
   }
   :root {
+    --green-background : #178317;
+    --green-muted-background : #79D88A;
+    --red-background : #be0000;
+    --red-muted-background : #d87979;
+    --neutral-background : #878787;
+    --dark-neutral-background: #4D4D4D;
     --main-background : #000;
     --main-background-font-color : #FFF;
+    --opposite-background-font-color : #000;
+    --opposite-background : #ddd;
+    --background-hide-color : #343434AA;
+    --body-background : #222222;
   }
 }
 
 @media screen and (min-width: 800px) {
   :root {
-    font-size: 20px;
+    font-size: 24px;
+  }
+  header {
+    grid-template-columns: 50px 1fr 50px;
+  }
+  header svg {
+    width: 50px;
+    height: 50px;
+  }
+  .footer_div {
+    width: 60px;
+    height: 60px;
+  }
+  .footer_div a {
+    height: 60px;
+  }
+  .footer_div img {
+    width: 60px;
+    height: 60px;
+  }
+  #plus_button:after {
+    height: 3.5px;
+    width: 45%;
+  }
+  
+  #plus_button:before {
+    height: 45%;
+    width: 3.5px;
   }
 }

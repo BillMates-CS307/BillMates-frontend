@@ -403,8 +403,8 @@
     padding: 20px;
     margin: 10px;
     border-radius: var(--border-radius);
-    font-size: 18px;
-    border: 1px solid black;
+    font-size: 1.25rem;
+    border: 1px solid var(--opposite-background);
 }
   
 .yourName {
@@ -417,7 +417,7 @@
 
 .groupTemplate {
     display: flex;
-    border: 1px solid black;
+    border: 1px solid var(--opposite-background);
     margin: 3px auto;
     width: 95%;
     cursor: pointer;

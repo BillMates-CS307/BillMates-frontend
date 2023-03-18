@@ -13,6 +13,7 @@ import React, { useEffect, useState } from "react";
 import { useStore } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { groupDataAction } from '@/lib/store/groupData.slice';
+import { useRouter } from 'next/router.js';
 //Components
 import GroupHeading from './_components_/group_heading.jsx';
 import { TransactionInputView, TransactionView, PendingView, FulFillView } from './_components_/views.jsx'
@@ -21,9 +22,10 @@ import { group_methods } from '@/lambda_service/groupService.js';
 import { user_methods } from '@/lambda_service/userService.js';
 
 export default function Group() {
+    const router = useRouter();
     const [isAuthenticated, setAuthentication] = useState(false);
     async function check() {
-      let result = await user_methods.validateLoginJWT();
+      let result = await user_methods.validateLoginJWT(router);
       if (result.success) {
         localStorage.setItem("tempId", result.payload.email);
         setAuthentication(true);
@@ -35,12 +37,6 @@ export default function Group() {
             check();
         }
     },[isAuthenticated])
-
-    // if (typeof window !== "undefined" && !isAuthenticated) {
-    //     console.log("performing auth check");
-    //     check();
-    // }
-
 
     //Defining state management
     const [transactionInputVisible, setTransactionInputVisible] = useState(false);
@@ -58,7 +54,6 @@ export default function Group() {
     const fetchData = async () => {
         console.log("fetching data");
         let response = await group_methods.getGroupInfo(groupId, userId);
-        console.log(response);
         if (response.errorType) {
             console.log("An error occured, check logs");
             return;
@@ -83,8 +78,6 @@ export default function Group() {
     }, [isAuthenticated]);
 
     if (isAuthenticated) {
-        console.log(loading);
-        console.log(response_data);
         return (
             <>
                 <CustomHead title={"Group"} description={"A BillMates group"}></CustomHead>
@@ -111,7 +104,6 @@ export default function Group() {
                         }
                         {(!loading) ?
                             response_data.expenses.map((item, index) => {
-                                console.log(item);
                                 return (<ExpenseItem index={index} id={index}
                                     title={item.title}
                                     date={item.date}

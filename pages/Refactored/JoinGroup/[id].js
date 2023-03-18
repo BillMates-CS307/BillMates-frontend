@@ -1,5 +1,4 @@
 //global imports
-import styles from '@/styles/Home.module.css'
 import { user_methods } from "@/lambda_service/userService.js";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router.js";
@@ -13,7 +12,7 @@ export default function JoinGroup() {
     const router = useRouter();
     const [isAuthenticated, setAuthentication] = useState(false);
     const check = async () => {
-        let result = await user_methods.validateLoginJWT(false);
+        let result = await user_methods.validateLoginJWT();
         if (result && !isAuthenticated) {
             localStorage.setItem("tempId", result.payload.email);
             setAuthentication(true);
