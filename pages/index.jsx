@@ -22,7 +22,7 @@ export default function SignIn () {
     const check = async () => {
       let result = await user_methods.validateLoginJWT();
         if (result) {
-          router.push("/Refactored/Home");
+          router.push("/Home");
         } else if (!isAuthenticated){
           setAuthentication(true);
         }
@@ -50,9 +50,8 @@ export default function SignIn () {
             
             //make API call
             let response = await user_methods.validateLoginCredential(fieldData.email[0], fieldData.password[0], true);
-            console.log(response);
             if (response.success) {
-                router.push("/Refactored/Home");
+                router.push("/Home");
             } else {
                 //check if no user or bad attempt
                 const element = document.querySelector("#incorrect");
@@ -161,7 +160,7 @@ export default function SignIn () {
             </form>
         </div>
         <p>
-        New to BillMates? <a href="./Refactored/Register">Create Account</a>
+        New to BillMates? <a href="/Register">Create Account</a>
         </p>
         </div>
         </main>

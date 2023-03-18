@@ -459,9 +459,7 @@ async function validateLoginJWT(router=null){
     if (!hasCookie("JWT_Token")) { //no cookie, check localStorage
         if (!(token = localStorage.getItem("token"))) {
             if (router) {
-                console.log("Before");
-                //window.location.href = "http://localhost:8000/Refactored/";
-                router.replace("/Refactored/");
+                router.replace("/");
                 return false;
             }
             return false;

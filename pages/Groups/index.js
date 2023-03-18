@@ -1,7 +1,7 @@
 export async function getServerSideProps({req, res}) {
     return {props : {},
             redirect : {permanent: false,
-            destination: "../home"} }
+            destination: "../Home"} }
 }
 
 

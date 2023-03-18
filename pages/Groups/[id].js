@@ -4,10 +4,7 @@ import Header from '../Global_components/header.jsx'
 import Footer from '../Global_components/footer.jsx'
 import CustomHead from '../Global_components/head.jsx'
 import LoadingCircle from '../Global_components/loading_circle.jsx';
-//import { ButtonLock } from '../Global_components/button_lock.js';
-//BillMates services and constants
-import { PAYMENT_PREFERENCE } from "@/lib/constants";
-import { groupService } from '@/pages/services/groups.js'
+
 //React and Redux stuff
 import React, { useEffect, useState } from "react";
 import { useStore } from 'react-redux';
@@ -65,6 +62,7 @@ export default function Group() {
                 groupDataAction.setGroupData(response_data)
             );
         } else {
+            router.push("/Home/");
             console.log(response);
         }
     }

@@ -26,7 +26,7 @@ export default function Register() {
     const check = async () => {
         let result = await user_methods.validateLoginJWT();
         if (result) {
-            router.push("/Refactored/Home");
+            router.push("/Home");
         } else if (!isAuthenticated){
           setAuthentication(true);
         }
@@ -130,7 +130,7 @@ export default function Register() {
                 return;
             }
             if (response.success) {
-                router.push("/Refactored/");
+                router.push("/");
             } else {
                 const email = document.querySelector('#email');
                 email.style = "outline: 1px solid var(--red-background)";

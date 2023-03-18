@@ -73,7 +73,7 @@ export default function Homeheading() {
     dispatch(
       groupDataAction.setGroupId({ groupId: groupId })
     );
-    router.push("./Groups/" + groupId);
+    router.push("/Groups/" + groupId);
   }
   if (isAuthenticated) {
     const hex = (sumDebts(userData.groups) == 0) ? "black" : (sumDebts(userData.groups) < 0) ? "var(--red-background)" : "var(--green-background)";
