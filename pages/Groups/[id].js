@@ -1,6 +1,6 @@
 //Global HTML Imports
 import styles from '@/styles/Group.module.css'
-import Header from '../Global_components/header.jsx'
+import Header from '../Global_components/groups_header.jsx'
 import Footer from '../Global_components/footer.jsx'
 import CustomHead from '../Global_components/head.jsx'
 import LoadingCircle from '../Global_components/loading_circle.jsx';
