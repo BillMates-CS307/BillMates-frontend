@@ -1,0 +1,14 @@
+A. Identification and classification
+Test Case: 1001
+System: Login
+User is able to see and click "Remember me" button
+Severity: 3
+
+B. Instructions
+	1. Verify there are no cookies
+	2. Go to the root index page (localhost:8000/)
+	3. Locate "Remember Me" text and checkbox
+	4. Click it
+
+C. Expected Result:
+	1. Checkbox turns a different color indicating the action was successful

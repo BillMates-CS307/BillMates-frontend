@@ -30,6 +30,9 @@ export default function Homeheading() {
     if (result.success) {
       localStorage.setItem("tempId", result.payload.email);
       setAuthentication(true);
+    } else {
+      router.replace("/");
+      return;
     }
   }
   useEffect(()=> {
@@ -52,6 +55,7 @@ export default function Homeheading() {
     let lambda_resp = await user_methods.getUserData(userId);
     if (lambda_resp.success) {
       userData = lambda_resp.user;
+      console.log(userData);
     }
     setLoading(false);
   }
@@ -104,7 +108,7 @@ export default function Homeheading() {
               <LoadingCircle additionalStyles={{ margin: "15px auto" }}></LoadingCircle>
               :
               userData.groups.map((group) => {
-                //groupId not working. Don't know how backend is formatting this data
+                //const group = userData.groups[id];
                 return <GroupTemplate groupName={group.name} debtOwed={group.balance.toFixed(2)} groupId={group.group_id} goToGroup={goToGroup}></GroupTemplate>;
               })
             }

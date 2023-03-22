@@ -1,0 +1,13 @@
+A. Identification and classification
+Test Case: 1002
+System: Login
+User is automatically redirected to the home page on visit
+Severity: 2
+
+B. Instructions
+	1. Verify there is a cookie named "JWT_Token"
+	2. Go to the root index page (localhost:8000/)
+
+C. Expected Result:
+	1. User is redirected to "localhost:8000/Home"
+	2. Correct information from home page is displayed

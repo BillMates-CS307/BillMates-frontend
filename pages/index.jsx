@@ -21,7 +21,7 @@ export default function SignIn () {
     const [isAuthenticated, setAuthentication] = useState(false);
     const check = async () => {
       let result = await user_methods.validateLoginJWT();
-        if (result) {
+        if (result.success) {
           router.push("/Home");
         } else if (!isAuthenticated){
           setAuthentication(true);
