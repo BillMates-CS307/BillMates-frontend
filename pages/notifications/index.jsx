@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { isEmpty, isUndefined } from "lodash";
 import styled from "@emotion/styled";
-import Header from "../globals/Header";
-import Footer from "../globals/Footer";
+import Header from "../Global_components/header";
+import Footer from "../Global_components/footer";
 import NotificationItem from "./__components__/NotificationItem";
 import { selectUserData } from "@/lib/store/userData.slice";
 
