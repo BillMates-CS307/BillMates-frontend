@@ -1,0 +1,14 @@
+A. Identification and classification
+Test Case: 3001
+System: User Settings
+User is warned when deleting their account
+Severity: 3
+
+B. Instructions
+	1. Navigate to the home page
+	2. Click on the gear in the top right
+	3. Click on the button labeled "Delete Account"
+
+C. Expected Result:
+	1. A popup is shown warning the user about the destructiveness of this action
+	2. GUI is frozen on this popup until user accepts or cancels the action

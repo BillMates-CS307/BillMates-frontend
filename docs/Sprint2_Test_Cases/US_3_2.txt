@@ -1,0 +1,13 @@
+A. Identification and classification
+Test Case: 3002
+System: User Settings
+User is unable to delete account with wrong password
+Severity: 3
+
+B. Instructions
+	1. Repeat instructions of test case 3001
+	2. Enter in an invalid password
+
+C. Expected Result:
+	1. Input field is cleared and highlighted red
+	2. A message is displayed saying "Incorrect password"
