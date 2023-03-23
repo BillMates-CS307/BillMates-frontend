@@ -1,0 +1,17 @@
+==============================TEMPLATE==============================
+
+A. Identification and classification
+Test Case: [user story #]00#
+System: [name of module]
+[Describe what is being tested]
+Severity: [1-3, 1 is most critical to overall operation]
+
+B. Instructions
+	1. 
+	2. 
+	...
+
+C. Expected Result:
+	1. 
+	2. 
+	...

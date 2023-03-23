@@ -11,6 +11,7 @@ export default function LogoutSection() {
 
   // TODO: change to logout api
   const onClickLogoutHandler = async (e) => {
+    console.log("clickig?");
     e.preventDefault();
     dispatch(userDataAction.clear());
     localStorage.removeItem("token");

@@ -1,0 +1,13 @@
+A. Identification and classification
+Test Case: 3004
+System: User Settings
+User is able to delete their account
+Severity: 3
+
+B. Instructions
+	1. Ensure that you are not the manager of any groups
+	2. Repeat instructions of test case 3001
+	3. Enter a valid password
+
+C. Expected Result:
+	1. User is taken to the Sign In page

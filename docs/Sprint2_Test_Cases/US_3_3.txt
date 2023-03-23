@@ -1,0 +1,15 @@
+A. Identification and classification
+Test Case: 3003
+System: User Settings
+User is unable to delete their account if they are still the manager of a group
+Severity: 3
+
+B. Instructions
+	1. Create a group and invite at least 1 other person
+	2. Repeat instructions of test case 3001
+	3. Enter a valid password
+
+C. Expected Result:
+	1. A message is displayed giving the group name(s) that must
+		be archived
+	2. User remains on the User Settings page

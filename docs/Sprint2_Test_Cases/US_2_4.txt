@@ -1,0 +1,14 @@
+A. Identification and classification
+Test Case: 2004
+System: User Settings
+User resends 2-factor code
+Severity: 2
+
+B. Instructions
+	1. Repeat instructions of test case 2002
+	2. Click on the "Resend Code" button
+
+C. Expected Result:
+	1. User receives another SMS text message from Venmo with a new code
+
+

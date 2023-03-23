@@ -1,0 +1,13 @@
+A. Identification and classification
+Test Case: 1003
+System: Login
+User is automatically redirected to sign in on visit without saved login
+Severity: 1
+
+B. Instructions
+	1. Verify there is not a cookie named "JWT_Token"
+	2. Go to the home page (localhost:8000/Home)
+		*note: any page can be used as the same code is used to detect and redirect
+C. Expected Result:
+	1. User is redirected to "localhost:8000/"
+	2. Sign in page is displayed

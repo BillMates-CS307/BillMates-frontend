@@ -1,0 +1,16 @@
+A. Identification and classification
+Test Case: 2005
+System: User Settings
+User enters invalid 2-factor code or not in time
+Severity: 2
+
+B. Instructions
+	1. Repeat instructions of test case 2002
+	2. Enter in the code that is shown in the SMS text
+		*note: this should be from the most recent SMS text sent
+
+C. Expected Result:
+	1. A message states that "Successfully linked your Venmo account"
+	2. User Settings page is updated to show "Unlink Venmo Account" button
+
+
