@@ -3,7 +3,7 @@ export default function Footer({callback, args, lockStatus}) {
     return (
         <>
                 <div className="footer_div">
-                <a href='/Home'>
+                <a href='/home'>
                     <Image
                     src = "/billmates_logo_person_trans.png"
                     alt={"Billmates Logo"}

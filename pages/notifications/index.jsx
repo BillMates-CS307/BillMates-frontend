@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { isEmpty, isUndefined } from "lodash";
 import styled from "@emotion/styled";
 import Header from '../global_components/header.jsx'
-import Footer from '../global_components/footer.jsx'
+import Footer from '../global_components/footer_no_plus.jsx'
 import NotificationItem from "./__components__/NotificationItem";
 import NotificationDetail from "./__components__/NotificationDetail.jsx";
 import { selectUserData } from "@/lib/store/userData.slice";

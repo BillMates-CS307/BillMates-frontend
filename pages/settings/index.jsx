@@ -7,7 +7,7 @@ import PaymentPreference from "./__components__/PaymentPreference";
 import SubmitButton from "./__components__/SubmitButton";
 import Theme from "./__components__/Theme";
 import Header from '../global_components/header.jsx'
-import Footer from '../global_components/footer.jsx'
+import Footer from '../global_components/footer_no_plus.jsx'
 import LogoutSection from "./__components__/LogoutSection";
 import CustomHead from "../global_components/head";
 
