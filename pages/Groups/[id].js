@@ -62,7 +62,7 @@ export default function Group() {
                 groupDataAction.setGroupData(response_data)
             );
         } else {
-            router.push("/Home/");
+            router.push("/home/");
             console.log(response);
         }
     }

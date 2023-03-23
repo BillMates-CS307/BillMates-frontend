@@ -1,10 +1,10 @@
-import TextField from "./Register/_components_/input_label.jsx";
-import PasswordField from "./Register/_components_/password.jsx";
+import TextField from "./register/_components_/input_label.jsx";
+import PasswordField from "./register/_components_/password.jsx";
 import BareHeader from "./global_components/bare_header.jsx";
 import styles from "@/styles/Home.module.css";
 import CustomHead from './global_components/head.jsx'
 
-import { fieldData } from "./Register/index.jsx";
+import { fieldData } from "./register/index.jsx";
 import {ButtonLock} from "./global_components/button_lock.js";
 import { user_methods } from "@/lambda_service/userService.js";
 import { useEffect, useState } from "react";
@@ -22,7 +22,7 @@ export default function SignIn () {
     const check = async () => {
       let result = await user_methods.validateLoginJWT();
         if (result.success) {
-          router.push("/Home");
+          router.push("/home");
         } else if (!isAuthenticated){
           setAuthentication(true);
         }
@@ -51,7 +51,7 @@ export default function SignIn () {
             //make API call
             let response = await user_methods.validateLoginCredential(fieldData.email[0], fieldData.password[0], true);
             if (response.success) {
-                router.push("/Home");
+                router.push("/home");
             } else {
                 //check if no user or bad attempt
                 const element = document.querySelector("#incorrect");
@@ -160,7 +160,7 @@ export default function SignIn () {
             </form>
         </div>
         <p>
-        New to BillMates? <a href="/Register">Create Account</a>
+        New to BillMates? <a href="/register">Create Account</a>
         </p>
         </div>
         </main>

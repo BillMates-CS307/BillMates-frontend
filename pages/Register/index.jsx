@@ -26,7 +26,7 @@ export default function Register() {
     const check = async () => {
         let result = await user_methods.validateLoginJWT();
         if (result) {
-            router.push("/Home");
+            router.push("/home");
         } else if (!isAuthenticated){
           setAuthentication(true);
         }
