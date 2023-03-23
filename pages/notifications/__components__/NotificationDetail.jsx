@@ -71,7 +71,7 @@ z-index: 999;
 
 const NotificationDetailWrapper = styled.div`
   max-width: 600px;
-  width : 50%;
+  width : 80%;
   margin: auto;
   padding: 1rem;
   border-radius: var(--border-radius);
