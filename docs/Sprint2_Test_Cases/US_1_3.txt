@@ -6,7 +6,7 @@ Severity: 1
 
 B. Instructions
 	1. Verify there is not a cookie named "JWT_Token"
-	2. Go to the home page (localhost:8000/Home)
+	2. Go to the home page (localhost:8000/home)
 		*note: any page can be used as the same code is used to detect and redirect
 C. Expected Result:
 	1. User is redirected to "localhost:8000/"
