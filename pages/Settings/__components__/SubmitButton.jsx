@@ -9,32 +9,22 @@ import { selectUserData } from "@/lib/store/userData.slice";
 export default function SubmitButton() {
   const { theme, setTheme } = useTheme();
   const {
+    email,
     name,
     oldPassword,
     newPassword,
     settings: { notification },
-    email
   } = useSelector(selectUserData);
   const onClickSubmitHandler = async (e) => {
     e.preventDefault();
-    // TODO: should fix this later to connect with redux
     const data = {
+      email,
       name,
       oldPassword,
       newPassword,
       notification,
-      email
     };
-
-    let new_data = {};
-    for (let field in data) {
-      if (data[field] != null) {
-        new_data[field] = data[field];
-      }
-    }
-
-    console.log(new_data);
-    const JSONdata = JSON.stringify(new_data);
+    const JSONdata = JSON.stringify(data);
     const endpoint = "/api/settings_api";
     // console.log(JSONdata);
     // Form the request for sending data to the server.
