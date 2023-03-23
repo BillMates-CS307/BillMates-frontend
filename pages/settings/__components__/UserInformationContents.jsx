@@ -2,12 +2,11 @@ import React, { useState } from "react";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import { useTheme } from "next-themes";
-import { THEME } from "@/lib/constants";
 import { useDispatch } from "react-redux";
 import { userDataAction } from "@/lib/store/userData.slice";
 import BulletLayout from "./BulletLayout";
 
-export default function UserInformation({email}) {
+export default function UserInformationContents({email}) {
   const dispatch = useDispatch();
   const { theme } = useTheme();
   const [isWrongName, setIsWrongName] = useState(false);
@@ -273,7 +272,6 @@ const UserInformationInput = styled.input`
   padding-right: 1.5rem;
   border-radius: 5px;
   border: 1px solid #9e9e9e;
-
   :focus {
     outline: 1px solid #00c923;
   }

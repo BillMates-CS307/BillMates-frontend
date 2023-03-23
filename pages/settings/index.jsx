@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { css } from "@emotion/react";
-import UserInformation from "./__components__/UserInformation";
+import Account from "./__components__/Account";
 import Notification from "./__components__/Notification";
 import PaymentPreference from "./__components__/PaymentPreference";
 import SubmitButton from "./__components__/SubmitButton";
@@ -14,11 +13,11 @@ import CustomHead from "../global_components/head";
 export default function Settings() {
   return (
     <>
-    <CustomHead title={"User Settings"} description={"Place to customize your BillMate preferences"}></CustomHead>
+    <CustomHead title={"User Information"} description={"Place to customize your BillMate preferences"}></CustomHead>
       <Header />
       <SettingsWrapper>
         <SettingsForm>
-          <UserInformation />
+          <Account />
           <Notification />
           <PaymentPreference />
           <Theme />
@@ -45,7 +44,7 @@ const SettingsWrapper = styled.div`
 
 const Space = styled.div`
   width: 100%;
-  height: 40px;
+  height: 50px;
 `;
 
 const SettingsForm = styled.form``;
