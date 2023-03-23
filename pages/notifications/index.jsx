@@ -33,7 +33,7 @@ export default function Notifications() {
   const email = (isAuthenticated) ? localStorage.getItem("tempId") : null;
   const [notifications, setNotifications] = useState([]);
   const [isEmptyNotifications, setIsEmptyNotifications] = useState(false);
-  const [currentNotificationFullView, setCurrentNotificationDetail] = useState(-1);
+  const [currentNotificationDetail, setCurrentNotificationDetail] = useState(-1);
 
   const getAllNotifications = async (email) => {
     console.log("fetching notifications...");
@@ -129,11 +129,11 @@ export default function Notifications() {
     <>
     <CustomHead title={"Notifications"} description={"Shows BillMates notifications"}></CustomHead>
       <Header></Header>
-      { (currentNotificationFullView != -1)?
+      { (currentNotificationDetail != -1)?
         <NotificationDetail closePanel={setCurrentNotificationDetail}
         deleteNotification={deleteNotification} 
-        index = {currentNotificationFullView}
-        {...notifications[currentNotificationFullView]}></NotificationDetail>
+        index = {currentNotificationDetail}
+        {...notifications[currentNotificationDetail]}></NotificationDetail>
         :
         <></>
       }
