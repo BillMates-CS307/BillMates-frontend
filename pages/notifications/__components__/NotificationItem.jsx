@@ -4,18 +4,19 @@ import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 
 export default function NotificationItem({
-  _id,
+  index,
   sender,
   message,
   time,
   isread,
   isfirst,
+  showDetail
 }) {
   return (
     <NotificationItemWrapper
       isread={isread}
       isfirst={isfirst}
-      href={`/notifications/${_id}`}
+      onClick={()=>{showDetail(index, index)}}
     >
       <ProfileWrapper>
         <Profile />
@@ -29,15 +30,14 @@ export default function NotificationItem({
   );
 }
 
-const NotificationItemWrapper = styled(Link)`
+const NotificationItemWrapper = styled.div`
   ${({ isread, isfirst }) => css`
-    display: flex;
-    justify-content: flex-start;
     margin-top: ${isfirst ? 0 : 5}px;
-    height: 80px;
     color: ${isread ? "white" : "black"};
-    background-color: ${isread ? "gray" : "#00c923"};
-    border-radius: 10px;
+    background-color: ${isread ? "var(--neutral-background)" : "var(--green-background)"};
+    border-radius: var(--border-radius);
+    display: grid;
+    grid-template-columns : 80px 1fr;
 
     :hover {
       cursor: pointer;
@@ -50,17 +50,14 @@ const ProfileWrapper = styled.div`
   justify-content: center;
   align-items: center;
   padding: 10px;
-  height: 100%;
   width: 80px;
-  max-width: 80px;
-  min-width: 80px;
 `;
 
 const Profile = styled.div`
-  height: 100%;
-  width: 100%;
+  height: 50px;
+  width: 50px;
   border-radius: 50%;
-  background-color: red;
+  background-color: var(--red-background);
 `;
 
 const ContentsWrapper = styled.div`
@@ -69,17 +66,17 @@ const ContentsWrapper = styled.div`
   align-items: flex-start;
   padding: 10px;
   width: 100%;
+  overflow : hidden;
 `;
 
 const Sender = styled.h3``;
 
 const Message = styled.div`
   padding-right: 10px;
-  max-width: 305px;
-  max-height: 18px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  width: 100%;
 `;
 
 const Time = styled.div`

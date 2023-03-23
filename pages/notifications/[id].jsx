@@ -3,6 +3,7 @@ import styled from "@emotion/styled";
 import { useRouter } from "next/router";
 import Header from "../global_components/header";
 import Footer from "../global_components/footer";
+import CustomHead from '../global_components/head.jsx'
 
 const NotificationDetail = () => {
   const router = useRouter();
@@ -118,6 +119,7 @@ const NotificationDetail = () => {
 
   return (
     <>
+      <CustomHead title={"Notifications"} description={"Shows BillMates"}></CustomHead>
       <Header />
       <NotificationDetailWrapper>
         <NotificationDetailContentsWrapper>
@@ -146,10 +148,10 @@ const NotificationDetailWrapper = styled.div`
   max-width: 440px;
   margin: 0 auto;
   padding: 1rem;
-  border-radius: 10px;
+  border-radius: var(--border-radius);
   box-shadow: 1px 2px 15px 0 #949494;
-  background: #fff;
-  color: black;
+  background: var(--main-background);
+  color: var(--main-background-font-colors);
 `;
 
 const NotificationDetailContentsWrapper = styled.div`
@@ -157,14 +159,14 @@ const NotificationDetailContentsWrapper = styled.div`
   flex-flow: column;
   width: 100%;
   max-height: 600px;
-  border: 1px solid #949494;
-  border-radius: 10px;
+  border: 1px solid var(--neutral-background);
+  border-radius: var(--border-radius);
   overflow: hidden;
 `;
 
 const NotificationDetailTitle = styled.div`
   padding: 10px;
-  background-color: #00c923;
+  background-color: var(--green-background);
   font-size: 16px;
   font-weight: bold;
 `;
@@ -179,7 +181,7 @@ const NotificationDetailMessage = styled.div`
   margin: 0 10px;
   padding: 10px 5px;
   max-width: 100%;
-  border-top: 1px solid #949494;
+  border-top: 1px solid var(--neutral-background);
   word-break: break-word;
 `;
 
@@ -187,7 +189,7 @@ const NotificationDetailTime = styled.div`
   display: flex;
   justify-content: flex-end;
   padding: 5px 10px;
-  color: #949494;
+  color: var(--dark-neutral-background);
 `;
 
 const DeleteButtonWrapper = styled.div`
@@ -195,9 +197,9 @@ const DeleteButtonWrapper = styled.div`
   margin-top: 10px;
   padding: 10px;
   width: 100%;
-  border-radius: 10px;
+  border-radius: var(--border-radius);
   box-shadow: 1px 2px 3px 0 #949494;
-  background: #00c923;
+  background: var(--green-background);
   color: white;
   font-weight: bold;
 `;

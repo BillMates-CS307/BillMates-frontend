@@ -1,5 +1,5 @@
-import BareHeader from "./Refactored/Global_components/bare_header"
-import Footer from "./Refactored/Global_components/footer_no_plus"
+import BareHeader from "/group_components/bare_header"
+import Footer from "/group_components/footer_no_plus"
 
 export default function Custom404() {
     return <>

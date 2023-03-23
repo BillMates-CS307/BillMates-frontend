@@ -12,7 +12,7 @@ export default function BulletLayout({ description }) {
 
 const BulletWrapper = styled.div`
   display: flex;
-  color: red;
+  color: var(--red-background);
   font-size: 12px;
   line-height: 18px;
   word-break: keep-all;

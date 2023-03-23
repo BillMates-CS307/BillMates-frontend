@@ -60,10 +60,10 @@ const SubmitButtonWrapper = styled.div`
     margin-top: 10px;
     padding: 10px;
     width: 100%;
-    border-radius: 10px;
+    border-radius: var(--border-radius);
     box-shadow: 1px 2px 3px 0 #949494;
     background: #00c923;
-    color: ${theme === THEME.LIGHT ? "white" : "black"};
+    color: var(--main-background-font-color);
     font-weight: bold;
   `}
 `;

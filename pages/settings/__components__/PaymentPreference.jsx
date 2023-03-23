@@ -72,9 +72,9 @@ const PaymentPreferenceWrapper = styled.div`
     align-items: center;
     margin-top: 10px;
     padding-bottom: 10px;
-    border-radius: 10px;
+    border-radius: var(--border-radius);
     box-shadow: 1px 2px 3px 0 #949494;
-    color: ${theme === THEME.LIGHT ? "black" : "white"};
+    color: var(--main-background-font-color);
     overflow: hidden;
   `}
 `;
@@ -83,8 +83,8 @@ const PaymentPreferenceTitleWrapper = styled.div`
   ${({ theme }) => css`
     padding: 10px;
     width: 100%;
-    background: #00c923;
-    color: ${theme === THEME.LIGHT ? "white" : "black"};
+    background: var(--green-background);
+    color: var(--main-background-font-color);
   `}
 `;
 
