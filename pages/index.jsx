@@ -1,11 +1,11 @@
 import TextField from "./Register/_components_/input_label.jsx";
 import PasswordField from "./Register/_components_/password.jsx";
-import BareHeader from "./Global_components/bare_header.jsx";
+import BareHeader from "./global_components/bare_header.jsx";
 import styles from "@/styles/Home.module.css";
-import CustomHead from './Global_components/head.jsx'
+import CustomHead from './global_components/head.jsx'
 
 import { fieldData } from "./Register/index.jsx";
-import {ButtonLock} from "./Global_components/button_lock.js";
+import {ButtonLock} from "./global_components/button_lock.js";
 import { user_methods } from "@/lambda_service/userService.js";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router.js";

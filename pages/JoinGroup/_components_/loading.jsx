@@ -1,5 +1,5 @@
-import CustomHead from '../../Global_components/head.jsx'
-import LoadingCircle from '../../Global_components/loading_circle.jsx';
+import CustomHead from '../../global_components/head.jsx'
+import LoadingCircle from '../../global_components/loading_circle.jsx';
 
 
 

@@ -1,7 +1,7 @@
 import styles from "@/styles/Home.module.css"
 import groupStyles from "@/styles/Group.module.css"
 import { user_methods } from "@/lambda_service/userService";
-import { ButtonLock } from "../../Global_components/button_lock";
+import { ButtonLock } from "../../global_components/button_lock";
 
 
 export function MakeGroupView({hideParent, userId}) {

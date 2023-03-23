@@ -1,14 +1,9 @@
 import Link from "next/link";
-import styled from "@emotion/styled";
-import { css } from "@emotion/react";
-import { useTheme } from "next-themes";
-import { THEME } from "@/lib/constants";
 
 export default function Header() {
-  const { theme } = useTheme();
   return (
     <>
-      <HeaderWrapper theme={theme}>
+      <header>
         <Link href="/notifications">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
             <path
@@ -29,40 +24,8 @@ export default function Header() {
             />
           </svg>
         </Link>
-      </HeaderWrapper>
+      </header>
     </>
   );
 }
 
-const HeaderWrapper = styled.header`
-  ${({ theme }) => css`
-    display: grid;
-    grid-template-columns: 30px 1fr 30px;
-    align-items: center;
-    padding: 10px;
-    width: 100vw;
-    height: 10vh;
-    border-bottom: 1px solid #000;
-    background: ${theme === THEME.LIGHT ? "white" : "black"};
-
-    svg {
-      width: 30px;
-      height: 30px;
-      color: ${theme === THEME.LIGHT ? "black" : "white"};
-    }
-
-    div {
-      text-align: center;
-
-      p {
-        display: inline-block;
-        font-size: 2rem;
-        color: #20ad20;
-      }
-
-      p:first-of-type {
-        color: ${theme === THEME.LIGHT ? "black" : "white"};
-      }
-    }
-  `}
-`;

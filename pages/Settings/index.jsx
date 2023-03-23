@@ -8,8 +8,8 @@ import Notification from "./__components__/Notification";
 import PaymentPreference from "./__components__/PaymentPreference";
 import SubmitButton from "./__components__/SubmitButton";
 import Theme from "./__components__/Theme";
-import Header from "../Global_components/header";
-import Footer from "../Global_components/footer";
+import Header from "../global_components/header";
+import Footer from "../global_components/footer";
 import LogoutSection from "./__components__/LogoutSection";
 
 export default function Settings() {

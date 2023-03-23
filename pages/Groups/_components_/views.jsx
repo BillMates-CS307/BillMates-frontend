@@ -1,7 +1,7 @@
 import { group_methods } from "@/lambda_service/groupService";
 import { user_methods } from "@/lambda_service/userService";
 import styles from "@/styles/Group.module.css";
-import { ButtonLock } from "../../Global_components/button_lock";
+import { ButtonLock } from "../../global_components/button_lock";
 
 
 export function TransactionInputView({ members, userId, groupId, commentLength, callback, args }) {
