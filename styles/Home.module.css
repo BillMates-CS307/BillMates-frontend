@@ -47,6 +47,7 @@
   display: block;
   margin-bottom: 5px;
   font-size: 0.9rem;
+  cursor: pointer;
 }
 
 .signup_form input {
@@ -93,6 +94,73 @@
     background: var(--main-background);
     padding: 1rem;
     border-radius: var(--border-radius);
+}
+
+/* #checkbox_div {
+  display: flex;
+  justify-content: flex-end;
+}
+#checkbox_div label {
+  margin: 0 5px 0 0;
+  align-items: center;
+  display: flex;
+}
+#checkbox_div input {
+  visibility: hidden;
+  display: block;
+  height: 0;
+  width: 0;
+  position: absolute;
+  overflow: hidden;
+}
+#checkbox_div span {
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid var(--neutral-background);
+  border-radius: var(--border-radius);
+  display: inline-block;
+  margin: 0 0 0 5px;
+  position: relative;
+}
+#checkbox_div input[type=checkbox]:checked + svg {
+  background: var(--green-background);
+} */
+
+#checkbox_div {
+  display: flex;
+  justify-content: flex-end;
+}
+#checkbox_div label {
+  margin: 0 5px 0 0;
+  align-items: center;
+  display: flex;
+}
+#checkbox_div input {
+  visibility: hidden;
+  display: block;
+  height: 0;
+  width: 0;
+  position: absolute;
+  overflow: hidden;
+}
+#checkbox_div span {
+  width: 1rem;
+  height: 1rem;
+  box-sizing: content-box;
+  border: 2px solid var(--neutral-background);
+  border-radius: 3px;
+  display: inline-block;
+  margin: 0 0 0 5px;
+  position: relative;
+  background-color: var(--main-background);
+  color : var(--main-background);
+}
+#checkbox_div span svg {
+  color: inherit;
+}
+#checkbox_div input[type=checkbox]:checked + span {
+  background: var(--green-background);
+  color : white;
 }
 
 .position_box p {
