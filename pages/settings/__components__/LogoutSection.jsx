@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
 import { userDataAction } from "@/lib/store/userData.slice";
-import { userService } from "@/pages/services/authorization";
+import { user_methods } from "@/lambda_service/userService";
 
 export default function LogoutSection() {
   const router = useRouter();
@@ -15,7 +15,7 @@ export default function LogoutSection() {
     e.preventDefault();
     dispatch(userDataAction.clear());
     localStorage.removeItem("token");
-    userService.deleteJwtToken();
+    user_methods.deleteJwtToken();
     router.push("/");
   };
 
