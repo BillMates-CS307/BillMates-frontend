@@ -1,7 +1,5 @@
 .main {
     width: 100vw;
-    background: var(--main-background);
-    /* font-family: Veranda, sans-serif; */
     display: grid;
     grid-template-rows: min-content 1fr;
 }
@@ -238,6 +236,22 @@
     width: 100%;
     font-size: 1.25rem;
 }
+
+.name_email_combo {
+    margin-top: 0px;
+}
+
+.name_email_combo p {
+    pointer-events: none;
+}
+
+.name_email_combo p:last-child{
+    font-size: 0.75rem;
+    /* font-style: italic; */
+    margin-left: 5px;
+    color: var(--neutral-background);
+}
+
 .transaction_heading input {
     width: 100%;
     font-size: 1rem;
@@ -267,7 +281,7 @@
 
 .person {
     display: grid;
-    grid-template-columns: 20px 1fr 30%;
+    grid-template-columns: 25px 1fr 30%;
     align-items: center;
     cursor: pointer;
     margin-bottom: 5px;
@@ -284,13 +298,10 @@
     border-radius: 50%;
     height: 20px;
     z-index: 1;
+    margin-right: 5px;
 }
 .active {
     background-color: var(--green-background);
-}
-.person p {
-    margin-left: 5px;
-    z-index: 1;
 }
 .person input {
     width: 100%;
@@ -331,6 +342,30 @@
     font-size: 1.5rem;
     cursor: pointer;
     pointer-events: none;
+  }
+
+  .confirm_void_container {
+    width: 100%;
+    display: none;
+    grid-template-columns: 49% 49%;
+    grid-gap: 2%;
+    margin-top: 20px;
+  }
+
+  .confirm_void_container p {
+    width: 90%;
+    padding: 10px;
+    text-align: center;
+    color : #FFF;
+    font-size: 1.5rem;
+    cursor: pointer;
+    background-color: var(--red-background);
+    justify-self: self-start;
+    border-radius: var(--border-radius);
+  }
+  .confirm_void_container p:first-child {
+    background-color: var(--green-background);
+    justify-self: self-end;
   }
 
 

@@ -9,5 +9,5 @@ B. Instructions
 	2. Go to the root index page (localhost:8000/)
 
 C. Expected Result:
-	1. User is redirected to "localhost:8000/Home"
+	1. User is redirected to "localhost:8000/home"
 	2. Correct information from home page is displayed

@@ -56,6 +56,38 @@ export default function Notifications() {
         }
   
         const result = await response.json();
+        // const result = {
+        //   notifications: [
+        //     {
+        //       _id : "0",
+        //       sender : "testing@email.com",
+        //       message : "some testing text to see how it all shows up",
+        //       time : "11:58pm",
+        //       isread : false
+        //     },
+        //     {
+        //       _id : "1",
+        //       sender : "testing@email.com",
+        //       message : "You have been removed from group 'Testing'",
+        //       time : "11:58pm",
+        //       isread : false
+        //     },
+        //     {
+        //       _id : "2",
+        //       sender : "testing@email.com",
+        //       message : "Something else here or just a lot of texeeeetxtxtxt",
+        //       time : "11:58pm",
+        //       isread : true
+        //     },
+        //     {
+        //       _id : "3",
+        //       sender : "testing@email.com",
+        //       message : "some testing text to see how it all shows up",
+        //       time : "11:58pm",
+        //       isread : false
+        //     }
+        //   ]
+        // }
         if (isEmpty(result.notifications)) {
           setIsEmptyNotifications(true);
         }
@@ -92,7 +124,6 @@ export default function Notifications() {
     setCurrentNotificationDetail(index);
   }
   const deleteNotification = (index) => {
-    //user_methods.deleteNotification(notifications[index]._id);
     const data = {
       object_id: notifications[index]._id,
     };
@@ -161,6 +192,7 @@ const NotificationsWrapper = styled.div`
   border-radius: var(--border-radius);
   box-shadow: 1px 2px 15px 0 #949494;
   background: var(--main-background);
+  color : var(--main-background-font-color);
 `;
 
 const NotificationsList = styled.ul`

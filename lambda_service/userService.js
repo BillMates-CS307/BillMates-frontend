@@ -1,6 +1,4 @@
-import { serverRuntimeConfig } from "@/next.config";
 import { LAMBDA_RESP } from "@/lib/constants";
-import jwt from 'jsonwebtoken';
 import { getCookies, setCookie, deleteCookie, hasCookie, getCookie } from 'cookies-next';
 
 
@@ -21,10 +19,8 @@ export const user_methods = {
     registerAccount,
     getUserData,
     updateSettings,
-    deleteJWT,
     signOut,
     createGroup,
-    getUserId,
     loginVenmoWithCredentials,
     sendVenmoSms,
     loginVenmoWithOtp
@@ -266,69 +262,69 @@ async function loginVenmoWithCredentials(email, password) {
 }
 
 
-function getUserId() {
-    let token = null;
-    if (!(token = getCookie("JWT_Token"))) {
-        token = localStorage.getItem("token");
-    }
-    const innerFunc = async (value) => {
-        let response_body = {
-            errorType : 0,
-            success : false
-        }
+// function getUserId() {
+//     let token = null;
+//     if (!(token = getCookie("JWT_Token"))) {
+//         token = localStorage.getItem("token");
+//     }
+//     const innerFunc = async (value) => {
+//         let response_body = {
+//             errorType : 0,
+//             success : false
+//         }
     
-       let request_body = JSON.stringify(
-        {
-            token : value
-        }
-       )
+//        let request_body = JSON.stringify(
+//         {
+//             token : value
+//         }
+//        )
     
-       const path = '/api/validate_token'
+//        const path = '/api/validate_token'
     
-       // Form the request for sending data to the server.
-       const options = {
-         method: 'POST',
-         mode : 'no-cors',
-         headers: {
-           'Content-Type': 'application/json',
-         },
-         body: request_body
-       }
+//        // Form the request for sending data to the server.
+//        const options = {
+//          method: 'POST',
+//          mode : 'no-cors',
+//          headers: {
+//            'Content-Type': 'application/json',
+//          },
+//          body: request_body
+//        }
     
-       return await fetch(path, options).then( (response) => {
-            if (response.status == 400 || response.status == 500) {
-                response_body.errorType = response.status;
-                return response_body;
-            }
-            return response.json();
-        }).then((result) => {
-            if (result.errorType) {
-                response_body["errorMessage"] = "Received a " + result.errorType + " error";
-                return response_body;
-            } else if (result.ERROR == "No user found") {
-                return response_body;
-            } 
-            // else if (!result.login_success) {
-            //     response_body["attemps"] = result.user_data.attempts;
-            //     return response_body;
-            // }
+//        return await fetch(path, options).then( (response) => {
+//             if (response.status == 400 || response.status == 500) {
+//                 response_body.errorType = response.status;
+//                 return response_body;
+//             }
+//             return response.json();
+//         }).then((result) => {
+//             if (result.errorType) {
+//                 response_body["errorMessage"] = "Received a " + result.errorType + " error";
+//                 return response_body;
+//             } else if (result.ERROR == "No user found") {
+//                 return response_body;
+//             } 
+//             // else if (!result.login_success) {
+//             //     response_body["attemps"] = result.user_data.attempts;
+//             //     return response_body;
+//             // }
     
-            result = {
-                errorType : 0,
-                success : true,
-                ...result
-            }
-            //set JWT token based on cookie preference
-            setJWT(result.token_l, result.token_c);
-            return result;
-        }).catch( (error) => {
-            console.log(error);
-            response_body.errorType = LAMBDA_RESP.ERROR;
-            return response_body;
-        }); 
-    }
-    return token;
-}
+//             result = {
+//                 errorType : 0,
+//                 success : true,
+//                 ...result
+//             }
+//             //set JWT token based on cookie preference
+//             setJWT(result.token_l, result.token_c);
+//             return result;
+//         }).catch( (error) => {
+//             console.log(error);
+//             response_body.errorType = LAMBDA_RESP.ERROR;
+//             return response_body;
+//         }); 
+//     }
+//     return token;
+// }
 
 async function createGroup(email, name) {
     let response_body = {
@@ -383,14 +379,16 @@ async function createGroup(email, name) {
     });
 }
 
-function setJWT(token_l, token_c=null) {
-    localStorage.setItem("token",token_l);
-    if (token_c) {
-        setCookie("JWT_Token", token_c, {maxAge: 60 * 60 * 24 * 7, sameSite:"strict"});
+function setJWT(token, isPersistant) {
+    //localStorage.setItem("token",token_l);
+    if (isPersistant) {
+        setCookie("JWT_Token", token, {maxAge: 60 * 60 * 24 * 7, sameSite:"strict"});
+    } else {
+        setCookie("JWT_Token", token, {sameSite:"strict"});
     }
 }
 
-async function validateLoginCredential (email, password, createJWT=false) {
+async function validateLoginCredential (email, password, createJWT=false, persistant=false) {
     let response_body = {
         errorType : 0,
         success : false
@@ -444,7 +442,7 @@ async function validateLoginCredential (email, password, createJWT=false) {
             ...result
         }
         //set JWT token based on cookie preference
-        setJWT(result.token_l, result.token_c);
+        setJWT(result.token, persistant);
         return result;
     }).catch( (error) => {
         console.log(error);
@@ -456,14 +454,12 @@ async function validateLoginCredential (email, password, createJWT=false) {
 async function validateLoginJWT(router=null){
     //check if cookie is assigned and valid
     let token = null;
-    if (!hasCookie("JWT_Token")) { //no cookie, check localStorage
-        if (!(token = localStorage.getItem("token"))) {
-            if (router) {
-                router.replace("/");
-                return false;
-            }
+    if (!hasCookie("JWT_Token")) { //both persistant and session will have same name
+        if (router) {
+            router.replace("/");
             return false;
         }
+        return false;
     } else {
         token = getCookie("JWT_Token");
     }
@@ -500,10 +496,9 @@ async function validateLoginJWT(router=null){
             response_body["errorMessage"] = "Received a " + result.errorType + " error";
             return response_body;
         }
-        // else if (!result.login_success) {
-        //     response_body["attemps"] = result.user_data.attempts;
-        //     return response_body;
-        // }
+        if (!result.success) {
+            deleteCookie("JWT_Token");
+        }
         return result;
     }).catch( (error) => {
         console.log(error);
@@ -620,11 +615,7 @@ async function registerAccount(email, password, name){
 async function updateSettings(){
     return;
 }
-function deleteJWT(){
-    return;
-}
-async function signOut(){
-    localStorage.clear();
+async function signOut() {
     deleteCookie("JWT_Token");
     return;
 }
