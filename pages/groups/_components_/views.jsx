@@ -218,7 +218,7 @@ export function TransactionInputView({ members, userId, groupId, commentLength, 
     return (
         <div className={styles.transaction_background} id="transaction_input">
             <div className={styles.transaction_large}>
-                <div className={styles.x_button} onClick={() => {callback(args)}}></div>
+                <div className={styles.x_button} onClick={() => { callback(args) }}></div>
                 <div className={styles.transaction_heading}>
                     <input type="text" placeholder='Item Name' id="input_item_name"></input>
                     <span></span>
@@ -266,7 +266,7 @@ export function TransactionInputView({ members, userId, groupId, commentLength, 
     );
 }
 
-export function TransactionView({userId, members, expense, hideParent, showFulFill}) {
+export function TransactionView({ userId, members, expense, hideParent, showFulFill }) {
     const fulfillAction = () => {
         if (!ButtonLock.isLocked()) {
             hideParent(-1);
@@ -302,7 +302,7 @@ export function TransactionView({userId, members, expense, hideParent, showFulFi
             console.log("locked");
         }
     }
-    const voidAction = async (event) =>{
+    const voidAction = async (event) => {
         if (!ButtonLock.isLocked()) {
             ButtonLock.LockButton();
             let container = event.target;
@@ -315,8 +315,8 @@ export function TransactionView({userId, members, expense, hideParent, showFulFi
             const result = await group_methods.voidExpense(expense._id);
             //const result = {success : false};
             if (result.errorType) {
-               console.log(result.errorMessage);
-               alert("Something went wrong, please try again later");
+                console.log(result.errorMessage);
+                alert("Something went wrong, please try again later");
             } else if (!result.success) {
                 alert("Something went wrong");
             } else { //went through and status has changed
@@ -330,12 +330,12 @@ export function TransactionView({userId, members, expense, hideParent, showFulFi
             console.log("locked");
         }
     }
-    const confirmAction = (event) =>{
+    const confirmAction = (event) => {
         event.target.style = "display:none";
         event.target.nextElementSibling.style = "display:grid";
     }
     const closeContainer = () => {
-        if(!ButtonLock.isLocked()) {
+        if (!ButtonLock.isLocked()) {
             hideParent(-1);
         }
     }
@@ -343,65 +343,65 @@ export function TransactionView({userId, members, expense, hideParent, showFulFi
     let hasDebt = false;
 
     return (
-        <div className={styles.transaction_background} id = "transaction_view">
-        <div className={styles.transaction_large}>
-            <div className={styles.x_button} onClick={closeContainer}></div>
-            <div className={styles.transaction_heading} id = "view_item_info">
-                <p>{expense.title}</p>
-                <p>${expense.amount.toFixed(2)}</p>
-                { (expense.comments)?
-                    <p>{expense.comments}</p>
-                    :
-                    <></>
-                }
-                <div className={styles.name_email_combo}>
-                    <p>{members[expense.owner]}</p>
-                    <p>{expense.owner}</p>
+        <div className={styles.transaction_background} id="transaction_view">
+            <div className={styles.transaction_large}>
+                <div className={styles.x_button} onClick={closeContainer}></div>
+                <div className={styles.transaction_heading} id="view_item_info">
+                    <p>{expense.title}</p>
+                    <p>${expense.amount.toFixed(2)}</p>
+                    {(expense.comments) ?
+                        <p>{expense.comments}</p>
+                        :
+                        <></>
+                    }
+                    <div className={styles.name_email_combo}>
+                        <p>{members[expense.owner]}</p>
+                        <p>{expense.owner}</p>
+                    </div>
                 </div>
-            </div>
-            <div><p className={styles.debt_remaining_text}>Debts Remaining</p></div>
-            <div className={styles.transaction_people} id = "view_transaction_people">
-                {
-                    expense.users.map( ([id, amt_remaining]) => {
-                        if (amt_remaining != 0) {
-                            hasDebt = true;
-                        return (
-                            <div className={styles.person + " " + styles.person_view}>
-                                <div className={styles.name_email_combo}>
-                                <p>{members[id]}</p>
-                                <p>{id}</p>
-                                </div>
-                                <p>${amt_remaining.toFixed(2)}</p>
-                            </div>
-                        )
-                        } else {
-                            return <></>
-                        }
-                    })
+                <div><p className={styles.debt_remaining_text}>Debts Remaining</p></div>
+                <div className={styles.transaction_people} id="view_transaction_people">
+                    {
+                        expense.users.map(([id, amt_remaining]) => {
+                            if (amt_remaining != 0) {
+                                hasDebt = true;
+                                return (
+                                    <div className={styles.person + " " + styles.person_view}>
+                                        <div className={styles.name_email_combo}>
+                                            <p>{members[id]}</p>
+                                            <p>{id}</p>
+                                        </div>
+                                        <p>${amt_remaining.toFixed(2)}</p>
+                                    </div>
+                                )
+                            } else {
+                                return <></>
+                            }
+                        })
+                    }
+                </div>
+                {(userId == expense.owner) ?
+                    <>
+                        <div className={styles.submit_expense_container} onClick={(event) => { confirmAction(event) }}><p>Void Expense</p></div>
+                        <div className={styles.confirm_void_container}><p onClick={(event) => { voidAction(event) }}>Confirm</p><p onClick={closeContainer}>Cancel</p></div>
+                    </>
+                    :
+                    (hasDebt) ?
+                        <>
+                            <div className={styles.submit_expense_container} onClick={(event) => { fulfillAction(event, false) }}><p>Bill Me</p></div>
+                            <div style={{ backgroundColor: "var(--red-background)" }} className={styles.submit_expense_container} onClick={(event) => { confirmAction(event) }}><p>Report</p></div>
+                            <div className={styles.confirm_void_container}><p onClick={(event) => { reportAction(event) }}>Confirm</p><p onClick={closeContainer}>Cancel</p></div>
+                        </>
+                        :
+                        <></>
                 }
+
             </div>
-            { (userId == expense.owner)?
-            <>
-            <div className={styles.submit_expense_container} onClick={(event) => {confirmAction(event)}}><p>Void Expense</p></div>
-            <div className={styles.confirm_void_container}><p onClick={(event)=>{voidAction(event)}}>Confirm</p><p onClick={closeContainer}>Cancel</p></div>
-            </>
-            :
-            (hasDebt) ?
-            <>
-            <div className={styles.submit_expense_container} onClick={(event) => {fulfillAction(event, false)}}><p>Bill Me</p></div>
-            <div style={{backgroundColor:"var(--red-background)"}} className={styles.submit_expense_container} onClick={(event) => {confirmAction(event)}}><p>Report</p></div>
-            <div className={styles.confirm_void_container}><p onClick={(event)=>{reportAction(event)}}>Confirm</p><p onClick={closeContainer}>Cancel</p></div>
-            </>
-                :
-                <></>
-            }
-            
         </div>
-    </div>
     );
 }
 
-export function FulFillView({userId, expense, defaultVenmo, hideParent}) {
+export function FulFillView({ userId, expense, defaultVenmo, hideParent }) {
     let usingVenmo = defaultVenmo;
     let amt = 0;
     for (let pair of expense.users) {
@@ -429,30 +429,30 @@ export function FulFillView({userId, expense, defaultVenmo, hideParent}) {
             //set button visually to be locked
             container.firstChild.textContent = "Billing";
             container.style = "background-color : var(--green-muted-background)";
-/*
-
-check if login was successful
-            - not : whatever form stuff
-check if 2 factor needed
-            call otp
-            check if secret expired (boolean returned)
-                - is : whatever form stuff
-                - not : show opt form
-
-loginwithcredentials {
-    error : int,
-    errorMessage : string
-    success : bool,
-    otpSecret : string or null,
-    deviceId : string or null
-}
-sendSms {
-    error : int,
-    errorMessage : string,
-    success : bool
-}
-
-*/
+            /*
+            
+            check if login was successful
+                        - not : whatever form stuff
+            check if 2 factor needed
+                        call otp
+                        check if secret expired (boolean returned)
+                            - is : whatever form stuff
+                            - not : show opt form
+            
+            loginwithcredentials {
+                error : int,
+                errorMessage : string
+                success : bool,
+                otpSecret : string or null,
+                deviceId : string or null
+            }
+            sendSms {
+                error : int,
+                errorMessage : string,
+                success : bool
+            }
+            
+            */
 
             if (usingVenmo) {
                 //check if login credentials work
@@ -493,24 +493,24 @@ sendSms {
     }
 
     return (
-        <div className={styles.transaction_background} id = "submit_expense">
-        <div className={styles.transaction_large}>
-            <div className={styles.x_button} onClick={()=>{hideParent(null)}}></div>
-            { (defaultVenmo)?
-            <div className={styles.payment_method} ><button onClick={(e) => toggle(e,false)}>BillMates</button><button style={{background : "var(--green-background)", color : "#FFF"}} onClick={(e) => toggle(e,true)}>Venmo</button></div> 
-            :
-            <div className={styles.payment_method} ><button style={{background : "var(--green-background)", color : "#FFF"}} onClick={(e) => toggle(e,false)}>BillMates</button><button onClick={(e) => toggle(e,true)}>Venmo</button></div> 
-            }
-            <div className={styles.expense_payment_form}>
-                <p>Amount Paying: ${amt.toFixed(2)}</p>
+        <div className={styles.transaction_background} id="submit_expense">
+            <div className={styles.transaction_large}>
+                <div className={styles.x_button} onClick={() => { hideParent(null) }}></div>
+                {(defaultVenmo) ?
+                    <div className={styles.payment_method} ><button onClick={(e) => toggle(e, false)}>BillMates</button><button style={{ background: "var(--green-background)", color: "#FFF" }} onClick={(e) => toggle(e, true)}>Venmo</button></div>
+                    :
+                    <div className={styles.payment_method} ><button style={{ background: "var(--green-background)", color: "#FFF" }} onClick={(e) => toggle(e, false)}>BillMates</button><button onClick={(e) => toggle(e, true)}>Venmo</button></div>
+                }
+                <div className={styles.expense_payment_form}>
+                    <p>Amount Paying: ${amt.toFixed(2)}</p>
+                </div>
+                <div className={styles.submit_expense_container} onClick={(e) => { handleExpensePay(e) }}><p>Bill Me</p></div>
             </div>
-            <div className={styles.submit_expense_container} onClick={(e) => {handleExpensePay(e)}}><p>Bill Me</p></div>
         </div>
-    </div>
     )
 }
 
-export function PendingView({members, expense, hideParent}) {
+export function PendingView({ members, expense, hideParent }) {
     console.log(expense);
     const handlePendingPay = async (event, isAccept) => {
         //make API call
@@ -519,14 +519,14 @@ export function PendingView({members, expense, hideParent}) {
             let container = event.target;
             let originalText = container.firstChild.textContent;
             //set button visually to be locked
-            container.firstChild.textContent = (isAccept)? "Accepting" : "Rejecting";
-            container.style = (isAccept)? "background-color : var(--green-muted-background)" : "background-color : var(--red-muted-background)";
-            
-            
+            container.firstChild.textContent = (isAccept) ? "Accepting" : "Rejecting";
+            container.style = (isAccept) ? "background-color : var(--green-muted-background)" : "background-color : var(--red-muted-background)";
+
+
             const result = await group_methods.updatePendingStatus(isAccept, expense._id);
             //const result = {success : false};
             if (result.errorType) {
-               console.log(result.errorMessage);
+                console.log(result.errorMessage);
             } else if (!result.success) {
                 alert("Something went wrong");
             } else { //went through and status has changed
@@ -540,38 +540,38 @@ export function PendingView({members, expense, hideParent}) {
         }
         return;
     }
-    
-    return   (
-        <div className={styles.transaction_background} id = "pending_view">
-        <div className={styles.transaction_large}>
-            <div className={styles.x_button} onClick={() =>hideParent(-1)}></div>
-            <div className={styles.transaction_heading} id = "pending_item_info">
-                <p>{expense.title}</p>
-                <p>{members[expense.paid_by]}</p>
+
+    return (
+        <div className={styles.transaction_background} id="pending_view">
+            <div className={styles.transaction_large}>
+                <div className={styles.x_button} onClick={() => hideParent(-1)}></div>
+                <div className={styles.transaction_heading} id="pending_item_info">
+                    <p>{expense.title}</p>
+                    <p>{members[expense.paid_by]}</p>
+                </div>
+                <div><p className={styles.debt_remaining_text + " " + styles.pending_larger_p}>Amount Paying: $ {expense.amount_paid.toFixed(2)}</p></div>
+                <div className={styles.submit_expense_container} onClick={(e) => { handlePendingPay(e, true) }}><p>Accept</p></div>
+                <div className={styles.submit_expense_container + " " + styles.negative} onClick={(e) => { handlePendingPay(e, false) }}><p>Reject</p></div>
             </div>
-            <div><p className={styles.debt_remaining_text + " " + styles.pending_larger_p}>Amount Paying: $ {expense.amount_paid.toFixed(2)}</p></div>
-            <div className={styles.submit_expense_container} onClick={(e) => {handlePendingPay(e, true)}}><p>Accept</p></div>
-            <div className={styles.submit_expense_container + " " + styles.negative} onClick={(e) => {handlePendingPay(e, false)}}><p>Reject</p></div>
         </div>
-    </div>
     );
 }
 
 export function PayAllView({ members, userId, groupId, commentLength, callback, args, balance }) {
     console.log("Creating Payout All View");
     //remove user from the list of members
-    
+
     let idx = 0;
     let format = {
         title: "",
         amount: balance,
         comment: "",
         members: Object.keys(members).reduce((result, id) => {
-                if (id != userId) {
-                    result.push({ id: id, name: members[id], position: idx, selected: false, amount: 0 })
-                    idx++;
-                }
-                return result;
+            if (id != userId) {
+                result.push({ id: id, name: members[id], position: idx, selected: false, amount: 0 })
+                idx++;
+            }
+            return result;
         }, []),
         owner: userId,
         groupId: groupId,
@@ -752,7 +752,7 @@ export function PayAllView({ members, userId, groupId, commentLength, callback, 
     return (
         <div className={styles.transaction_background} id="transaction_input">
             <div className={styles.transaction_large}>
-                <div className={styles.x_button} onClick={() => {callback(args)}}></div>
+                <div className={styles.x_button} onClick={() => { callback(args) }}></div>
                 <div className={styles.transaction_heading}>
                     <input type="text" placeholder='Item Name' id="input_item_name"></input>
                     <span></span>
@@ -776,8 +776,8 @@ export function PayAllView({ members, userId, groupId, commentLength, callback, 
                 <div className={styles.transaction_people} count="0" id="transaction_people">
                     {
 
-                       format.members.map((member) => {
-                        console.log(member);
+                        format.members.map((member) => {
+                            console.log(member);
                             return (
                                 <div className={styles.person}>
                                     <div className={styles.radio} onClick={(e) => selectPerson(e, member.position)}></div>

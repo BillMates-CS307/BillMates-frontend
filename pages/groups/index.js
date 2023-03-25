@@ -22,18 +22,18 @@ export default function SelfGroup() {
     const router = useRouter();
     const [isAuthenticated, setAuthentication] = useState(false);
     async function check() {
-      let result = await user_methods.validateLoginJWT(router);
-      if (result.success) {
-        localStorage.setItem("tempId", result.payload.email);
-        setAuthentication(true);
-      }
+        let result = await user_methods.validateLoginJWT(router);
+        if (result.success) {
+            localStorage.setItem("tempId", result.payload.email);
+            setAuthentication(true);
+        }
     }
-    useEffect(()=> {
+    useEffect(() => {
         if (!isAuthenticated) {
             console.log("authenticating");
             check();
         }
-    },[isAuthenticated])
+    }, [isAuthenticated])
 
     //Defining state management
     const [transactionInputVisible, setTransactionInputVisible] = useState(false);
@@ -58,19 +58,19 @@ export default function SelfGroup() {
 
             //sort each group
             for (let groupId in response_data.group_expenses) {
-              groupExpenses = response_data.group_expenses[groupId];
-              groupExpenses.sort((a,b) => {
-                if (a.time <= b.time) {
-                  return -1;
-                } else {
-                  return 1;
-                }
-              })
-              response_data.group_expenses[groupId] = groupExpenses;
+                groupExpenses = response_data.group_expenses[groupId];
+                groupExpenses.sort((a, b) => {
+                    if (a.time <= b.time) {
+                        return -1;
+                    } else {
+                        return 1;
+                    }
+                })
+                response_data.group_expenses[groupId] = groupExpenses;
             }
 
             //merge groups into one array
-            
+
             final_expenses = [];
 
             setLoading(false);
@@ -149,7 +149,7 @@ export default function SelfGroup() {
                 }
                 {(currentFulfillView != null) ?
                     <FulFillView userId={userId} expense={currentFulfillView} hideParent={setCurrentFulfillView}></FulFillView>
-                :
+                    :
                     <></>
                 }
                 <Footer callback={setTransactionInputVisible} args={true} lockStatus={loading}></Footer>

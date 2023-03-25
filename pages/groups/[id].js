@@ -22,18 +22,18 @@ export default function Group() {
     const router = useRouter();
     const [isAuthenticated, setAuthentication] = useState(false);
     async function check() {
-      let result = await user_methods.validateLoginJWT(router);
-      if (result.success) {
-        localStorage.setItem("tempId", result.payload.email);
-        setAuthentication(true);
-      }
+        let result = await user_methods.validateLoginJWT(router);
+        if (result.success) {
+            localStorage.setItem("tempId", result.payload.email);
+            setAuthentication(true);
+        }
     }
-    useEffect(()=> {
+    useEffect(() => {
         if (!isAuthenticated) {
             console.log("authenticating");
             check();
         }
-    },[isAuthenticated])
+    }, [isAuthenticated])
 
     //Defining state management
     const [transactionInputVisible, setTransactionInputVisible] = useState(false);
@@ -119,7 +119,7 @@ export default function Group() {
                         }
                     </div>
                     <GroupHeading></GroupHeading>
-                    <div className={styles.repay_all_container} onClick={()=>{setPayAllVisible(true)}}>
+                    <div className={styles.repay_all_container} onClick={() => { setPayAllVisible(true) }}>
                         <p>Repay All</p>
                     </div>
                 </main>
@@ -140,7 +140,7 @@ export default function Group() {
                 }
                 {(currentFulfillView != null) ?
                     <FulFillView userId={userId} expense={currentFulfillView} hideParent={setCurrentFulfillView}></FulFillView>
-                :
+                    :
                     <></>
                 }
                 {(payAllVisible) ?

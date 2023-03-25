@@ -22,12 +22,12 @@ export default function Notifications() {
       setAuthentication(true);
     }
   }
-  useEffect(()=> {
-      if (!isAuthenticated) {
-          console.log("authenticating");
-          check();
-      }
-  },[isAuthenticated]);
+  useEffect(() => {
+    if (!isAuthenticated) {
+      console.log("authenticating");
+      check();
+    }
+  }, [isAuthenticated]);
 
 
   const email = (isAuthenticated) ? localStorage.getItem("tempId") : null;
@@ -37,88 +37,87 @@ export default function Notifications() {
 
   const getAllNotifications = async (email) => {
     console.log("fetching notifications...");
-        const endpoint = "/api/get_all_notifications";
-  
-        // Form the request for sending data to the server.
-        const options = {
-          method: "POST",
-          mode: "no-cors",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({email : email}),
-        };
-        const response = await fetch(endpoint, options);
-        console.log(response);
-        if (response.status == 400) {
-          alert("Failed ");
-          return;
-        }
-  
-        const result = await response.json();
-        console.log(result);
-        // const result = {
-        //   notifications: [
-        //     {
-        //       _id : "0",
-        //       sender : "testing@email.com",
-        //       message : "some testing text to see how it all shows up",
-        //       time : "11:58pm",
-        //       isread : false
-        //     },
-        //     {
-        //       _id : "1",
-        //       sender : "testing@email.com",
-        //       message : "You have been removed from group 'Testing'",
-        //       time : "11:58pm",
-        //       isread : false
-        //     },
-        //     {
-        //       _id : "2",
-        //       sender : "testing@email.com",
-        //       message : "Something else here or just a lot of texeeeetxtxtxt",
-        //       time : "11:58pm",
-        //       isread : true
-        //     },
-        //     {
-        //       _id : "3",
-        //       sender : "testing@email.com",
-        //       message : "some testing text to see how it all shows up",
-        //       time : "11:58pm",
-        //       isread : false
-        //     }
-        //   ]
-        // }
-        if (isEmpty(result.notifications)) {
-          setIsEmptyNotifications(true);
-        }
-  
-        setNotifications(result.notifications);
+    const endpoint = "/api/get_all_notifications";
+
+    // Form the request for sending data to the server.
+    const options = {
+      method: "POST",
+      mode: "no-cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email: email }),
+    };
+    const response = await fetch(endpoint, options);
+    // console.log(response);
+    if (response.status == 400) {
+      alert("Failed ");
+      return;
+    }
+
+    const result = await response.json();
+    // const result = {
+    //   notifications: [
+    //     {
+    //       _id : "0",
+    //       sender : "testing@email.com",
+    //       message : "some testing text to see how it all shows up",
+    //       time : "11:58pm",
+    //       isread : false
+    //     },
+    //     {
+    //       _id : "1",
+    //       sender : "testing@email.com",
+    //       message : "You have been removed from group 'Testing'",
+    //       time : "11:58pm",
+    //       isread : false
+    //     },
+    //     {
+    //       _id : "2",
+    //       sender : "testing@email.com",
+    //       message : "Something else here or just a lot of texeeeetxtxtxt",
+    //       time : "11:58pm",
+    //       isread : true
+    //     },
+    //     {
+    //       _id : "3",
+    //       sender : "testing@email.com",
+    //       message : "some testing text to see how it all shows up",
+    //       time : "11:58pm",
+    //       isread : false
+    //     }
+    //   ]
+    // }
+    if (isEmpty(result.notifications)) {
+      setIsEmptyNotifications(true);
+    }
+
+    setNotifications(result.notifications);
   };
   useEffect(() => {
     if (isAuthenticated && email != null) {
-        getAllNotifications(email); //make the call
+      getAllNotifications(email); //make the call
     }
-}, [isAuthenticated]);
+  }, [isAuthenticated]);
   const readNotification = (index) => {
     if (!notifications[index].isread) {
       const id = notifications[index]._id;
       const data = JSON.stringify(
         {
-          object_id : id
+          object_id: id
         }
       )
-        const endpoint = "/api/read_notification";
-        // Form the request for sending data to the server.
-        const options = {
-          method: "POST",
-          mode: "no-cors",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: data,
-        };
-        fetch(endpoint, options);
+      const endpoint = "/api/read_notification";
+      // Form the request for sending data to the server.
+      const options = {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: data,
+      };
+      fetch(endpoint, options);
     }
 
     notifications[index].isread = true;
@@ -149,7 +148,7 @@ export default function Notifications() {
   if (isEmptyNotifications) {
     return (
       <>
-      <CustomHead title={"Notifications"} description={"Shows BillMates notifications"}></CustomHead>
+        <CustomHead title={"Notifications"} description={"Shows BillMates notifications"}></CustomHead>
         <Header />
         <NotificationsWrapper>No Notifications</NotificationsWrapper>
         <Footer />
@@ -159,13 +158,13 @@ export default function Notifications() {
 
   return (
     <>
-    <CustomHead title={"Notifications"} description={"Shows BillMates notifications"}></CustomHead>
+      <CustomHead title={"Notifications"} description={"Shows BillMates notifications"}></CustomHead>
       <Header></Header>
-      { (currentNotificationDetail != -1)?
+      {(currentNotificationDetail != -1) ?
         <NotificationDetail closePanel={setCurrentNotificationDetail}
-        deleteNotification={deleteNotification} 
-        index = {currentNotificationDetail}
-        {...notifications[currentNotificationDetail]}></NotificationDetail>
+          deleteNotification={deleteNotification}
+          index={currentNotificationDetail}
+          {...notifications[currentNotificationDetail]}></NotificationDetail>
         :
         <></>
       }
