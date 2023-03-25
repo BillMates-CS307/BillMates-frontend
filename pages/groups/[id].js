@@ -65,6 +65,7 @@ export default function Group() {
             router.push("/home/");
             console.log(response);
         }
+        console.log(response);
     }
 
     //define loading circle and refresh when loading is done
@@ -117,7 +118,6 @@ export default function Group() {
                         }
                     </div>
                     <GroupHeading></GroupHeading>
-                    <div className={styles.buffer_block}></div>
                 </main>
                 {(currentPendingView != -1) ?
                     <PendingView members={response_data.members} expense={response_data.pending[currentPendingView]} hideParent={setCurrentPendingView}></PendingView>

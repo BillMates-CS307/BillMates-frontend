@@ -57,17 +57,20 @@ export default function SelfGroup() {
             response_data = response;
 
             //sort each group
-            for (let group in response_data.group_expenses) {
-              group.sort((a,b) => {
+            for (let groupId in response_data.group_expenses) {
+              groupExpenses = response_data.group_expenses[groupId];
+              groupExpenses.sort((a,b) => {
                 if (a.time <= b.time) {
                   return -1;
                 } else {
                   return 1;
                 }
               })
+              response_data.group_expenses[groupId] = groupExpenses;
             }
 
             //merge groups into one array
+            
             final_expenses = [];
 
             setLoading(false);
