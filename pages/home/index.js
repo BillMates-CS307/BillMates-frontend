@@ -77,7 +77,7 @@ export default function Homeheading() {
     dispatch(
       groupDataAction.setGroupId({ groupId: groupId })
     );
-    router.push("/Groups/" + groupId);
+    router.push("/groups/" + groupId);
   }
   if (isAuthenticated) {
     const hex = (sumDebts(userData.groups) == 0) ? "black" : (sumDebts(userData.groups) < 0) ? "var(--red-background)" : "var(--green-background)";
@@ -109,7 +109,7 @@ export default function Homeheading() {
               :
               userData.groups.map((group) => {
                 //const group = userData.groups[id];
-                return <GroupTemplate groupName={group.name} debtOwed={group.balance.toFixed(2)} groupId={group.group_id} goToGroup={goToGroup}></GroupTemplate>;
+                return <GroupTemplate groupName={group.name} debtOwed={group.balance.toFixed(2)} groupId={group.uuid} goToGroup={goToGroup}></GroupTemplate>;
               })
             }
             <div className={styles.buffer_block}></div>

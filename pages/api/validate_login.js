@@ -45,8 +45,8 @@ export default async function handler(req, res) {
         return response.json();
     }).then( (result) => {
         if (result.errorType != 500 && result.token_success && result.login_success && createJWT) {
-            result["token_c"] = jwt.sign({ email: email}, serverRuntimeConfig.JWT_TOKEN, { expiresIn: '7d' });
-            result["token_l"] = jwt.sign({ email: email}, serverRuntimeConfig.JWT_TOKEN, { expiresIn: '1d' });
+            result["token"] = jwt.sign({ email: email}, serverRuntimeConfig.JWT_TOKEN, { expiresIn: '7d' });
+            //result["token_l"] = jwt.sign({ email: email}, serverRuntimeConfig.JWT_TOKEN, { expiresIn: '1d' });
         }
         return res.status(200).json(result);
     }).catch( (error) => {console.log(error); return res.status(500).json({ errorMessage: 'Internal API error' })} )

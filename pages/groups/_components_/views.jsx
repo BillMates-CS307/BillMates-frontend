@@ -246,7 +246,10 @@ export function TransactionInputView({ members, userId, groupId, commentLength, 
                             return (
                                 <div className={styles.person}>
                                     <div className={styles.radio} onClick={(e) => selectPerson(e, idx)}></div>
-                                    <p className={styles.person_name} onClick={(e) => selectPerson(e, idx)}>{members[id]}</p>
+                                    <div className={styles.name_email_combo} onClick={(e) => selectPerson(e, idx)}>
+                                        <p className={styles.person_name}>{members[id]}</p>
+                                        <p>{id}</p>
+                                    </div>
                                     <input type="text" placeholder='00.00' email={id} onChange={(e) => { e.target.parentNode.parentNode.nextElementSibling.style = ""; }} readOnly={true}></input>
                                 </div>
                             )
@@ -265,13 +268,56 @@ export function TransactionInputView({ members, userId, groupId, commentLength, 
 
 export function TransactionView({userId, members, expense, hideParent, showFulFill}) {
     const fulfillAction = () => {
-        if (userId == expense.owner) {
-            console.log("Would you like to void this expense?");
-            return;
+            hideParent(-1);
+            showFulFill(expense);
+    }
+    const reportAction = async (event) => {
+        if (!ButtonLock.isLocked()) {
+            ButtonLock.LockButton();
+            let container = event.target;
+            let originalText = container.firstChild.textContent;
+            //set button visually to be locked
+            container.firstChild.textContent = "Reporting";
+            container.style = "background-color : var(--red-muted-background)";
+
+            //TODO: api call
+
+            setTimeout(() =>{
+                ButtonLock.UnlockButton();
+                container.firstChild.textContent = originalText;
+                container.style = "background-color : var(--red-background)";
+            }, 5000);
+
         } else {
-            hideParent(-1);showFulFill(expense);
+            console.log("locked");
         }
     }
+    const voidAction = async (event) =>{
+        if (!ButtonLock.isLocked()) {
+            ButtonLock.LockButton();
+            let container = event.target;
+            let originalText = container.firstChild.textContent;
+            //set button visually to be locked
+            container.firstChild.textContent = "Voiding";
+            container.style = "background-color : var(--green-muted-background)";
+
+            //TODO: api call
+
+            setTimeout(() =>{
+                ButtonLock.UnlockButton();
+                container.firstChild.textContent = originalText;
+                container.style = "";
+            }, 5000);
+
+        } else {
+            console.log("locked");
+        }
+    }
+    const confirmAction = (event) =>{
+        event.target.style = "display:none";
+        event.target.nextElementSibling.style = "display:grid";
+    }
+    let hasDebt = false;
 
     return (
         <div className={styles.transaction_background} id = "transaction_view">
@@ -280,17 +326,30 @@ export function TransactionView({userId, members, expense, hideParent, showFulFi
             <div className={styles.transaction_heading} id = "view_item_info">
                 <p>{expense.title}</p>
                 <p>${expense.amount.toFixed(2)}</p>
-                <p>{expense.comments}</p>
-                <p>{expense.owner}</p>
+                { (expense.comments)?
+                    <p>{expense.comments}</p>
+                    :
+                    <></>
+                }
+                <div className={styles.name_email_combo}>
+                    <p>{members[expense.owner]}</p>
+                    <p>{expense.owner}</p>
+                </div>
             </div>
             <div><p className={styles.debt_remaining_text}>Debts Remaining</p></div>
             <div className={styles.transaction_people} id = "view_transaction_people">
                 {
-                    Object.keys(expense.users).map( (id) => {
-                        let amt_remaining = expense.users[id];
+                    expense.users.map( ([id, amt_remaining]) => {
                         if (amt_remaining != 0) {
+                            hasDebt = true;
                         return (
-                            <div className={styles.person + " " + styles.person_view}><p>{members[id]}</p><p>${amt_remaining.toFixed(2)}</p></div>
+                            <div className={styles.person + " " + styles.person_view}>
+                                <div className={styles.name_email_combo}>
+                                <p>{members[id]}</p>
+                                <p>{id}</p>
+                                </div>
+                                <p>${amt_remaining.toFixed(2)}</p>
+                            </div>
                         )
                         } else {
                             return <></>
@@ -298,10 +357,19 @@ export function TransactionView({userId, members, expense, hideParent, showFulFi
                     })
                 }
             </div>
-            { (expense.users[userId] == undefined && userId != expense.owner)?
-            <></>
+            { (userId == expense.owner)?
+            <>
+            <div className={styles.submit_expense_container} onClick={(event) => {confirmAction(event)}}><p>Void Expense</p></div>
+            <div className={styles.confirm_void_container}><p onClick={(event)=>{voidAction(event)}}>Confirm</p><p onClick={() => {hideParent(-1)}}>Cancel</p></div>
+            </>
             :
-            <div className={styles.submit_expense_container} onClick={fulfillAction}><p>Bill Me</p></div>
+            (hasDebt) ?
+            <>
+            <div className={styles.submit_expense_container} onClick={(event) => {fulfillAction(event, false)}}><p>Bill Me</p></div>
+            <div style={{backgroundColor:"var(--red-background)"}} className={styles.submit_expense_container} onClick={reportAction}><p>Report</p></div>
+            </>
+                :
+                <></>
             }
             
         </div>
@@ -311,6 +379,13 @@ export function TransactionView({userId, members, expense, hideParent, showFulFi
 
 export function FulFillView({userId, expense, defaultVenmo, hideParent}) {
     let usingVenmo = defaultVenmo;
+    let amt = 0;
+    for (let pair of expense.users) {
+        if (pair[0] == userId) {
+            amt = pair[1];
+            break;
+        }
+    }
     const toggle = (event, isVenmo) => {
         const elm = event.target;
         elm.style = "background:var(--green-background); color : #FFF";
@@ -373,7 +448,7 @@ sendSms {
                 }
             } else {
                 console.log("using billmates");
-                let result = await group_methods.fulfillExpense(userId, expense._id, expense.users[userId]);
+                let result = await group_methods.fulfillExpense(userId, expense._id, amt);
                 if (result.errorType) {
                     console.log(result.errorMessage);
                     alert("Something went wrong, please try again later");
@@ -403,7 +478,7 @@ sendSms {
             <div className={styles.payment_method} ><button style={{background : "var(--green-background)", color : "#FFF"}} onClick={(e) => toggle(e,false)}>BillMates</button><button onClick={(e) => toggle(e,true)}>Venmo</button></div> 
             }
             <div className={styles.expense_payment_form}>
-                <p>Amount Paying: ${expense.users[userId].toFixed(2)}</p>
+                <p>Amount Paying: ${amt.toFixed(2)}</p>
             </div>
             <div className={styles.submit_expense_container} onClick={(e) => {handleExpensePay(e)}}><p>Bill Me</p></div>
         </div>

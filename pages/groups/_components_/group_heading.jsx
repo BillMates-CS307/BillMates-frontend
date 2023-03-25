@@ -17,7 +17,7 @@ export default function GroupHeading() {
         let hex = (state.balance == 0) ? "var(--neutral-background)" : (state.balance < 0) ? "var(--red-background)" : "var(--green-background)";
         heading.children[0].children[1].children[0].textContent = `$${((state.balance < 0) ? state.balance * -1 : state.balance * 1).toFixed(2)}`;
         heading.children[0].children[1].children[0].style = `color:${hex}`;
-        heading.children[1].children[0].children[1].textContent = "localhost:8000/JoinGroup/" + state.groupId;
+        heading.children[1].children[0].children[1].textContent = "localhost:8000/joingroup/" + state.groupId;
     }
     //set to update when getting the data
     store.subscribe(renderGroupHeading);
