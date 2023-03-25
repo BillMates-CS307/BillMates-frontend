@@ -35,17 +35,17 @@ export default function Homeheading() {
       return;
     }
   }
-  useEffect(()=> {
+  useEffect(() => {
     if (!isAuthenticated) {
-        console.log("authenticating");
-        check();
+      console.log("authenticating");
+      check();
     }
-},[isAuthenticated])
+  }, [isAuthenticated])
 
   //get redux state
   const store = useStore();
   const dispatch = useDispatch();
-  const userId = (isAuthenticated)? localStorage.getItem("tempId") : null;
+  const userId = (isAuthenticated) ? localStorage.getItem("tempId") : null;
   //let response_data = store.getState().userData;
   //define loading circle and refresh when loading is done
   const [loading, setLoading] = useState(true);

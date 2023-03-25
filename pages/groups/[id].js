@@ -13,7 +13,7 @@ import { groupDataAction } from '@/lib/store/groupData.slice';
 import { useRouter } from 'next/router.js';
 //Components
 import GroupHeading from './_components_/group_heading.jsx';
-import { TransactionInputView, TransactionView, PendingView, FulFillView } from './_components_/views.jsx'
+import { TransactionInputView, TransactionView, PendingView, FulFillView, PayAllView } from './_components_/views.jsx'
 import { ExpenseItem, PendingItem } from './_components_/items.jsx';
 import { group_methods } from '@/lambda_service/groupService.js';
 import { user_methods } from '@/lambda_service/userService.js';
@@ -22,21 +22,22 @@ export default function Group() {
     const router = useRouter();
     const [isAuthenticated, setAuthentication] = useState(false);
     async function check() {
-      let result = await user_methods.validateLoginJWT(router);
-      if (result.success) {
-        localStorage.setItem("tempId", result.payload.email);
-        setAuthentication(true);
-      }
+        let result = await user_methods.validateLoginJWT(router);
+        if (result.success) {
+            localStorage.setItem("tempId", result.payload.email);
+            setAuthentication(true);
+        }
     }
-    useEffect(()=> {
+    useEffect(() => {
         if (!isAuthenticated) {
             console.log("authenticating");
             check();
         }
-    },[isAuthenticated])
+    }, [isAuthenticated])
 
     //Defining state management
     const [transactionInputVisible, setTransactionInputVisible] = useState(false);
+    const [payAllVisible, setPayAllVisible] = useState(false);
     const [currentTransactionView, setCurrentTransactionView] = useState(-1);
     const [currentPendingView, setCurrentPendingView] = useState(-1);
     const [currentFulfillView, setCurrentFulfillView] = useState(null);
@@ -93,7 +94,7 @@ export default function Group() {
                                         title={item.title}
                                         date={item.date}
                                         amount={item.amount_paid.toFixed(2)}
-                                        owner={item.paid_by}
+                                        owner={response_data.members[item.paid_by]}
                                         showView={setCurrentPendingView}
                                     ></PendingItem>);
                                 } else {
@@ -118,6 +119,9 @@ export default function Group() {
                         }
                     </div>
                     <GroupHeading></GroupHeading>
+                    <div className={styles.repay_all_container} onClick={() => { setPayAllVisible(true) }}>
+                        <p>Repay All</p>
+                    </div>
                 </main>
                 {(currentPendingView != -1) ?
                     <PendingView members={response_data.members} expense={response_data.pending[currentPendingView]} hideParent={setCurrentPendingView}></PendingView>
@@ -136,7 +140,12 @@ export default function Group() {
                 }
                 {(currentFulfillView != null) ?
                     <FulFillView userId={userId} expense={currentFulfillView} hideParent={setCurrentFulfillView}></FulFillView>
-                :
+                    :
+                    <></>
+                }
+                {(payAllVisible) ?
+                    <PayAllView balance={response_data.balance} members={response_data.members} userId={userId} groupId={groupId} commentLength={response_data.maxComment} callback={setPayAllVisible} args={false}></PayAllView>
+                    :
                     <></>
                 }
                 <Footer callback={setTransactionInputVisible} args={true} lockStatus={loading}></Footer>

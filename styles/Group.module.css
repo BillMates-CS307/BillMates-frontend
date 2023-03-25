@@ -1,7 +1,7 @@
 .main {
     width: 100vw;
     display: grid;
-    grid-template-rows: min-content 1fr;
+    grid-template-rows: min-content 1fr auto;
 }
 
 .main p {
@@ -9,7 +9,6 @@
     overflow-x: hidden;
     color: var(--main-background-font-color);
 }
-
 
 .group_heading {
     width: 100%;
@@ -33,9 +32,11 @@
 .group_info p {
     font-size: 1rem;
 }
+
 .group_info p:first-of-type {
     font-size: 1.5rem;
 }
+
 #joinlink {
     font-size: 1.25rem;
 }
@@ -43,6 +44,7 @@
 .names_members {
     overflow-x: hidden;
 }
+
 .names_members svg {
     width: 20px;
     height: 20px;
@@ -52,17 +54,21 @@
     cursor: pointer;
     color: var(--main-background-font-color);
 }
+
 .word_break_all {
     word-break: break-all;
 }
+
 .group_amount {
     display: flex;
     align-items: center;
 }
+
 .group_amount p {
     font-size: 1rem;
     color: inherit;
 }
+
 .banner {
     width: 100%;
     /* margin-top: 15px; */
@@ -70,6 +76,7 @@
     text-align: center;
     padding: 5px 0;
 }
+
 .banner p {
     font-size: 1rem;
     color: #FFF;
@@ -81,7 +88,7 @@
 }
 
 .buffer_block {
-    background : transparent;
+    background: transparent;
     height: 60px;
     width: 100%;
     display: block;
@@ -99,21 +106,33 @@
     z-index: 1;
     border-radius: var(--border-radius);
 }
+
 .pending {
     background-color: #00DBFF;
     font-style: italic;
 }
+
+.pending_upper_row {
+    display: block;
+}
+
 .pending_larger_p {
     font-size: 1.2rem !important;
 }
 
-.transaction_container > div {
+.transaction_container>div {
     pointer-events: none;
 }
+
+.pending_transaction_info>div {
+    pointer-events: none;
+}
+
 .relative_amount {
     border-top-right-radius: var(--border-radius);
     border-bottom-right-radius: var(--border-radius);
 }
+
 /* sfdasd */
 .transaction_info div {
     display: grid;
@@ -123,7 +142,8 @@
     border-top-left-radius: 0;
     border-bottom-left-radius: var(--border-radius);
 }
-.pending_transaction_info div {
+
+/* .pending_transaction_info div {
     display: grid;
     grid-template-columns: 50% 50%;
     background-color: var(--neutral-background);
@@ -138,13 +158,14 @@
 }
 .pending_transaction_info div p:first-of-type {
     text-align: left;
-}
+} */
 
 .transaction_info div:first-of-type {
     background-color: var(--dark-neutral-background);
     border-top-left-radius: var(--border-radius);
     border-bottom-left-radius: 0;
 }
+
 .transaction_info div:first-of-type p {
     color: #FFF;
 }
@@ -171,11 +192,13 @@
     z-index: 999;
     /* cursor: pointer; */
 }
+
 .transaction_background p {
     text-overflow: ellipsis;
     overflow-x: hidden;
     color: var(--main-background-font-color);
 }
+
 .transaction_large {
     width: 95vw;
     height: auto;
@@ -193,7 +216,7 @@
 .transaction_heading {
     border-bottom: 1px solid var(--main-background-font-color);
     margin-bottom: 5px;
-    color : var(--main-background-font-color);
+    color: var(--main-background-font-color);
 }
 
 .x_button {
@@ -214,9 +237,9 @@
     background: var(--main-background-font-color);
     top: 50%;
     left: 50%;
-  }
-  
-  .x_button:before {
+}
+
+.x_button:before {
     content: '';
     position: absolute;
     top: 50%;
@@ -225,9 +248,9 @@
     background: var(--main-background-font-color);
     height: 100%;
     width: 3px;
-  }
+}
 
-.transaction_heading > * {
+.transaction_heading>* {
     margin: 5px 0;
 }
 
@@ -245,7 +268,7 @@
     pointer-events: none;
 }
 
-.name_email_combo p:last-child{
+.name_email_combo p:last-child {
     font-size: 0.75rem;
     /* font-style: italic; */
     margin-left: 5px;
@@ -262,6 +285,7 @@
     background: var(--main-background);
     color: var(--main-background-font-color);
 }
+
 .transaction_heading input:focus {
     border-bottom: 1px solid var(--green-background);
 }
@@ -269,6 +293,7 @@
 .split_button_container {
     text-align: end;
 }
+
 .split_button_container button {
     line-height: 1.5;
     font-size: 1rem;
@@ -300,9 +325,11 @@
     z-index: 1;
     margin-right: 5px;
 }
+
 .active {
     background-color: var(--green-background);
 }
+
 .person input {
     width: 100%;
     font-size: 1rem;
@@ -321,9 +348,9 @@
     height: fit-content;
     margin-top: 0.05rem;
     color: var(--red-background);
-  }
+}
 
-  .transaction_large span.comments_char_count {
+.transaction_large span.comments_char_count {
     display: block;
     color: var(--neutral-background);
     font-style: italic;
@@ -336,44 +363,46 @@
     margin-top: 20px;
     cursor: pointer;
     border-radius: var(--border-radius);
-  }
-  .submit_expense_container p {
-    color : #FFF;
+}
+
+.submit_expense_container p {
+    color: #FFF;
     font-size: 1.5rem;
     cursor: pointer;
     pointer-events: none;
-  }
+}
 
-  .confirm_void_container {
+.confirm_void_container {
     width: 100%;
     display: none;
     grid-template-columns: 49% 49%;
     grid-gap: 2%;
     margin-top: 20px;
-  }
+}
 
-  .confirm_void_container p {
+.confirm_void_container p {
     width: 90%;
     padding: 10px;
     text-align: center;
-    color : #FFF;
+    color: #FFF;
     font-size: 1.5rem;
     cursor: pointer;
     background-color: var(--red-background);
     justify-self: self-start;
     border-radius: var(--border-radius);
-  }
-  .confirm_void_container p:first-child {
+}
+
+.confirm_void_container p:first-child {
     background-color: var(--green-background);
     justify-self: self-end;
-  }
+}
 
 
-  .debt_remaining_text {
+.debt_remaining_text {
     font-size: 0.75rem;
     font-style: italic;
-    color : var(--neutral-background);
-  }
+    color: var(--neutral-background);
+}
 
 
 .expense_payment_form input {
@@ -388,6 +417,7 @@
 .payment_method {
     margin: 10px 0;
 }
+
 .payment_method button {
     padding: 0.25rem 0.5rem;
     line-height: 2;
@@ -395,34 +425,34 @@
     background-color: var(--neutral-background);
     color: var(--main-background-font-color);
     width: 50%;
-    border : none;
+    border: none;
     cursor: pointer;
 }
 
 .selected_method {
     background-color: var(--green-background) !important;
-    color : var(--opposite-background-font-color) !important;
+    color: var(--opposite-background-font-color) !important;
 }
 
 .delete_group_button {
     font-size: 1.5rem;
     background-color: var(--red-background);
-    color : var(--opposite-background-font-color);
+    color: var(--opposite-background-font-color);
     padding: 15px;
     margin: 5px auto;
     display: block;
-    border : none;
+    border: none;
     cursor: pointer;
 }
 
 .delete_group_button {
     font-size: 1.5rem;
     background-color: var(--red-background);
-    color : var(--opposite-background-font-color);
+    color: var(--opposite-background-font-color);
     padding: 15px;
     margin: 5px auto;
     display: block;
-    border : none;
+    border: none;
     cursor: pointer;
 }
 
@@ -441,11 +471,11 @@
     font-size: 1.25rem;
     border: 1px solid var(--opposite-background);
 }
-  
+
 .yourName {
     font-weight: bold;
 }
-  
+
 .individualDebt {
     margin-top: 10px;
 }
@@ -458,7 +488,7 @@
     cursor: pointer;
     border-radius: var(--border-radius);
 }
-  
+
 .groupNameP {
     background-color: var(--neutral-background);
     /* color: white; */
@@ -468,7 +498,7 @@
     border-top-left-radius: var(--border-radius);
     border-bottom-left-radius: var(--border-radius);
 }
-  
+
 .debtInGroupP {
     background-color: lightcoral;
     /* color: white; */
@@ -481,9 +511,27 @@
 .positive {
     background-color: var(--green-background);
 }
+
 .negative {
     background-color: var(--red-background);
 }
+
 .neutral {
     background-color: var(--neutral-background);
+}
+
+
+.repay_all_container {
+    margin: 15px auto;
+    width: fit-content;
+    padding: 10px 20px;
+    background-color: var(--green-background);
+    border-radius: var(--border-radius);
+    font-size: 1.25rem;
+    cursor: pointer;
+}
+
+.repay_all_container p {
+    color: #FFF;
+    /* white just looks good with both green backgrounds */
 }

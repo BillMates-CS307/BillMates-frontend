@@ -33,7 +33,7 @@
 .incorrect_box p {
   background: var(--red-muted-background) !important;
   border: none !important;
-  color : #900;
+  color: #900;
   padding: 10px;
   border-radius: var(--border-radius);
   text-align: center;
@@ -58,13 +58,14 @@
   padding-right: 1.5rem;
   width: 100%;
   border-radius: var(--border-radius);
-  border : 1px solid var(--neutral-background);
-  font-size : 1rem;
+  border: 1px solid var(--neutral-background);
+  font-size: 1rem;
 }
 
 .signup_form input:focus {
   outline: 1px solid var(--green-background);
 }
+
 .signup_form input.active {
   border: 1px solid var(--red-background);
 }
@@ -90,11 +91,11 @@
 
 .signup_form {
   margin: 15px auto;
-    /* margin-top: 15px; */
-    width: 80%;
-    background: var(--main-background);
-    padding: 1rem;
-    border-radius: var(--border-radius);
+  /* margin-top: 15px; */
+  width: 80%;
+  background: var(--main-background);
+  padding: 1rem;
+  border-radius: var(--border-radius);
 }
 
 /* #checkbox_div {
@@ -131,11 +132,13 @@
   display: flex;
   justify-content: flex-end;
 }
+
 #checkbox_div label {
   margin: 0 5px 0 0;
   align-items: center;
   display: flex;
 }
+
 #checkbox_div input {
   visibility: hidden;
   display: block;
@@ -144,6 +147,7 @@
   position: absolute;
   overflow: hidden;
 }
+
 #checkbox_div span {
   width: 1rem;
   height: 1rem;
@@ -154,31 +158,34 @@
   margin: 0 0 0 5px;
   position: relative;
   background-color: var(--main-background);
-  color : var(--main-background);
+  color: var(--main-background);
 }
+
 #checkbox_div span svg {
   color: inherit;
 }
-#checkbox_div input[type=checkbox]:checked + span {
+
+#checkbox_div input[type=checkbox]:checked+span {
   background: var(--green-background);
-  color : white;
+  color: white;
 }
 
 .position_box p {
   text-align: center;
-    padding: 15px;
-    border: 1px solid var(--neutral-background);
-    border-radius: var(--border-radius);
-    width: 80%;
-    margin: auto;
-    background: var(--main-background);
-    box-shadow: 1px 2px 15px 0 var(--dark-neutral-background);
+  padding: 15px;
+  border: 1px solid var(--neutral-background);
+  border-radius: var(--border-radius);
+  width: 80%;
+  margin: auto;
+  background: var(--main-background);
+  box-shadow: 1px 2px 15px 0 var(--dark-neutral-background);
 }
 
 .position_box a {
   display: block;
   color: var(--green-background);
 }
+
 .position_box a:visited {
   color: #007b15;
 }
@@ -196,9 +203,11 @@
   pointer-events: none;
   color: var(--main-background-font-color);
 }
+
 .inode path {
   pointer-events: none;
 }
+
 .inode i {
   width: 1rem;
   height: 1.5rem;

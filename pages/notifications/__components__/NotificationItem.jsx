@@ -16,7 +16,7 @@ export default function NotificationItem({
     <NotificationItemWrapper
       isread={isread}
       isfirst={isfirst}
-      onClick={()=>{showDetail(index, index)}}
+      onClick={() => { showDetail(index, index) }}
     >
       <ProfileWrapper>
         <Profile />
