@@ -1,7 +1,7 @@
 import styles from "@/styles/Group.module.css"
 
 export default function GroupTemplate({groupName, debtOwed, groupId, goToGroup}) {
-    let hexBox = (debtOwed == 0) ? "lightgray" : (debtOwed < 0) ? "var(--red-background)" : "var(--green-background)";
+    let hexBox = (debtOwed == 0) ? "#e8e8e8" : (debtOwed < 0) ? "var(--red-background)" : "var(--green-background)";
     return (
       <div className={styles.groupTemplate} onClick={() => {goToGroup(groupId)}}>
           <p className={styles.groupNameP}>{groupName}</p>

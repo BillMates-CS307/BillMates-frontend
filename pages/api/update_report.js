@@ -20,7 +20,7 @@ export default async function handler(req, res) {
     // Sends a HTTP success code
 
     //make request to Lambda
-    const url = 'https://jfynig6bitelqawn2z4pv7rg440wnwjw.lambda-url.us-east-2.on.aws/';
+    const url = 'placeholder';
     const options = {
       method: 'POST',
       mode : 'cors',

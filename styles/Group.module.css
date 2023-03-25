@@ -1,7 +1,7 @@
 .main {
     width: 100vw;
     display: grid;
-    grid-template-rows: min-content 1fr;
+    grid-template-rows: min-content 1fr auto;
 }
 
 .main p {
@@ -103,11 +103,17 @@
     background-color: #00DBFF;
     font-style: italic;
 }
+.pending_upper_row {
+    display: block;
+}
 .pending_larger_p {
     font-size: 1.2rem !important;
 }
 
 .transaction_container > div {
+    pointer-events: none;
+}
+.pending_transaction_info > div {
     pointer-events: none;
 }
 .relative_amount {
@@ -123,7 +129,7 @@
     border-top-left-radius: 0;
     border-bottom-left-radius: var(--border-radius);
 }
-.pending_transaction_info div {
+/* .pending_transaction_info div {
     display: grid;
     grid-template-columns: 50% 50%;
     background-color: var(--neutral-background);
@@ -138,7 +144,7 @@
 }
 .pending_transaction_info div p:first-of-type {
     text-align: left;
-}
+} */
 
 .transaction_info div:first-of-type {
     background-color: var(--dark-neutral-background);
@@ -486,4 +492,18 @@
 }
 .neutral {
     background-color: var(--neutral-background);
+}
+
+
+.repay_all_container {
+    margin: 15px auto;
+    width: fit-content;
+    padding: 10px 20px;
+    background-color: var(--green-background);
+    border-radius: var(--border-radius);
+    font-size: 1.25rem;
+    cursor: pointer;
+}
+.repay_all_container p {
+    color: #FFF; /* white just looks good with both green backgrounds */
 }

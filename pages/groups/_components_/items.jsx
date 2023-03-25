@@ -1,22 +1,42 @@
 import styles from "@/styles/Group.module.css";
 
+export function ReportedItem({id,index, title, date, owner, amount, showView}) {
+    return (
+            <div index={index} key={id} className={styles.transaction_container + " " + styles.pending}
+            onClick={() => showView(index)}>
+            <div className={styles.transaction_info}>
+                <div className={styles.transaction_name_amount + " " + styles.pending_upper_row}>
+                    <p>Review Expense: {title}</p>
+                </div>
+                <div className={styles.transaction_owner_date}>
+                    <p>{owner}</p>
+                    <p>{date}</p>
+                </div>
+            </div>
+            <div className={styles.relative_amount}>
+                <p>${amount}</p>
+            </div>
+        </div>
+    )
+}
+
 export function PendingItem({id,index, title, date, owner, amount, showView}) {
     return (
-        <div index={index} className={`${styles.transaction_container} ${styles.pending}`} key={index} onClick={() => showView(index)}>
-        <div className={styles.pending_transaction_info}>
-            <div className={styles.transaction_name_amount}>
-                <p>Pending:</p>
-                <p>{title}</p>
+            <div index={index} key={id} className={styles.transaction_container + " " + styles.pending}
+            onClick={() => showView(index)}>
+            <div className={styles.transaction_info}>
+                <div className={styles.transaction_name_amount + " " + styles.pending_upper_row}>
+                    <p>Pending Approval: {title}</p>
+                </div>
+                <div className={styles.transaction_owner_date}>
+                    <p>{owner}</p>
+                    <p>{date}</p>
+                </div>
             </div>
-            <div className={styles.transaction_owner_date}>
-                <p>{owner}</p>
-                <p>{date}</p>
+            <div className={styles.relative_amount}>
+                <p>${amount}</p>
             </div>
         </div>
-        <div className={styles.relative_amount}>
-            <p>${amount}</p>
-        </div>
-    </div>
     )
 }
 export function ExpenseItem({id,index, title, date, owner, amount, isOwner, userId, users, showExpense}) {

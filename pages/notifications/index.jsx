@@ -49,13 +49,14 @@ export default function Notifications() {
           body: JSON.stringify({email : email}),
         };
         const response = await fetch(endpoint, options);
-        // console.log(response);
+        console.log(response);
         if (response.status == 400) {
           alert("Failed ");
           return;
         }
   
         const result = await response.json();
+        console.log(result);
         // const result = {
         //   notifications: [
         //     {
