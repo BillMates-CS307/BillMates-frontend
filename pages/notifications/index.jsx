@@ -204,6 +204,7 @@ const NotificationsWrapper = styled.div`
   border-radius: var(--border-radius);
   box-shadow: 1px 2px 15px 0 #949494;
   background: var(--main-background);
+  color: var(--main-background-font-color);
 `;
 
 const NotificationsList = styled.ul`

@@ -2,30 +2,30 @@ import styled from "@emotion/styled";
 
 
 
-export default function NotificationDetail({_id, sender, message, time, closePanel, deleteNotification, index}) {
-    console.log(sender);
+export default function NotificationDetail({ _id, sender, message, time, closePanel, deleteNotification, index }) {
+  console.log(sender);
 
-    return (
-        <>
-        <BackgroundBlur>
-              <NotificationDetailWrapper>
-        <NotificationDetailContentsWrapper>
-          <NotificationDetailTitle><CloseButton onClick={()=>{closePanel(-1)}}></CloseButton></NotificationDetailTitle>
-          <NotificationDetailSender>
-            {sender}
-          </NotificationDetailSender>
-          <NotificationDetailMessage>
-            {message}
-          </NotificationDetailMessage>
-          <NotificationDetailTime>{time}</NotificationDetailTime>
-        </NotificationDetailContentsWrapper>
-        <DeleteButtonWrapper onClick={()=>{deleteNotification(index)}}>
-          Delete
-        </DeleteButtonWrapper>
-      </NotificationDetailWrapper>
+  return (
+    <>
+      <BackgroundBlur>
+        <NotificationDetailWrapper>
+          <NotificationDetailContentsWrapper>
+            <NotificationDetailTitle><CloseButton onClick={() => { closePanel(-1) }}></CloseButton></NotificationDetailTitle>
+            <NotificationDetailSender>
+              {sender}
+            </NotificationDetailSender>
+            <NotificationDetailMessage>
+              {message}
+            </NotificationDetailMessage>
+            <NotificationDetailTime>{time}</NotificationDetailTime>
+          </NotificationDetailContentsWrapper>
+          <DeleteButtonWrapper onClick={() => { deleteNotification(index) }}>
+            Delete
+          </DeleteButtonWrapper>
+        </NotificationDetailWrapper>
       </BackgroundBlur>
-        </>
-    )
+    </>
+  )
 }
 
 const CloseButton = styled.div`

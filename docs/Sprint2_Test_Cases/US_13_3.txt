@@ -1,0 +1,12 @@
+A. Identification and classification
+Test Case: 13003
+System: Group Expense Management
+User is able to cancel voiding an expense when prompted
+Severity: 3
+
+B. Instructions
+	1. Repeat test case 13002 until step 4
+	2. Click "Cancel"
+
+C. Expected Result:
+	1. The group page appears the same as before the test case

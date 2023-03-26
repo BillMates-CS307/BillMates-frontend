@@ -1,0 +1,15 @@
+A. Identification and classification
+Test Case: 14001
+System: Notifications
+User receives a notification when included in an expense
+Severity: 3
+
+B. Instructions
+	1. User 1, create a group
+	2. User 2, join the group from the join link
+	3. User 1, create an expense and include User 2 with a non-zero dollar amount
+	4. User 2, navigate to the notifications page
+
+C. Expected Result:
+	1. At least one notification highlighted green will appear
+	2. The given notification shows the ...

@@ -31,7 +31,7 @@ export default function JoinGroup() {
             console.log(result.errorMessage);
             return;
         } else if (result.success) {
-            router.push("../Groups/" + groupId);
+            router.push("../groups/" + groupId);
         } else {
             alert("Already in group or banned?");
         }

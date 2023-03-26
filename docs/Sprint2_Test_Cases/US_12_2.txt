@@ -1,0 +1,12 @@
+A. Identification and classification
+Test Case: 12002
+System: Group Exepense Management
+User is able to cancel reporting the expense
+Severity: 2
+
+B. Instructions
+	1. Repeat test case 12001
+	2. User 2, Select the "Cancel" button
+
+C. Expected Result:
+	1. User 2 is shown the group page unmodified

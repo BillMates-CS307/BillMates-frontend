@@ -1,0 +1,23 @@
+A. Identification and classification
+Test Case: 11002
+System: Group Expense Management
+User is able to select Venmo as the payment method
+Severity: 3
+
+B. Instructions
+	1. User 1, create a group
+	2. User 2, join the group with the join link
+	3. User 1, create an expense with the following inputs
+		title = "test case"
+		amount = 10.00
+		comment = "testing payment methods"
+		User 2 = 10.00
+	4. Submit the expense
+	5. User 2, select the newly created expense
+	6. Select "BillMe" and then "Venmo"
+		
+
+C. Expected Result:
+	1. The toggle is highlighted green over "Venmo"
+	
+	
