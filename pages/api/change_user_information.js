@@ -10,13 +10,10 @@ export default async function handler(req, res) {
     !req_body.email ||
     !req_body.name ||
     !req_body.oldPassword ||
-    !req_body.newPassword ||
-    !req_body.notification
+    !req_body.newPassword
   ) {
     // Sends a HTTP bad request error code
-    return res
-      .status(400)
-      .json({ data: "name, password, or notification not found" });
+    return res.status(400).json({ data: "name, password not found" });
   }
 
   // Found the name.
@@ -36,8 +33,24 @@ export default async function handler(req, res) {
     body: JSON.stringify(body_json),
   };
 
-  const lambda_resp = await fetch(url, options);
-  const lambda_data = await lambda_resp.json();
+  let response_body = {
+    errorType: 0,
+    success: false,
+  };
 
-  return res.status(200).json(lambda_data);
+  return await fetch(url, options)
+    .then((response) => {
+      if (response.status == 500) {
+        response_body.errorType = 500;
+        return response_body;
+      }
+      return response.json();
+    })
+    .then((result) => {
+      return res.status(200).json(result);
+    })
+    .catch((error) => {
+      console.log(error);
+      return res.status(500).json({ message: "Internal API error" });
+    });
 }
