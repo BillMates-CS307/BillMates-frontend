@@ -13,8 +13,8 @@ export default function Header() {
           </svg>
         </Link>
         <div>
-          <p>Bill</p>
-          <p>Mates</p>
+          <p><strong>Bill</strong></p>
+          <p><strong>Mates</strong></p>
         </div>
         <Link href="/settings">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
