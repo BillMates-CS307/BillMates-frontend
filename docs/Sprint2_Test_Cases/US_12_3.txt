@@ -1,0 +1,16 @@
+A. Identification and classification
+Test Case: 12003
+System: Group Exepense Management
+User is able to report the expense
+Severity: 2
+
+B. Instructions
+	1. Repeat test case 12001
+	2. User 2, Select the "Report" button
+
+C. Expected Result:
+	1. The expense is removed from the group page for Users 2 and 3
+	2. The balances of User 3 and User 2 are reverted to the amount
+		before the reported expense was made
+	3. The expense appears for User 1 as "Needs Review"
+

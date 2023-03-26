@@ -1,0 +1,18 @@
+A. Identification and classification
+Test Case: 13002
+System: Group Expense Management
+User is prompted to confirm voiding the expense
+Severity: 1
+
+B. Instructions
+	1. Using the same users from test case 13001, User 1 navigate 
+		to the group created in test case 13001
+	2. User 1, click an expense that was submitted by User 1
+	3. Click on "Void Expense"
+	4. Click on "Confirm"
+
+C. Expected Result:
+	1. Two new buttons appear reading "Confirm" and "Cancel"
+	2. The expense that was voided no longer appears
+	3. The balances of User 1 and User 2 are updated 
+		(relative to the amount specified in test case 13001)

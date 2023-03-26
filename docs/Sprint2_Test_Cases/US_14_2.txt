@@ -1,0 +1,14 @@
+A. Identification and classification
+Test Case: 14002
+System: Notifications
+User does not receive a notification if they opt out of it
+Severity: 3
+
+B. Instructions
+	1. User 2, go to the settings page and select the notifications
+		option "Email Only"
+	2. Repeat test case 14001
+
+C. Expected Result:
+	1. No new notification related to the previous action appears
+	

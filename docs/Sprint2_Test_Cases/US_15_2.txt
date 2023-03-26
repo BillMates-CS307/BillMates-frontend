@@ -1,0 +1,17 @@
+A. Identification and classification
+Test Case: 15002
+System: Group Exepense Management
+User is unable to submit the expense with (bad) inputs
+Severity: 1
+
+B. Instructions
+	1. Repeat steps 1-5 in test case 15001
+	2. User 2, select a user in the members list
+	3. Type the word "money" in the corresponding input field
+	4. Click the "Submit" button
+
+C. Expected Result:
+	1. Expense name field will be highlighted red and stated as "required"
+	2. Red text will appear stating "Amount remaining: $##.##"
+	3. The input field will be highlighted red
+	

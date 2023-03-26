@@ -1,0 +1,17 @@
+A. Identification and classification
+Test Case: 12005
+System: Group Exepense Management
+Group manager is able to restore an expense by denying the report
+Severity: 2
+
+B. Instructions
+	1. Repeat test case 12003
+	2. User 1, reload the group page
+	3. User 1, select the reported expense
+	4. User 1, select the "Deny" button
+
+C. Expected Result:
+	1. The expense is restored to the group page for all users
+	2. The balances of User 2 and 3 are updated to the state
+		that they were after the expense was originall created
+
