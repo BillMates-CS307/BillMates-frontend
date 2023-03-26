@@ -1,7 +1,9 @@
+import { serverRuntimeConfig } from "@/next.config";
+
 export default async function handler(req, res) {
   // Get data submitted in request's body.
   const req_body = JSON.parse(req.body);
-
+  // console.log(req);
   // Guard clause checks for first and last name,
   // and returns early if they are not found
   if (
@@ -29,7 +31,7 @@ export default async function handler(req, res) {
     mode: "cors",
     headers: {
       "Content-Type": "application/json",
-      token: "zpdkwA.2_kLU@zg",
+      token: serverRuntimeConfig.LAMBDA_TOKEN,
     },
     body: JSON.stringify(body_json),
   };
