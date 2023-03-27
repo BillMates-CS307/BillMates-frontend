@@ -1,6 +1,7 @@
 import { group_methods } from "@/lambda_service/groupService";
 import { user_methods } from "@/lambda_service/userService";
 import styles from "@/styles/Group.module.css";
+import { use } from "react";
 import { ButtonLock } from "../../global_components/button_lock";
 
 
@@ -359,12 +360,19 @@ export function TransactionView({ userId, members, expense, hideParent, showFulF
                         <p>{expense.owner}</p>
                     </div>
                 </div>
-                <div><p className={styles.debt_remaining_text}>Debts Remaining</p></div>
+                {(expense.is_payout)?
+                    <div><p className={styles.debt_remaining_text}>Paid To</p></div>
+                :
+                    <div><p className={styles.debt_remaining_text}>Debts Remaining</p></div>
+                }
+                
                 <div className={styles.transaction_people} id="view_transaction_people">
                     {
                         expense.users.map(([id, amt_remaining]) => {
                             if (amt_remaining != 0) {
-                                hasDebt = true;
+                                if (id == userId) {
+                                    hasDebt = true;
+                                }
                                 return (
                                     <div className={styles.person + " " + styles.person_view}>
                                         <div className={styles.name_email_combo}>
@@ -388,7 +396,11 @@ export function TransactionView({ userId, members, expense, hideParent, showFulF
                     :
                     (hasDebt) ?
                         <>
-                            <div className={styles.submit_expense_container} onClick={(event) => { fulfillAction(event, false) }}><p>Bill Me</p></div>
+                            {(!expense.is_payout)?
+                                <div className={styles.submit_expense_container} onClick={(event) => { fulfillAction(event, false) }}><p>Bill Me</p></div>
+                            :
+                                <></>
+                            }
                             <div style={{ backgroundColor: "var(--red-background)" }} className={styles.submit_expense_container} onClick={(event) => { confirmAction(event) }}><p>Report</p></div>
                             <div className={styles.confirm_void_container}><p onClick={(event) => { reportAction(event) }}>Confirm</p><p onClick={closeContainer}>Cancel</p></div>
                         </>
@@ -455,21 +467,33 @@ export function FulFillView({ userId, expense, defaultVenmo, hideParent }) {
             */
 
             if (usingVenmo) {
-                //check if login credentials work
-                let result = await user_methods.loginVenmoWithCredentials("coverlog555@gmail.com", "Logcov210117?");
-                if (result.error) {
-                    alert("We got an error");
-                    console.log(result.errorMessage);
-                } else if (!result.success) {
-                    console.log("invalid credentials");
-                } else if (result.otpSecret) {
-                    let smsResult = await user_methods.sendVenmoSms(result.deviceId, result.otpSecret);
-                    if (smsResult.success) {
-                        console.log("sent the text");
-                    } else {
-                        console.log("secret expired somehow");
-                    }
+                let my_token = "Bearer e7bdd17043835f22d704edf1a896ca6d43924110251baa85bca5e14062739900";
+                let result = await user_methods.getUserIdsFromVenmo(my_token, my_token);
+                console.log(result);
+                if (result[0].success && result[1].success) { //both users had valid tokens and linked to Venmo
+                    let payment = await user_methods.payUserWithVenmo(my_token, "1", result[0].userId, result[1].userId);
+                    console.log(payment);
                 }
+            
+
+                //check if login credentials work
+                // let result = await user_methods.loginVenmoWithCredentials("coverlog555@gmail.com", "Logcov210117?");
+                // if (result.error) {
+                //     alert("We got an error");
+                //     console.log(result.errorMessage);
+                // } else if (!result.success) {
+                //     console.log("invalid credentials");
+                // } else if (result.otpSecret) {
+                //     console.log(result);
+                //     let smsResult = await user_methods.sendVenmoSms(result.deviceId, result.otpSecret);
+                //     if (smsResult.success) {
+                //         console.log("sent the text");
+                //     } else {
+                //         console.log("secret expired somehow");
+                //     }
+                // }
+                // let finalResult = await user_methods.loginVenmoWithOtp("357113572186890509257930635223921221", "MeyN16znRPaIl7AdULCSfTpoFK2smvQTOSdRbcgnANxXUJBoaRXPLq2iaotQQ7AV", "990700");
+                // console.log(finalResult);
             } else {
                 console.log("using billmates");
                 let result = await group_methods.fulfillExpense(userId, expense._id, amt);
@@ -557,7 +581,7 @@ export function PendingView({ members, expense, hideParent }) {
     );
 }
 
-export function PayAllView({ members, userId, groupId, commentLength, callback, args, balance }) {
+export function PayAllView({ members, userId, groupId, commentLength, callback, args, balance, userBalances }) {
     console.log("Creating Payout All View");
     //remove user from the list of members
 
@@ -578,8 +602,6 @@ export function PayAllView({ members, userId, groupId, commentLength, callback, 
         expense: {},
         numSelected: 0
     }
-    console.log(format.members);
-
     const splitEven = () => {
         const elm = document.querySelector('#transaction_people');
         //reset the error total message
@@ -754,7 +776,7 @@ export function PayAllView({ members, userId, groupId, commentLength, callback, 
             <div className={styles.transaction_large}>
                 <div className={styles.x_button} onClick={() => { callback(args) }}></div>
                 <div className={styles.transaction_heading}>
-                    <input type="text" placeholder='Item Name' id="input_item_name"></input>
+                    <input type="text" placeholder='Item Name' id="input_item_name" readOnly value={members[userId] + " has paid back their balance in full"}></input>
                     <span></span>
                     <input type="text" placeholder='00.00' id="input_item_total" readOnly value={(format.amount * -1).toFixed(2)}></input>
                     <span></span>
@@ -777,7 +799,6 @@ export function PayAllView({ members, userId, groupId, commentLength, callback, 
                     {
 
                         format.members.map((member) => {
-                            console.log(member);
                             return (
                                 <div className={styles.person}>
                                     <div className={styles.radio} onClick={(e) => selectPerson(e, member.position)}></div>
@@ -785,7 +806,7 @@ export function PayAllView({ members, userId, groupId, commentLength, callback, 
                                         <p className={styles.person_name}>{members[member.id]}</p>
                                         <p>{member.id}</p>
                                     </div>
-                                    <input type="text" placeholder='00.00' email={member.id} onChange={(e) => { e.target.parentNode.parentNode.nextElementSibling.style = ""; }} readOnly={true}></input>
+                                    <input type="text" placeholder={userBalances[member.id].toFixed(2)} email={member.id} onChange={(e) => { e.target.parentNode.parentNode.nextElementSibling.style = ""; }} readOnly={true}></input>
                                 </div>
                             )
                         })

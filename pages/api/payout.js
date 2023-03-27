@@ -7,11 +7,11 @@ export default async function handler(req, res) {
   }
 
   // Get data submitted in request's body.
-  const { title, group_id, expense, total, owner } = JSON.parse(req.body);
+  const {group_id, expenses, total, email } = JSON.parse(req.body);
   console.log(req.body);
   // Guard clause checks for first and last name,
   // and returns early if they are not found
-  if (title == null || group_id == null || expense == null || total == null || owner == null) {
+  if (group_id == null || expenses == null || total == null || email == null) {
     // Sends a HTTP bad request error code
     return res.status(400).json({ message: 'email or password not found' })
   }
@@ -20,7 +20,7 @@ export default async function handler(req, res) {
   // Sends a HTTP success code
 
   //make request to Lambda
-  const url = 'placeholder';
+  const url = 'https://ipzfxhr6iinf5lohek6kvva3lu0wirji.lambda-url.us-east-2.on.aws/';
   const options = {
     method: 'POST',
     mode: 'cors',
