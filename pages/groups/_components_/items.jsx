@@ -19,7 +19,6 @@ export function ReportedItem({ id, index, title, date, owner, amount, showView }
         </div>
     )
 }
-
 export function PendingItem({ id, index, title, date, owner, amount, showView }) {
     return (
         <div index={index} key={id} className={styles.transaction_container + " " + styles.pending}

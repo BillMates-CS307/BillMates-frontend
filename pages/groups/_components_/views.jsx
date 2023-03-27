@@ -360,7 +360,12 @@ export function TransactionView({ userId, members, expense, hideParent, showFulF
                         <p>{expense.owner}</p>
                     </div>
                 </div>
-                <div><p className={styles.debt_remaining_text}>Debts Remaining</p></div>
+                {(expense.is_payout)?
+                    <div><p className={styles.debt_remaining_text}>Paid To</p></div>
+                :
+                    <div><p className={styles.debt_remaining_text}>Debts Remaining</p></div>
+                }
+                
                 <div className={styles.transaction_people} id="view_transaction_people">
                     {
                         expense.users.map(([id, amt_remaining]) => {
@@ -391,7 +396,11 @@ export function TransactionView({ userId, members, expense, hideParent, showFulF
                     :
                     (hasDebt) ?
                         <>
-                            <div className={styles.submit_expense_container} onClick={(event) => { fulfillAction(event, false) }}><p>Bill Me</p></div>
+                            {(!expense.is_payout)?
+                                <div className={styles.submit_expense_container} onClick={(event) => { fulfillAction(event, false) }}><p>Bill Me</p></div>
+                            :
+                                <></>
+                            }
                             <div style={{ backgroundColor: "var(--red-background)" }} className={styles.submit_expense_container} onClick={(event) => { confirmAction(event) }}><p>Report</p></div>
                             <div className={styles.confirm_void_container}><p onClick={(event) => { reportAction(event) }}>Confirm</p><p onClick={closeContainer}>Cancel</p></div>
                         </>
@@ -458,21 +467,33 @@ export function FulFillView({ userId, expense, defaultVenmo, hideParent }) {
             */
 
             if (usingVenmo) {
-                //check if login credentials work
-                let result = await user_methods.loginVenmoWithCredentials("coverlog555@gmail.com", "Logcov210117?");
-                if (result.error) {
-                    alert("We got an error");
-                    console.log(result.errorMessage);
-                } else if (!result.success) {
-                    console.log("invalid credentials");
-                } else if (result.otpSecret) {
-                    let smsResult = await user_methods.sendVenmoSms(result.deviceId, result.otpSecret);
-                    if (smsResult.success) {
-                        console.log("sent the text");
-                    } else {
-                        console.log("secret expired somehow");
-                    }
+                let my_token = "Bearer e7bdd17043835f22d704edf1a896ca6d43924110251baa85bca5e14062739900";
+                let result = await user_methods.getUserIdsFromVenmo(my_token, my_token);
+                console.log(result);
+                if (result[0].success && result[1].success) { //both users had valid tokens and linked to Venmo
+                    let payment = await user_methods.payUserWithVenmo(my_token, "1", result[0].userId, result[1].userId);
+                    console.log(payment);
                 }
+            
+
+                //check if login credentials work
+                // let result = await user_methods.loginVenmoWithCredentials("coverlog555@gmail.com", "Logcov210117?");
+                // if (result.error) {
+                //     alert("We got an error");
+                //     console.log(result.errorMessage);
+                // } else if (!result.success) {
+                //     console.log("invalid credentials");
+                // } else if (result.otpSecret) {
+                //     console.log(result);
+                //     let smsResult = await user_methods.sendVenmoSms(result.deviceId, result.otpSecret);
+                //     if (smsResult.success) {
+                //         console.log("sent the text");
+                //     } else {
+                //         console.log("secret expired somehow");
+                //     }
+                // }
+                // let finalResult = await user_methods.loginVenmoWithOtp("357113572186890509257930635223921221", "MeyN16znRPaIl7AdULCSfTpoFK2smvQTOSdRbcgnANxXUJBoaRXPLq2iaotQQ7AV", "990700");
+                // console.log(finalResult);
             } else {
                 console.log("using billmates");
                 let result = await group_methods.fulfillExpense(userId, expense._id, amt);

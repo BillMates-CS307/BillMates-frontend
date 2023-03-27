@@ -62,6 +62,7 @@ export default function Group() {
             //response.review = response.review.reverse();
             response_data = response;
             response_data["groupId"] = groupId;
+            console.log(response_data);
             setLoading(false);
             dispatch(
                 groupDataAction.setGroupData(response_data)
@@ -108,6 +109,19 @@ export default function Group() {
                         }
                         {(!loading) ?
                             response_data.expenses.map((item, index) => {
+                                if (item.contested) {
+                                    if (userId == response_data.manager) {
+                                        return (<PendingItem index={index}
+                                            title={item.title}
+                                            date={item.date}
+                                            amount={item.amount_paid.toFixed(2)}
+                                            owner={response_data.members[item.paid_by]}
+                                            showView={setCurrentPendingView}
+                                        ></PendingItem>);
+                                    } else {
+                                        return <></>
+                                    }
+                                }
                                 return (<ExpenseItem index={index} id={index}
                                     title={item.title}
                                     date={item.date}
