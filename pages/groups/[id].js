@@ -56,6 +56,10 @@ export default function Group() {
             console.log("An error occured, check logs");
             return;
         } else if (response.success) {
+            //reverse arrays to show most recent first
+            response.expenses = response.expenses.reverse();
+            response.pending = response.pending.reverse();
+            //response.review = response.review.reverse();
             response_data = response;
             response_data["groupId"] = groupId;
             setLoading(false);
@@ -66,7 +70,7 @@ export default function Group() {
             router.push("/home/");
             console.log(response);
         }
-        console.log(response);
+        //console.log(response);
     }
 
     //define loading circle and refresh when loading is done
@@ -119,9 +123,14 @@ export default function Group() {
                         }
                     </div>
                     <GroupHeading></GroupHeading>
-                    <div className={styles.repay_all_container} onClick={() => { setPayAllVisible(true) }}>
-                        <p>Repay All</p>
-                    </div>
+                    {(response_data.balance < 0)?
+                        <div className={styles.repay_all_container} onClick={() => { setPayAllVisible(true) }}>
+                            <p>Repay All</p>
+                        </div>
+                        :
+                        <></>
+                    }
+
                 </main>
                 {(currentPendingView != -1) ?
                     <PendingView members={response_data.members} expense={response_data.pending[currentPendingView]} hideParent={setCurrentPendingView}></PendingView>
@@ -144,7 +153,7 @@ export default function Group() {
                     <></>
                 }
                 {(payAllVisible) ?
-                    <PayAllView balance={response_data.balance} members={response_data.members} userId={userId} groupId={groupId} commentLength={response_data.maxComment} callback={setPayAllVisible} args={false}></PayAllView>
+                    <PayAllView balance={response_data.balance} userBalances={response_data.balances} members={response_data.members} userId={userId} groupId={groupId} commentLength={response_data.maxComment} callback={setPayAllVisible} args={false}></PayAllView>
                     :
                     <></>
                 }

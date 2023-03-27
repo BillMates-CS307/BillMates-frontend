@@ -1,6 +1,7 @@
 import { group_methods } from "@/lambda_service/groupService";
 import { user_methods } from "@/lambda_service/userService";
 import styles from "@/styles/Group.module.css";
+import { use } from "react";
 import { ButtonLock } from "../../global_components/button_lock";
 
 
@@ -364,7 +365,9 @@ export function TransactionView({ userId, members, expense, hideParent, showFulF
                     {
                         expense.users.map(([id, amt_remaining]) => {
                             if (amt_remaining != 0) {
-                                hasDebt = true;
+                                if (id == userId) {
+                                    hasDebt = true;
+                                }
                                 return (
                                     <div className={styles.person + " " + styles.person_view}>
                                         <div className={styles.name_email_combo}>
@@ -557,7 +560,7 @@ export function PendingView({ members, expense, hideParent }) {
     );
 }
 
-export function PayAllView({ members, userId, groupId, commentLength, callback, args, balance }) {
+export function PayAllView({ members, userId, groupId, commentLength, callback, args, balance, userBalances }) {
     console.log("Creating Payout All View");
     //remove user from the list of members
 
@@ -578,8 +581,6 @@ export function PayAllView({ members, userId, groupId, commentLength, callback, 
         expense: {},
         numSelected: 0
     }
-    console.log(format.members);
-
     const splitEven = () => {
         const elm = document.querySelector('#transaction_people');
         //reset the error total message
@@ -754,7 +755,7 @@ export function PayAllView({ members, userId, groupId, commentLength, callback, 
             <div className={styles.transaction_large}>
                 <div className={styles.x_button} onClick={() => { callback(args) }}></div>
                 <div className={styles.transaction_heading}>
-                    <input type="text" placeholder='Item Name' id="input_item_name"></input>
+                    <input type="text" placeholder='Item Name' id="input_item_name" readOnly value={members[userId] + " has paid back their balance in full"}></input>
                     <span></span>
                     <input type="text" placeholder='00.00' id="input_item_total" readOnly value={(format.amount * -1).toFixed(2)}></input>
                     <span></span>
@@ -777,7 +778,6 @@ export function PayAllView({ members, userId, groupId, commentLength, callback, 
                     {
 
                         format.members.map((member) => {
-                            console.log(member);
                             return (
                                 <div className={styles.person}>
                                     <div className={styles.radio} onClick={(e) => selectPerson(e, member.position)}></div>
@@ -785,7 +785,7 @@ export function PayAllView({ members, userId, groupId, commentLength, callback, 
                                         <p className={styles.person_name}>{members[member.id]}</p>
                                         <p>{member.id}</p>
                                     </div>
-                                    <input type="text" placeholder='00.00' email={member.id} onChange={(e) => { e.target.parentNode.parentNode.nextElementSibling.style = ""; }} readOnly={true}></input>
+                                    <input type="text" placeholder={userBalances[member.id].toFixed(2)} email={member.id} onChange={(e) => { e.target.parentNode.parentNode.nextElementSibling.style = ""; }} readOnly={true}></input>
                                 </div>
                             )
                         })
