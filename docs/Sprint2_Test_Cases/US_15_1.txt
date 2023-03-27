@@ -1,0 +1,18 @@
+A. Identification and classification
+Test Case: 15001
+System: Group Expense Management
+User is unable to submit the form with empty information
+Severity: 1
+
+B. Instructions
+	1. User 1, create a group
+	2. User 2, join the group with the join link
+	3. User 1, create 2-3 expenses and assign debt to User 2
+	4. User 2, reload the group
+	5. User 2, select the "Payout Debt" button at the bottom
+	6. User 2, hit the "Submit" button
+
+C. Expected Result:
+	1. Expense name field will be highlighted red and stated as "required"
+	2. Red text will appear stating "Amount remaining: $##.##"
+	

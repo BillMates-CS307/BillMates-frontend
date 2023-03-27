@@ -1,0 +1,15 @@
+A. Identification and classification
+Test Case: 12004
+System: Group Exepense Management
+Group manager is able to remove an expense by approving the report
+Severity: 2
+
+B. Instructions
+	1. Repeat test case 12003
+	2. User 1, reload the group page
+	3. User 1, select the reported expense
+	4. User 1, select the "Approve" button
+
+C. Expected Result:
+	1. The expense is removed from User 1's group page
+

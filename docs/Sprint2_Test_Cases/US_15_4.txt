@@ -1,0 +1,23 @@
+A. Identification and classification
+Test Case: 15004
+System: Group Exepense Management
+User is able to use this feature with Venmo
+Severity: 2
+
+B. Instructions
+	1. Repeat steps 1-5 in test case 15001
+	2. User 2, type "Test Case" in as the title
+	3. User 2, select one or more users in the members list
+	4. User 2, Click the "Split Even" button
+		(note: this can be uneven, it just has to sum to the total)
+	5. User 2, select "Venmo" as the payment option
+	5. User 2, Click the "Submit" button
+
+C. Expected Result:
+	1. A new expense appears in the history with the total amount
+		owed by User 2
+	2. The balance of User 2 is $0.00 and the balance of other 
+		users who were included in the expense are decreased
+		by the amount specified in the expense
+	3. User 2's Venmo account shows transactions made that are
+		equal to the amounts specified in the expense

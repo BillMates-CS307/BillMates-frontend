@@ -1,0 +1,18 @@
+A. Identification and classification
+Test Case: 12001
+System: Group Expense Management
+User is prompted to confirm the action to report the expense
+Severity: 3
+
+B. Instructions
+	1. User 1, create a new group
+	2. User 2, join the group from the join link
+	3. User 3, join the group from the join link
+	4. User 3, create a valid expense and select User 2
+		to be billed a non-zero amount
+	5. User 2, reload the group page and select the expense
+		created in step 4
+	6. Click the "Report Expense" button
+
+C. Expected Result:
+	1. Two new buttons appear with the text "Report" and "Cancel"

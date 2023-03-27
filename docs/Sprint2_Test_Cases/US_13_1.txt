@@ -1,0 +1,16 @@
+A. Identification and classification
+Test Case: 13001
+System: Group Expense Management
+User is unable to void an expense that they did not submit
+Severity: 1
+
+B. Instructions
+	1. User 1, create a group
+	2. User 2, join the group with the join link
+	3. User 1, submit an expense (any valid combination of inputs)
+	4. User 2, refresh the page
+	5. User 2, click on the newly created expense
+
+C. Expected Result:
+	1. User 2 is unable to see the option to void the expense
+	   (only "Bill Me" and "Report" buttons are visible) 

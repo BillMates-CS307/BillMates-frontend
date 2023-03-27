@@ -144,7 +144,6 @@ export default function Group() {
                         :
                         <></>
                     }
-
                 </main>
                 {(currentPendingView != -1) ?
                     <PendingView members={response_data.members} expense={response_data.pending[currentPendingView]} hideParent={setCurrentPendingView}></PendingView>
