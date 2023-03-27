@@ -38,19 +38,8 @@ export default async function handler(req, res) {
     success: false,
   };
 
-  return await fetch(url, options)
-    .then((response) => {
-      if (response.status == 500) {
-        response_body.errorType = 500;
-        return response_body;
-      }
-      return response.json();
-    })
-    .then((result) => {
-      return res.status(200).json(result);
-    })
-    .catch((error) => {
-      console.log(error);
-      return res.status(500).json({ message: "Internal API error" });
-    });
+  const lambda_resp = await fetch(url, options);
+  const lambda_data = await lambda_resp.json();
+
+  return res.json(lambda_data);
 }
