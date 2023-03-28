@@ -1,16 +1,25 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { useDispatch } from "react-redux";
-import { userDataAction } from "@/lib/store/userData/userData.slice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  selectUserData,
+  userDataAction,
+} from "@/lib/store/userData/userData.slice";
 import Header from "@/pages/global_components/header";
 import Footer from "@/pages/global_components/footer";
 import CustomHead from "@/pages/global_components/head";
 import SubmitButton from "../__components__/SubmitButton";
 import { CommonPopup } from "@/lib/ui/CommonPopup";
 import VenmoContents from "../__components__/VenmoContents";
+import VenmoToken from "../__components__/VenmoToken";
 
 export default function Venmo() {
   const dispatch = useDispatch();
+  const { isVenmoSMSCodeSent } = useSelector(selectUserData);
+  const onClickSendHandler = async (e) => {
+    e.preventDefault();
+    dispatch(userDataAction.sendVenmoSMSCode());
+  };
   const onClickLinkHandler = async (e) => {
     e.preventDefault();
     dispatch(userDataAction.requestFlowLinkVenmo());
@@ -25,11 +34,23 @@ export default function Venmo() {
       <CommonPopup />
       <Header />
       <VenmoWrapper>
-        <VenmoContents />
-        <SubmitButton
-          text="Link Venmo"
-          onClickSubmitHandler={onClickLinkHandler}
-        />
+        {isVenmoSMSCodeSent ? (
+          <>
+            <VenmoToken />
+            <SubmitButton
+              text="Send Token"
+              onClickSubmitHandler={onClickSendHandler}
+            />
+          </>
+        ) : (
+          <>
+            <VenmoContents />
+            <SubmitButton
+              text="Link Venmo"
+              onClickSubmitHandler={onClickLinkHandler}
+            />
+          </>
+        )}
         <Space />
       </VenmoWrapper>
       <Footer />

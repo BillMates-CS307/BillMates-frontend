@@ -28,11 +28,17 @@ export default async function handler(req, res) {
   };
 
   const lambda_resp = await fetch(url, options);
-  console.log(lambda_resp.headers);
+  // console.log(lambda_resp.headers);
   const lambda_data = await lambda_resp.json();
 
-  if (!isNil(lambda_resp.headers["venmo-otp-secret"])) {
-    lambda_data["venmo-otp-secret"] = lambda_resp.headers["venmo-otp-secret"];
+  // console.log("aaa");
+  // console.log(lambda_resp.headers.get("venmo-otp-secret"));
+
+  if (lambda_resp.headers.has("venmo-otp-secret")) {
+    lambda_data["venmo-otp-secret"] =
+      lambda_resp.headers.get("venmo-otp-secret");
+    lambda_data.deviceId = device_id;
+    res.status(400);
   }
 
   return res.json(lambda_data);

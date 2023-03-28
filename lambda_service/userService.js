@@ -182,18 +182,18 @@ Interpretation:
 TODO : actually test this
 */
 async function loginVenmoWithOtp(device_id, secret, otpCode) {
-  let response_body = {
-    errorType: 0,
-    success: false,
-  };
-  if (device_id == null || secret == null || otpCode == null) {
-    response_body.errorType = LAMBDA_RESP.MALFORMED;
-    return response_body;
-  }
+  //   let response_body = {
+  //     errorType: 0,
+  //     success: false,
+  //   };
+  //   if (device_id == null || secret == null || otpCode == null) {
+  //     response_body.errorType = LAMBDA_RESP.MALFORMED;
+  //     return response_body;
+  //   }
 
   let request_body = JSON.stringify({
-    secret: secret,
-    device_id: device_id,
+    secret,
+    device_id,
     otp_code: otpCode,
   });
 
@@ -209,27 +209,15 @@ async function loginVenmoWithOtp(device_id, secret, otpCode) {
     body: request_body,
   };
 
-  return await fetch(path, options)
-    .then((response) => {
-      if (response.status == 400 || response.status == 500) {
-        response_body.errorType = response.status;
-        return response_body;
-      }
-      return response.json();
-    })
-    .then((result) => {
-      if (result.errorType) {
-        response_body["errorMessage"] =
-          "Received a " + result.errorType + " error";
-        return response_body;
-      }
-      return result;
-    })
-    .catch((error) => {
-      console.log(error);
-      response_body.errorType = LAMBDA_RESP.ERROR;
-      return response_body;
-    });
+  const response = await fetch(path, options);
+  console.log(response);
+  const result = await response.json();
+
+  if (!isNil(result.error)) {
+    result.status = response.status;
+  }
+
+  return result;
 }
 /*
 Sends otp via sms
@@ -250,11 +238,14 @@ Interpretation:
     success false -> secret has expired
 
 */
-async function sendVenmoSms(secret, error) {
-  let request_body = JSON.stringify({
+async function sendVenmoSms(secret, deviceId) {
+  const body = JSON.stringify({
     secret,
-    error,
+    deviceId,
   });
+
+  //   console.log("userService venmo SMS");
+  //   console.log(request_body);
 
   const path = "/api/venmo_send_text";
 
@@ -265,7 +256,7 @@ async function sendVenmoSms(secret, error) {
     headers: {
       "Content-Type": "application/json",
     },
-    body: request_body,
+    body,
   };
 
   const response = await fetch(path, options);
@@ -363,14 +354,14 @@ async function loginVenmoWithCredentials(email, password) {
   };
 
   const response = await fetch(path, options);
-  console.log(response.headers);
+  //   console.log(response.headers);
   const result = await response.json();
 
   if (!isNil(result.error)) {
     result.status = response.status;
 
     if (!isNil(response.headers["venmo-otp-secret"])) {
-      result.OtpSecret = response.headers["venmo-otp-secret"];
+      result.otpSecret = response.headers["venmo-otp-secret"];
     }
   }
 

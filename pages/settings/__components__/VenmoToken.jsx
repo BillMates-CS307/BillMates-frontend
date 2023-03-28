@@ -8,27 +8,13 @@ import {
 } from "@/lib/store/userData/userData.slice";
 import BulletLayout from "./BulletLayout";
 
-export default function VenmoContents({ email }) {
+export default function VenmoToken() {
   const dispatch = useDispatch();
-
-  const onEmailBlurHandler = (e) => {
-    dispatch(
-      userDataAction.setVenmoEmail({ venmoEmail: e.currentTarget.value })
-    );
-  };
-
-  const onPasswordBlurHandler = (e) => {
-    dispatch(
-      userDataAction.setVenmoPassword({
-        venmoPassword: e.currentTarget.value,
-      })
-    );
-  };
 
   const onTokenBlurHandler = (e) => {
     dispatch(
       userDataAction.setVenmoSMSCode({
-        venmoToken: e.currentTarget.value,
+        venmoSMSCode: e.currentTarget.value,
       })
     );
   };
@@ -36,32 +22,18 @@ export default function VenmoContents({ email }) {
   return (
     <VenmoWrapper>
       <VenmoTitleWrapper>
-        <VenmoTitle>Link Venmo</VenmoTitle>
+        <VenmoTitle>Venmo Token</VenmoTitle>
       </VenmoTitleWrapper>
-
       <VenmoInputSectionWrapper marginTop={10}>
-        <VenmoInputLabel>email</VenmoInputLabel>
+        <VenmoInputLabel>token (if needed)</VenmoInputLabel>
         <VenmoInputWrapper>
           <VenmoInput
             type="text"
-            name="email"
+            name="token"
             required
             minlength="1"
             maxlength="20"
-            onBlur={onEmailBlurHandler}
-          />
-        </VenmoInputWrapper>
-      </VenmoInputSectionWrapper>
-      <VenmoInputSectionWrapper marginTop={5}>
-        <VenmoInputLabel>password</VenmoInputLabel>
-        <VenmoInputWrapper>
-          <VenmoInput
-            type="password"
-            name="password"
-            required
-            minlength="1"
-            maxlength="20"
-            onBlur={onPasswordBlurHandler}
+            onBlur={onTokenBlurHandler}
           />
         </VenmoInputWrapper>
       </VenmoInputSectionWrapper>
