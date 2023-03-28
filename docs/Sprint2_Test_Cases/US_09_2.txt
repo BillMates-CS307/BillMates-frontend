@@ -1,0 +1,20 @@
+A. Identification and classification
+Test Case: 9002
+System: Expense Payment
+User is unable to pay with Venmo if the User or receiver has not linked thier Venmo account
+Severity: 2
+
+B. Instructions
+	1. Go to a group with more than one person 
+		(or create a and invite another user if needed)
+	2. Ensure at least one user has not linked their account
+		(unlink one if neccesary)
+	3. User 1, create an expense and include User 2	
+	4. User 2, access the group and select the newly created expense
+	5. User 2, select "Bill Me"
+	6. User 2, select "Venmo" and submit
+
+C. Expected Result:
+	1. User 2 is shown a message that "[user] has not linked their account"
+
+

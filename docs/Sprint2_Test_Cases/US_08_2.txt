@@ -1,0 +1,19 @@
+A. Identification and classification
+Test Case: 8002
+System: Group Expense Management
+User is able to see all expenses they are a part of in all groups they are a part of
+Severity: 3
+
+B. Instructions
+	1. Navigate to the home page
+	2. User 1, create two new groups and invite User 2 to both
+	3. User 1, in one group, create an expense and include User 2
+	4. User 2, in the other group, create an expense and include User 1
+	5. User 1, navigate to the home page
+	6. User 1, click on the top most element containg your name and total balance
+
+C. Expected Result:
+	1. User 1 is shown a display of the expenses created above, labeled by group
+	2. User 1 is shown a total amount owed from each expense
+	 
+
