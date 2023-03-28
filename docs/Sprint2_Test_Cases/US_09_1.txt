@@ -1,0 +1,20 @@
+A. Identification and classification
+Test Case:9001
+System: Expense Payment
+User is able to pay for an expense through Venmo
+Severity: 3
+
+B. Instructions
+	1. Go to a group with more than one person 
+		(or create a and invite another user if needed)
+	2. Ensure both users have their Venmo accounts linked through Settings
+	3. User 1, create an expense and include User 2	
+	4. User 2, access the group and select the newly created expense
+	5. User 2, select "Bill Me"
+	6. User 2, select "Venmo" and submit
+
+C. Expected Result:
+	1. The balances of User 1 and 2 are updated accordingly
+	2. The expense is removed (if User 2 was the only person involved)
+	3. Venmo shows a transaction for the amount specified in BillMates
+

@@ -16,13 +16,10 @@ export default async function handler(req, res) {
 
   // Found the name.
   // Sends a HTTP success code
-  // const body = JSON.stringify({
-  //     "phone_email_or_username": email,
-  //     "client_id": "1",
-  //     "password": password
-  //   });
+  const body = JSON.stringify({
+    });
   //make request to Venmo
-  const url = 'https://api.venmo.com/v1/oauth/access_token';
+  const url = 'https://api.venmo.com/v1/oauth/access_token?client_id=1';
   const options = {
     method: 'POST',
     mode: 'cors',
@@ -32,7 +29,7 @@ export default async function handler(req, res) {
       'venmo-otp-secret': secret,
       'Venmo-Otp': otp_code
     },
-    body: "",
+    body: body,
   }
 
   let response_body = {
@@ -41,12 +38,13 @@ export default async function handler(req, res) {
   }
 
   return await fetch(url, options).then((response) => {
-
     if (response.status == 400) { //code expired
+      response_body.errorType = 400;
       return response_body;
     }
     return response.json();
   }).then((result) => {
+    console.log(result);
     if (result.success) { //counter-intuitive
       result.success = false;
       return res.status(200).json(result);

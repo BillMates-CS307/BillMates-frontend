@@ -30,7 +30,134 @@ export const user_methods = {
   loginVenmoWithCredentials,
   sendVenmoSms,
   loginVenmoWithOtp,
+  payUserWithVenmo,
+  getUserIdsFromVenmo,
 };
+
+async function getUserIdsFromVenmo(selfToken, targetToken) {
+  let response_body = {
+    errorType: 0,
+    success: false,
+  };
+  if (selfToken == null || targetToken == null) {
+    response_body.errorType = LAMBDA_RESP.MALFORMED;
+    return response_body;
+  }
+
+  let request_body = JSON.stringify({
+    token: selfToken,
+  });
+
+  const path = "/api/venmo_get_user_id";
+
+  // Form the request for sending data to the server.
+  const options = {
+    method: "POST",
+    mode: "no-cors",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: request_body,
+  };
+
+  const self_response = fetch(path, options)
+    .then((response) => {
+      if (response.status == 400 || response.status == 500) {
+        response_body.errorType = response.status;
+        return response_body;
+      }
+      return response.json();
+    })
+    .then((result) => {
+      if (result.errorType) {
+        response_body["errorMessage"] = result.errorMessage;
+        return response_body;
+      }
+      return result;
+    })
+    .catch((error) => {
+      console.log(error);
+      response_body.errorType = LAMBDA_RESP.ERROR;
+      return response_body;
+    });
+
+  request_body = JSON.stringify({
+    token: targetToken,
+  });
+  const target_response = fetch(path, options)
+    .then((response) => {
+      if (response.status == 400 || response.status == 500) {
+        response_body.errorType = response.status;
+        return response_body;
+      }
+      return response.json();
+    })
+    .then((result) => {
+      if (result.errorType) {
+        response_body["errorMessage"] = result.errorMessage;
+        return response_body;
+      }
+      return result;
+    })
+    .catch((error) => {
+      console.log(error);
+      response_body.errorType = LAMBDA_RESP.ERROR;
+      return response_body;
+    });
+
+  return [await self_response, await target_response];
+}
+
+async function payUserWithVenmo(token, amount, sourceId, targetId) {
+  let response_body = {
+    errorType: 0,
+    success: false,
+  };
+  if (token == null || sourceId == null || targetId == null) {
+    response_body.errorType = LAMBDA_RESP.MALFORMED;
+    return response_body;
+  }
+
+  let request_body = JSON.stringify({
+    token: token,
+    funding_source_id: sourceId,
+    user_id: targetId,
+    amount: amount,
+  });
+
+  const path = "/api/venmo_pay";
+
+  // Form the request for sending data to the server.
+  const options = {
+    method: "POST",
+    mode: "no-cors",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: request_body,
+  };
+
+  return await fetch(path, options)
+    .then((response) => {
+      if (response.status == 400 || response.status == 500) {
+        response_body.errorType = response.status;
+        return response_body;
+      }
+      return response.json();
+    })
+    .then((result) => {
+      if (result.errorType) {
+        response_body["errorMessage"] = result.errorMessage;
+        return response_body;
+      }
+      return result;
+    })
+    .catch((error) => {
+      console.log(error);
+      response_body.errorType = LAMBDA_RESP.ERROR;
+      return response_body;
+    });
+}
 
 /*
 Attemps login with one time password sent via text

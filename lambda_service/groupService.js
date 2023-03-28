@@ -489,9 +489,9 @@ async function submitPayout({title, groupId, expense, total, owner, comment}) {
     {
         title : title,
         group_id : groupId,
-        expense : expense,
+        expenses : expense,
         total : total,
-        owner : owner,
+        email : owner,
         comment : comment
     }
    )
@@ -519,7 +519,7 @@ async function submitPayout({title, groupId, expense, total, owner, comment}) {
         if (result.errorType) {
             response_body["errorMessage"] = "Received a " + result.errorType + " error";
             return response_body;
-        }else if (!result.submit_success) {
+        }else if (!result.pay_success) {
             return response_body;
         }
         result = {

@@ -19,7 +19,6 @@ export function ReportedItem({ id, index, title, date, owner, amount, showView }
         </div>
     )
 }
-
 export function PendingItem({ id, index, title, date, owner, amount, showView }) {
     return (
         <div index={index} key={id} className={styles.transaction_container + " " + styles.pending}
@@ -50,12 +49,14 @@ export function ExpenseItem({ id, index, title, date, owner, amount, isOwner, us
     }
     //idk why it was changed to an array over a dictionary but ok
     const getRelativeAmt = (expenses) => {
+        console.log(expenses);
         for (let i = 0; i < expenses.length; i++) {
+            console.log(expenses[i] + " " + userId);
             if (expenses[i][0] == userId) {
                 return expenses[i][1].toFixed(2);
             }
-            return 0.00;
         }
+        return 0.00;
     }
     let relative = (isOwner) ? sumMemberExpenses(users) : getRelativeAmt(users);
     return (

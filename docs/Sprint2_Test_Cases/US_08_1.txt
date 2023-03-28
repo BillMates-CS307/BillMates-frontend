@@ -1,0 +1,18 @@
+A. Identification and classification
+Test Case: 8001
+System: Group Expense Management
+User's total is altered when included in an expense
+Severity: 3
+
+B. Instructions
+	1. Go to a group with more than one people
+		(or create a and invite another user if needed)
+	2. User 1, create an expense and include User 2
+	3. User 2, go to the Home page
+
+C. Expected Result:
+	1. User is shown an element on the page with the group name and new balance
+		relative to what was requested in the expense
+	2. User is shown a total amount that is the sum of all group balances
+	 
+
