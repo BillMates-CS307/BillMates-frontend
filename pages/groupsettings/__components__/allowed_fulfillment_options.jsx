@@ -1,7 +1,7 @@
 import styles from '@/styles/Group.module.css'
 import React from 'react';
 
-function AllowedFulfillmentOptions({ options, onChange }) {
+export default function AllowedFulfillmentOptions({ options, onChange }) {
   const handleChange = (e) => {
     onChange(e.target.value);
   };
@@ -21,5 +21,3 @@ function AllowedFulfillmentOptions({ options, onChange }) {
     </div>
   );
 }
-
-export default AllowedFulfillmentOptions;
