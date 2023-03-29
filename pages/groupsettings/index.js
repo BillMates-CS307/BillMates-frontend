@@ -1,9 +1,17 @@
-import React from "react";
+//HTML Imports...
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
-import Header from '../global_components/groups_header.jsx'; //y
-import Footer from '../global_components/footer_no_plus.jsx'; //y
+import Header from '../global_components/groups_header.jsx';
+import Footer from '../global_components/footer_no_plus.jsx'; 
 import CustomHead from "../global_components/head";
+import LoadingCircle from '../global_components/loading_circle.jsx';
+
+import React, { useEffect, useState } from "react";
+import { useStore } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { useRouter } from 'next/router.js';
+import { user_methods } from '@/lambda_service/userService.js';
+import { group_methods } from '@/lambda_service/groupService.js';
 
 //From components...
 import MaxCommentLen from "./__components__/max_comment_length_input";
@@ -11,7 +19,64 @@ import AllowedFulfillmentOptions from "./__components__/allowed_fulfillment_opti
 import AutoApprove from "./__components__/autoapprove_toggle";
 import MemberList from "./__components__/member_list";
 
-export default function Settings() {
+export default function GroupSettings() {
+  const router = useRouter();
+  const [isAuthenticated, setAuthentication] = useState(false);
+  const check = async () => {
+    let result = await user_methods.validateLoginJWT(router);
+    if (result.success) {
+      localStorage.setItem("tempId", result.payload.email);
+      setAuthentication(true);
+    } else {
+      router.replace("/");
+      return;
+    }
+  }
+  useEffect(() => {
+    if (!isAuthenticated) {
+      console.log("authenticating");
+      check();
+    }
+  }, [isAuthenticated]) //not being used here
+
+  //get redux state
+  const store = useStore();
+  const dispatch = useDispatch();
+  const userId = (isAuthenticated) ? localStorage.getItem("tempId") : null;
+  const groupId = (isAuthenticated) ? window.location.href.match('[a-zA-Z0-9\-]*$')[0] : null;
+  //const state = store.getState().groupData;
+
+  //API call and populate group information to trigger redraw
+  let response_data = store.getState().groupData;
+  const fetchData = async () => {
+      console.log("fetching data");
+      let response = await group_methods.getGroupInfo(groupId, userId); //getGroupInfo(groupId, userId);
+      if (response.errorType) {
+          console.log("An error occured, check logs");
+          return;
+      } else if (response.success) {
+          response_data = response;
+          response_data["groupId"] = groupId;
+          setLoading(false);
+          dispatch(
+              groupDataAction.setGroupData(response_data)
+          );
+      } else {
+          //router.push("/home/");
+          console.log(response);
+      }
+      console.log(response);
+  }
+
+  //leading circle
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+      if (isAuthenticated) {
+          fetchData(); //make the call
+      }
+  }, [isAuthenticated]);
+    
+
   return (
     <>
     <CustomHead title={"Group Settings"} description={"Customize your individual group preferences"}></CustomHead>
@@ -22,7 +87,8 @@ export default function Settings() {
           <MaxCommentLen></MaxCommentLen>
           <AllowedFulfillmentOptions></AllowedFulfillmentOptions>
           <AutoApprove></AutoApprove>
-          <MemberList></MemberList>
+          <MemberList groupMembers = {response_data.members} groupOwnerId = {Object.keys(response_data.manager)} currentUserId = {userId}></MemberList>
+          <a href={"/groups/"+ response_data.groupId} class="button">[SAVE AND GO BACK BUTTON]</a>
         </SettingsForm>
         <Space />
       </SettingsWrapper>

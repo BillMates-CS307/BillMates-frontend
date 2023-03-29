@@ -1,16 +1,20 @@
 import styles from '@/styles/Group.module.css'
 import { useState, useEffect } from 'react';
+import { useStore } from 'react-redux';
 
-function MemberList({ groupMembers, groupOwnerId, currentUserId, onKickUser }) {
+export default function MemberList({ groupMembers, groupOwnerId, currentUserId, onKickUser }) {
+  const store = useStore();
+  //const state = store.getState().groupData;
+
   return (
     <div>
       <h3>Group Members</h3>
       <ul>
-        {groupMembers.map((member) => (
-          <li key={member.id}>
-            {member.name}
-            {currentUserId === groupOwnerId && currentUserId !== member.id && (
-              <button onClick={() => onKickUser(member.id)}>Kick</button>
+        {Object.keys(groupMembers).map((member) => (
+          <li key={member}>
+            {groupMembers[member]}
+            {currentUserId === groupOwnerId && currentUserId !== member && (
+              <button onClick={() => onKickUser(member)}>Kick</button>
             )}
           </li>
         ))}
@@ -18,5 +22,3 @@ function MemberList({ groupMembers, groupOwnerId, currentUserId, onKickUser }) {
     </div>
   );
 }
-
-export default MemberList;
