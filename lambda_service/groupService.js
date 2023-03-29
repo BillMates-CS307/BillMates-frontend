@@ -138,14 +138,15 @@ async function archiveGroup() {
 async function resetGroup() {
     return;
 }
-async function reportExpense(id) {
+async function reportExpense(id, email) {
         let response_body = {
             errorType : 0,
             success : false
         }
        let request_body = JSON.stringify(
         {
-            expense_id : id
+            expense_id : id,
+            email : email
         }
        )
     
@@ -196,7 +197,8 @@ async function voidExpense(id) {
     }
    let request_body = JSON.stringify(
     {
-        expense_id : id
+        expense_id : id,
+        remove : true
     }
    )
 
@@ -223,7 +225,7 @@ async function voidExpense(id) {
         if (result.errorType) {
             response_body["errorMessage"] = "Received a " + result.errorType + " error";
             return response_body;
-        } else if (!result.handle_success) {
+        } else if (!result.remove_success) {
             response_body.errorType = 1;
             response_body["errorMessage"] = "This expense does not exist";
             return response_body;
@@ -286,8 +288,8 @@ async function fulfillExpense(email, expense_id, amount) {
             response_body["errorMessage"] = "Received a " + result.errorType + " error";
             return response_body;
         } else if (!result.pay_success) {
-            response_body.errorType = 1;
-            response_body["errorMessage"] = "Too much moneyz";
+            // response_body.errorType = 1;
+            // response_body["errorMessage"] = "Expense does not exist";
             return response_body;
         }
         result = {
@@ -359,7 +361,7 @@ async function updatePendingStatus(accepted, payment_id) {
         return response_body;
     });
 }
-async function updateReportStatus(accepted, payment_id) {
+async function updateReportStatus(remove, expense_id) {
     let response_body = {
         errorType : 0,
         success : false
@@ -371,8 +373,8 @@ async function updateReportStatus(accepted, payment_id) {
 
    let request_body = JSON.stringify(
     {
-        accepted : accepted,
-        payment_id : payment_id
+        remove : remove,
+        expense_id : expense_id
     }
    )
 

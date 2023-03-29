@@ -43,7 +43,7 @@ export default function SelfGroup() {
 
     //get global store state from Redux
     const store = useStore();
-    const dispatch = useDispatch();
+    //const dispatch = useDispatch();
     const userId = (isAuthenticated) ? localStorage.getItem("tempId") : null;
     //API call and populate group information to trigger redraw
     let response_data = store.getState().groupData;
@@ -55,19 +55,18 @@ export default function SelfGroup() {
             return;
         } else if (response.success) {
             response_data = response;
-
-            //sort each group
-            for (let groupId in response_data.group_expenses) {
-                groupExpenses = response_data.group_expenses[groupId];
-                groupExpenses.sort((a, b) => {
-                    if (a.time <= b.time) {
-                        return -1;
-                    } else {
-                        return 1;
-                    }
-                })
-                response_data.group_expenses[groupId] = groupExpenses;
-            }
+            //sort each group (TODO maybe another time)
+            // for (let groupId in response_data.group_expenses) {
+            //     groupExpenses = response_data.group_expenses[groupId];
+            //     groupExpenses.sort((a, b) => {
+            //         if (a.time <= b.time) {
+            //             return -1;
+            //         } else {
+            //             return 1;
+            //         }
+            //     })
+            //     response_data.group_expenses[groupId] = groupExpenses;
+            // }
 
             //merge groups into one array
 

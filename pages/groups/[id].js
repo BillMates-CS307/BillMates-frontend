@@ -13,8 +13,8 @@ import { groupDataAction } from '@/lib/store/groupData.slice';
 import { useRouter } from 'next/router.js';
 //Components
 import GroupHeading from './_components_/group_heading.jsx';
-import { TransactionInputView, TransactionView, PendingView, FulFillView, PayAllView } from './_components_/views.jsx'
-import { ExpenseItem, PendingItem } from './_components_/items.jsx';
+import { TransactionInputView, TransactionView, PendingView, FulFillView, PayAllView, ReportView } from './_components_/views.jsx'
+import { ExpenseItem, PendingItem, ReportedItem } from './_components_/items.jsx';
 import { group_methods } from '@/lambda_service/groupService.js';
 import { user_methods } from '@/lambda_service/userService.js';
 
@@ -40,6 +40,7 @@ export default function Group() {
     const [payAllVisible, setPayAllVisible] = useState(false);
     const [currentTransactionView, setCurrentTransactionView] = useState(-1);
     const [currentPendingView, setCurrentPendingView] = useState(-1);
+    const [currentReportView, setCurrentReportView] = useState(-1);
     const [currentFulfillView, setCurrentFulfillView] = useState(null);
 
     //get global store state from Redux
@@ -110,14 +111,17 @@ export default function Group() {
                         {(!loading) ?
                             response_data.expenses.map((item, index) => {
                                 if (item.contested) {
+                                    console.log(userId);
+                                    console.log(response_data);
+                                    console.log(response_data.manager);
                                     if (userId == response_data.manager) {
-                                        return (<PendingItem index={index}
+                                        return (<ReportedItem index={index}
                                             title={item.title}
                                             date={item.date}
-                                            amount={item.amount_paid.toFixed(2)}
-                                            owner={response_data.members[item.paid_by]}
-                                            showView={setCurrentPendingView}
-                                        ></PendingItem>);
+                                            amount={item.amount.toFixed(2)}
+                                            owner={response_data.members[item.owner]}
+                                            showView={setCurrentReportView}
+                                        ></ReportedItem>);
                                     } else {
                                         return <></>
                                     }
@@ -152,6 +156,11 @@ export default function Group() {
                 }
                 {(currentTransactionView != -1) ?
                     <TransactionView userId={userId} members={response_data.members} expense={response_data.expenses[currentTransactionView]} hideParent={setCurrentTransactionView} showFulFill={setCurrentFulfillView}></TransactionView>
+                    :
+                    <></>
+                }
+                {(currentReportView != -1) ?
+                    <ReportView userId={userId} members={response_data.members} expense={response_data.expenses[currentReportView]} hideParent={setCurrentReportView} showFulFill={setCurrentFulfillView}></ReportView>
                     :
                     <></>
                 }
