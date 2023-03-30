@@ -88,7 +88,7 @@ export default function Homeheading() {
         <Header></Header>
         <main className={styles.main}>
           <div className={styles.group_heading}>
-            <div className={styles.yourNameTotalContainer}>
+            <div className={styles.yourNameTotalContainer} onClick={() => {goToGroup("")}} style={{cursor : "pointer"}}>
               {/* <p className={styles.individualDebt}>Total debt: ${sumDebts(userData.groups)}</p> */}
               {(loading) ?
                 <p className={styles.individualDebt} >Loading...</p>

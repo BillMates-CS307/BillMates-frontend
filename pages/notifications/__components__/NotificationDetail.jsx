@@ -3,8 +3,9 @@ import styled from "@emotion/styled";
 
 
 export default function NotificationDetail({ _id, sender, message, time, closePanel, deleteNotification, index }) {
-  console.log(sender);
-
+  //console.log(sender);
+  console.log(time);
+  let date = new Date(time);
   return (
     <>
       <BackgroundBlur>
@@ -17,7 +18,7 @@ export default function NotificationDetail({ _id, sender, message, time, closePa
             <NotificationDetailMessage>
               {message}
             </NotificationDetailMessage>
-            <NotificationDetailTime>{time}</NotificationDetailTime>
+            <NotificationDetailTime>{date.toLocaleDateString()}</NotificationDetailTime>
           </NotificationDetailContentsWrapper>
           <DeleteButtonWrapper onClick={() => { deleteNotification(index) }}>
             Delete
@@ -132,4 +133,5 @@ const DeleteButtonWrapper = styled.div`
   background: var(--green-background);
   color: white;
   font-weight: bold;
+  cursor : pointer;
 `;

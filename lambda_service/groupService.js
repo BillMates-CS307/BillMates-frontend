@@ -173,7 +173,7 @@ async function reportExpense(id, email) {
             if (result.errorType) {
                 response_body["errorMessage"] = "Received a " + result.errorType + " error";
                 return response_body;
-            } else if (!result.handle_success) {
+            } else if (!result.contest_success) {
                 response_body.errorType = 1;
                 response_body["errorMessage"] = "This expense does not exist";
                 return response_body;
@@ -401,7 +401,7 @@ async function updateReportStatus(remove, expense_id) {
         if (result.errorType) {
             response_body["errorMessage"] = "Received a " + result.errorType + " error";
             return response_body;
-        } else if (!result.handle_success) {
+        } else if (!result.remove_success) {
             response_body.errorType = 1;
             response_body["errorMessage"] = "This expense does not exist";
             return response_body;

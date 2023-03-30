@@ -12,6 +12,7 @@ export default function NotificationItem({
   isfirst,
   showDetail
 }) {
+  const date = new Date(time);
   return (
     <NotificationItemWrapper
       isread={isread}
@@ -24,7 +25,7 @@ export default function NotificationItem({
       <ContentsWrapper>
         <Sender>{sender}</Sender>
         <Message>{message}</Message>
-        <Time>{time}</Time>
+        <Time>{date.toLocaleDateString()}</Time>
       </ContentsWrapper>
     </NotificationItemWrapper>
   );

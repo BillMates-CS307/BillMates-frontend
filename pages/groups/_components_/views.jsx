@@ -152,8 +152,9 @@ export function TransactionInputView({ members, userId, groupId, commentLength, 
             }
 
             if (format.title != "" && format.total != "" && format.expense != {}) {
-                //why are we subtracting what the owner paid from the grand total???
-                //format.total = (Math.round((parseFloat(format.total) * 100)) / 100) - (Math.round(((parseFloat(format.expense[userId]) || 0) * 100)) / 100);
+                if (format.comment.trim() == "") {
+                    format.comment = "No Additional Comments";
+                }
                 delete format.expense[userId];
                 format.total = parseFloat(format.total);
                 format.request_time = "now";
@@ -172,6 +173,7 @@ export function TransactionInputView({ members, userId, groupId, commentLength, 
                     alert("invalid but not error");
                 }
             }
+
 
 
             ButtonLock.UnlockButton();
@@ -323,11 +325,7 @@ export function TransactionView({ userId, members, expense, hideParent, showFulF
                 <div className={styles.transaction_heading} id="view_item_info">
                     <p>{expense.title}</p>
                     <p>${expense.amount.toFixed(2)}</p>
-                    {(expense.comments) ?
-                        <p>{expense.comments}</p>
-                        :
-                        <></>
-                    }
+                    <p style={{color : "var(--neutral-background)"}}>{expense.comment}</p>
                     <div className={styles.name_email_combo}>
                         <p>{members[expense.owner]}</p>
                         <p>{expense.owner}</p>
@@ -387,6 +385,7 @@ export function TransactionView({ userId, members, expense, hideParent, showFulF
 }
 
 export function FulFillView({ userId, expense, defaultVenmo, hideParent }) {
+    console.log(expense);
     let usingVenmo = defaultVenmo;
     let amt = 0;
     for (let pair of expense.users) {
@@ -575,6 +574,7 @@ export function ReportView({ userId, members, expense, hideParent, showFulFill }
             } else if (!result.success) {
                 alert("Something went wrong");
             } else { //went through and status has changed
+                console.log("here");
                 window.location.reload();
                 return;
             }
@@ -634,7 +634,7 @@ export function ReportView({ userId, members, expense, hideParent, showFulFill }
                     }
                 </div>
                 <div className={styles.submit_expense_container} onClick={(e) => { handleReport(e, true) }}><p>Accept</p></div>
-                <div className={styles.submit_expense_container + " " + styles.negative} onClick={(e) => { handleReport(e, false) }}><p>Reject</p></div>
+                <div className={styles.submit_expense_container + " " + styles.negative} onClick={(e) => { handleReport(e, false) }}><p>Void</p></div>
                 {/* {(userId == expense.owner) ?
                     <>
                         <div className={styles.submit_expense_container} onClick={(event) => { confirmAction(event) }}><p>Void Expense</p></div>
@@ -900,7 +900,6 @@ export function PayAllView({ members, userId, groupId, commentLength, callback, 
 
     );
 }
-
 
 export default function ViewsPage() {
     return <></>;

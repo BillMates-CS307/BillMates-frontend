@@ -535,3 +535,39 @@
     color: #FFF;
     /* white just looks good with both green backgrounds */
 }
+
+.warningPopup {
+    padding: 15px;
+height: 100px;
+width: 50%;
+margin: 10px auto;
+background: var(--red-background);
+display: flex;
+align-items: center;
+justify-content: center;
+border-radius: var(--border-radius);
+animation: popup 1.5s ease-in forwards;
+}
+
+.groupNameHeading {
+    width: 98%;
+    margin-left: 1%;
+    border-bottom: 2px solid var(--neutral-background);
+    margin-bottom: 5px;
+}
+.groupNameHeading p {
+    color : var(--neutral-background)
+}
+
+
+@keyframes popup {
+    0%{
+        opacity: 1;
+    }
+    50% {
+        opacity: 1;
+    }
+    100%{
+        opacity: 0;
+    }
+}

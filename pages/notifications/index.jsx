@@ -49,48 +49,17 @@ export default function Notifications() {
       body: JSON.stringify({ email: email }),
     };
     const response = await fetch(endpoint, options);
-    // console.log(response);
     if (response.status == 400) {
       alert("Failed ");
       return;
     }
 
     const result = await response.json();
-    // const result = {
-    //   notifications: [
-    //     {
-    //       _id : "0",
-    //       sender : "testing@email.com",
-    //       message : "some testing text to see how it all shows up",
-    //       time : "11:58pm",
-    //       isread : false
-    //     },
-    //     {
-    //       _id : "1",
-    //       sender : "testing@email.com",
-    //       message : "You have been removed from group 'Testing'",
-    //       time : "11:58pm",
-    //       isread : false
-    //     },
-    //     {
-    //       _id : "2",
-    //       sender : "testing@email.com",
-    //       message : "Something else here or just a lot of texeeeetxtxtxt",
-    //       time : "11:58pm",
-    //       isread : true
-    //     },
-    //     {
-    //       _id : "3",
-    //       sender : "testing@email.com",
-    //       message : "some testing text to see how it all shows up",
-    //       time : "11:58pm",
-    //       isread : false
-    //     }
-    //   ]
-    // }
+    console.log(result);
     if (isEmpty(result.notifications)) {
       setIsEmptyNotifications(true);
     }
+    result.notifications.reverse(); //newest first
 
     setNotifications(result.notifications);
   };

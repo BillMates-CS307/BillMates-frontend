@@ -14,6 +14,7 @@ fieldData.fname[2] = false;
 fieldData.lname[2] = false;
 fieldData.remail[2] = false;
 fieldData.rpassword[2] = false;
+fieldData["persistant"] = ["off", null, true];
 
 export default function SignIn({ groupId }) {
   const router = useRouter();
@@ -33,14 +34,14 @@ export default function SignIn({ groupId }) {
       console.log(fieldData);
 
       //set button visually to be locked
-      event.target.children[2].textContent = "Signing In";
-      event.target.children[2].style = "background-color : var(--green-muted-background)";
+      event.target.children[3].textContent = "Signing In";
+      event.target.children[3].style = "background-color : var(--green-muted-background)";
 
       //make API call
-      let response = await user_methods.validateLoginCredential(fieldData.email[0], fieldData.password[0], true);
-      console.log(response);
+      let response = await user_methods.validateLoginCredential(fieldData.email[0], fieldData.password[0],
+        true, fieldData.persistant[0]);
       if (response.success) {
-        router.reload();
+        router.push("/");
       } else {
         //check if no user or bad attempt
         const element = document.querySelector("#incorrect");
@@ -62,8 +63,8 @@ export default function SignIn({ groupId }) {
       //on success, route to home where first Redux state is created
       //default to test locking
       ButtonLock.UnlockButton();
-      event.target.children[2].textContent = "Sign In";
-      event.target.children[2].style = "";
+      event.target.children[3].textContent = "Sign In";
+      event.target.children[3].style = "";
     } else {
       console.log("locked");
     }
@@ -106,10 +107,13 @@ export default function SignIn({ groupId }) {
                     }
 
             break;
+          case "persistant":
+            fieldData[field][0] = fieldData[field][1].checked;
+            break;
           default:
             break;
         }
-
+        console.log(fieldData);
         if (message != "") {
           isValid = false;
           if (fieldData[field][1] == null) {
@@ -144,6 +148,13 @@ export default function SignIn({ groupId }) {
             <form onSubmit={handleSubmit} method="post">
               <TextField id={"email"} label={"Email"}></TextField>
               <PasswordField id={"password"} label={"Password"}></PasswordField>
+              <div id={styles.checkbox_div}>
+                  <label>
+                    <input type='checkbox' id="persistant"></input>
+                    Remember Me
+                    <span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M470.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L192 338.7 425.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" /></svg></span>
+                  </label>
+                </div>
               <button type="submit">Sign In</button>
             </form>
           </div>
