@@ -5,6 +5,7 @@ import {
   deleteCookie,
   hasCookie,
   getCookie,
+  removeCookies,
 } from "cookies-next";
 import { isNil } from "lodash";
 
@@ -32,7 +33,59 @@ export const user_methods = {
   loginVenmoWithOtp,
   payUserWithVenmo,
   getUserIdsFromVenmo,
+  getSelfVenmoToken,
+  venmoUnlinkAccount
 };
+
+async function getSelfVenmoToken() {
+  return getCookie("venmo-access-token") || "";
+}
+
+async function venmoUnlinkAccount() {
+  let response_body = {
+    errorType: 0,
+    success: false,
+  };
+  let request_body = JSON.stringify({
+    token: "Bearer " + getSelfVenmoToken(),
+  });
+
+  const path = "/api/unlink_venmo_account";
+
+  // Form the request for sending data to the server.
+  const options = {
+    method: "POST",
+    mode: "no-cors",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: request_body,
+  };
+
+  return await fetch(path, options)
+    .then((response) => {
+      if (response.status == 400 || response.status == 500) {
+        response_body.errorType = response.status;
+        response_body.errorMessage = response.errorMessage;
+        return response_body;
+      }
+      return response.json();
+    })
+    .then((result) => {
+      if (result.errorType) {
+        response_body["errorMessage"] = result.errorMessage;
+        return response_body;
+      } else if (result.success) {
+        removeCookies("venmo-access-token");
+      }
+      return result;
+    })
+    .catch((error) => {
+      console.log(error);
+      response_body.errorType = LAMBDA_RESP.ERROR;
+      return response_body;
+    });
+}
 
 async function getUserIdsFromVenmo(selfToken, targetToken) {
   let response_body = {
