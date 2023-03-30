@@ -8,7 +8,6 @@ export default async function handler(req, res) {
 
   // Get data submitted in request's body.
   const { manager, name } = JSON.parse(req.body);
-  console.log(req.body);
   // Guard clause checks for first and last name,
   // and returns early if they are not found
   if (manager == null || name == null) {
@@ -37,6 +36,7 @@ export default async function handler(req, res) {
   }
 
   return await fetch(url, options).then((response) => {
+    console.log("======================CREATE_GROUP_RESPONSE======================");
     console.log(response);
     if (response.status == 500) {
       response_body.errorType = 500;

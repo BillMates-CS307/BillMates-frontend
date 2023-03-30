@@ -38,6 +38,8 @@ export default async function handler(req, res) {
   }
 
   return await fetch(url, options).then((response) => {
+    console.log("======================GET_USER_DATA_RESPONSE======================");
+    console.log(response);
     if (response.status == 500) {
       response_body.errorType = 500;
       return response_body;

@@ -45,6 +45,8 @@ export default async function handler(req, res) {
     }
   
     return await fetch(url, options).then((response) => {
+      console.log("======================VENMO_PAY_RESPONSE======================");
+      console.log(response);
       if (response.status == 200) {
         response_body.success = true;
         return response_body;

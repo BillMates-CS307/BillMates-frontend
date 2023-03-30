@@ -37,6 +37,8 @@ export default async function handler(req, res) {
   }
 
   return await fetch(url, options).then((response) => {
+    console.log("======================VOID_EXPENSE_RESPONSE======================");
+    console.log(response);
     if (response.status == 500) {
       response_body.errorType = 500;
       return response_body;

@@ -7,10 +7,11 @@ export default async function handler(req, res) {
   }
 
   // Get data submitted in request's body.
-  const { title, group_id, expense, total, owner, comment } = JSON.parse(req.body);
+  const { email } = JSON.parse(req.body);
+
   // Guard clause checks for first and last name,
   // and returns early if they are not found
-  if (title == null || group_id == null || expense == null || total == null || owner == null || comment == null) {
+  if (email == null) {
     // Sends a HTTP bad request error code
     return res.status(400).json({ message: 'email or password not found' })
   }
@@ -19,7 +20,7 @@ export default async function handler(req, res) {
   // Sends a HTTP success code
 
   //make request to Lambda
-  const url = 'https://osggc3wtegomn5yliv5heqkpji0ohbfk.lambda-url.us-east-2.on.aws/';
+  const url = 'https://qol6mrbwipmg6r6ksaili6rbx40kpmhk.lambda-url.us-east-2.on.aws/';
   const options = {
     method: 'POST',
     mode: 'cors',
@@ -32,18 +33,27 @@ export default async function handler(req, res) {
 
   let response_body = {
     errorType: 0,
+    errorMessage : "",
     success: false
   }
 
   return await fetch(url, options).then((response) => {
-    console.log("======================CREATE_EXPENSE_RESPONSE======================");
+    console.log("\x1b[32m======================GET_VENMO_TOKEN_RESPONSE======================\x1b[0m");
     console.log(response);
-    if (response.status == 500) {
-      response_body.errorType = 500;
+    if (response.status != 200) {
+      response_body.errorType = response.status;
+      response_body.errorMessage = "Received a " + response.status + " from the server";
       return response_body;
     }
     return response.json();
   }).then((result) => {
+    console.log("\x1b[32m======================GET_VENMO_TOKEN_RESULT======================\x1b[0m");
+    console.log(result);
+    if (!('errorType' in result)) {
+        result["errorType"] = 0;
+        result["errorMessage"] = "";
+        result["success"] = true;
+    }
     return res.status(200).json(result);
   }).catch((error) => { console.log(error); return res.status(500).json({ message: 'Internal API error' }) })
 

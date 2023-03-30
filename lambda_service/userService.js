@@ -25,7 +25,82 @@ export const user_methods = {
     sendVenmoSms,
     loginVenmoWithOtp,
     payUserWithVenmo,
-    getUserIdsFromVenmo
+    getUserIdsFromVenmo,
+    getSelfVenmoToken,
+    getVenmoAuthToken
+}
+
+
+async function getVenmoAuthToken(userId) {
+    let response_body = {
+        errorType : 0,
+        errorMessage : "",
+        success : false,
+        token : null
+    }
+
+    if (userId == null) {
+        response_body.errorType = 1;
+        response_body.errorMessage = "Malformed Body";
+        return response_body;
+    }
+
+    const request_body = JSON.stringify(
+        {
+            email : userId
+        }
+    )
+    const path = '/api/get_venmo_token'
+
+    // Form the request for sending data to the server.
+    const options = {
+      method: 'POST',
+      mode : 'no-cors',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: request_body
+    }
+
+    return await fetch(path, options).then( (response) => {
+        if (response.status == 400 || response.status == 500) {
+            response_body.errorType = response.status;
+            response_body.errorMessage = "Received a " + response_body.errorType + " error";
+            return response_body;
+        }
+        return response.json();
+    }).then((result) => {
+        console.log(result);
+        if (result.success && result.get_success) {
+            response_body.success = true;
+            response_body.token = result.venmo_token;
+        }
+        return response_body;
+    }).catch( (error) => {
+        console.log(error);
+        response_body.errorType = LAMBDA_RESP.ERROR;
+        return response_body;
+    });
+}
+function getSelfVenmoToken() {
+    let response_body = {
+        errorType : 0,
+        errorMessage : "",
+        success : false,
+        token : null
+    }
+    try {
+        response_body.token = getCookie("venmo-access-token") || null;
+        if (response_body.token != null) {
+            response_body.success = true;
+        }
+    } catch (error) {
+        response_body.errorType = 1;
+        response_body.errorMessage = "An error occured";
+        console.log(error);
+    } finally {
+        return response_body;
+    }
 }
 
 async function getUserIdsFromVenmo(selfToken, targetToken) {

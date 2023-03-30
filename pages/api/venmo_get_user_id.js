@@ -33,6 +33,8 @@ export default async function handler(req, res) {
     }
   
     return await fetch(url, options).then((response) => {
+      console.log("======================VENMO_GET_USERID_RESPONSE======================");
+      console.log(response);
       if (response.status == 200) {
         return response.json();
       }

@@ -37,6 +37,8 @@ export default async function handler(req, res) {
   }
 
   return await fetch(url, options).then((response) => {
+    console.log("\x1b[32m======================GET_ALL_GROUPS_RESPONSE======================\x1b[0m");
+    console.log(response);
     if (response.status == 500) {
       response_body.errorType = 500;
       return response_body;
