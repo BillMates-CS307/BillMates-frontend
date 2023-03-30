@@ -175,7 +175,7 @@ export default function Group() {
                     <></>
                 }
                 {(currentFulfillView != null) ?
-                    <FulFillView userId={userId} expense={currentFulfillView} hideParent={setCurrentFulfillView}></FulFillView>
+                    <FulFillView userId={userId} expense={currentFulfillView} hideParent={setCurrentFulfillView} warningPopup={setWarningPopup}></FulFillView>
                     :
                     <></>
                 }

@@ -384,10 +384,11 @@ export function TransactionView({ userId, members, expense, hideParent, showFulF
     );
 }
 
-export function FulFillView({ userId, expense, defaultVenmo, hideParent }) {
+export function FulFillView({ userId, expense, defaultVenmo, hideParent, warningPopup }) {
     console.log(expense);
-    let usingVenmo = defaultVenmo;
+    let usingVenmo = (sessionStorage.getItem("isVenmo") == 'true') || defaultVenmo;
     let amt = 0;
+    console.log(usingVenmo);
     for (let pair of expense.users) {
         if (pair[0] == userId) {
             amt = pair[1];
@@ -398,6 +399,7 @@ export function FulFillView({ userId, expense, defaultVenmo, hideParent }) {
         const elm = event.target;
         elm.style = "background:var(--green-background); color : #FFF";
         usingVenmo = isVenmo;
+        sessionStorage.setItem("isVenmo", isVenmo);
         if (isVenmo) {
             elm.previousElementSibling.style = "";
         } else {
@@ -439,15 +441,90 @@ export function FulFillView({ userId, expense, defaultVenmo, hideParent }) {
             */
 
             if (usingVenmo) {
-                let my_token = "Bearer e7bdd17043835f22d704edf1a896ca6d43924110251baa85bca5e14062739900";
-                let result = await user_methods.getUserIdsFromVenmo(my_token, my_token);
-                console.log(result);
-                if (result[0].success && result[1].success) { //both users had valid tokens and linked to Venmo
-                    let payment = await user_methods.payUserWithVenmo(my_token, "1", result[0].userId, result[1].userId);
-                    console.log(payment);
-                }
-            
+                /*
+                * Grab tokens of owner and user (from cookie)
+                * Grab userId from Venmo using tokens
+                * validate the userId response
+                *       false -> set popup warning the action
+                * Make BillMates fulfill requset to check if expense still exists
+                *       false -> relay expense no longer exists
+                * Make Venmo request using the API to pay
+                */
 
+                //grab token of owner of the expense
+                const owner_auth_token = await user_methods.getVenmoAuthToken(expense.owner);
+                if (owner_auth_token.errorType) {
+                    warningPopup(owner_auth_token.errorMessage + "\n please try again later");
+                    ButtonLock.UnlockButton();
+                    container.firstChild.textContent = originalText;
+                    container.style = "";
+                    return;
+                }
+                if (!owner_auth_token.success) {
+                    warningPopup("The owner of this expense has not linked their Venmo account yet");
+                    ButtonLock.UnlockButton();
+                    container.firstChild.textContent = originalText;
+                    container.style = "";
+                    return;
+                }
+                //grab token of token of the user
+                const user_auth_token = await user_methods.getVenmoAuthToken(userId);
+                if (user_auth_token.errorType) {
+                    warningPopup(owner_auth_token.errorMessage + "\n please try again later");
+                    ButtonLock.UnlockButton();
+                    container.firstChild.textContent = originalText;
+                    container.style = "";
+                    return;
+                }
+                if (!user_auth_token.success) {
+                    warningPopup("You not linked your Venmo account yet");
+                    ButtonLock.UnlockButton();
+                    container.firstChild.textContent = originalText;
+                    container.style = "";
+                    return;
+                }
+                //grab userId from Venmo (required for the actual Venmo transaction)
+                const venmo_user_ids = await user_methods.getUserIdsFromVenmo(user_auth_token.token, owner_auth_token.token);
+                //let my_token = "Bearer e7bdd17043835f22d704edf1a896ca6d43924110251baa85bca5e14062739900";
+                if (venmo_user_ids[0].errorType || venmo_user_ids[1].errorType) {
+                    if (venmo_user_ids[0].errorType) {
+                        warningPopup(venmo_user_ids[0].errorMessage + "\n Please try again later");
+                    } else {
+                        warningPopup(venmo_user_ids[1].errorMessage + "\n Please try again later");
+                    }
+                    ButtonLock.UnlockButton();
+                    container.firstChild.textContent = originalText;
+                    container.style = "";
+                    return;
+                }
+                if (venmo_user_ids[0].success && venmo_user_ids[1].success) {
+                    //Pay through BillMates first to validate it can be done
+                    const fulfill_request = await group_methods.fulfillExpense(userId, expense._id, amt);
+                    if (fulfill_request.errorType) {
+                        warningPopup(fulfill_request.errorMessage + "\n Please try again later");
+                        ButtonLock.UnlockButton();
+                        container.firstChild.textContent = originalText;
+                        container.style = "";
+                    } else if (!fulfill_request.success) { //expense does not exist
+                        window.location.reload();
+                        return;
+                    } else { //valid to make through Venmo
+                        const venmo_payment = await group_methods.payUserWithVenmo(user_auth_token.token, amt, 
+                            venmo_user_ids[0].id, venmo_user_ids[1].id );
+                        if (venmo_payment.errorType) {
+                            warningPopup(venmo_payment.errorMessage + "\n Resubmit expense through BillMates");
+                            ButtonLock.UnlockButton();
+                            container.firstChild.textContent = originalText;
+                            container.style = "";
+                        }
+                    }
+                } else {
+                    if (venmo_user_ids[0].success) { //other person invalid token
+                        warningPopup("The owner of this expense has not linked their Venmo account yet");
+                    } else {
+                        warningPopup("You have not linked your Venmo account yet");
+                    }
+                }
                 //check if login credentials work
                 // let result = await user_methods.loginVenmoWithCredentials("coverlog555@gmail.com", "Logcov210117?");
                 // if (result.error) {
@@ -468,17 +545,17 @@ export function FulFillView({ userId, expense, defaultVenmo, hideParent }) {
                 // console.log(finalResult);
             } else {
                 console.log("using billmates");
-                let result = await group_methods.fulfillExpense(userId, expense._id, amt);
-                if (result.errorType) {
-                    console.log(result.errorMessage);
-                    alert("Something went wrong, please try again later");
-                } else if (!result.success) { //expense does not exist
-                    window.location.reload();
-                    return;
-                } else {
-                    window.location.reload();
-                    return;
-                }
+                // let result = await group_methods.fulfillExpense(userId, expense._id, amt);
+                // if (result.errorType) {
+                //     console.log(result.errorMessage);
+                //     alert("Something went wrong, please try again later");
+                // } else if (!result.success) { //expense does not exist
+                //     window.location.reload();
+                //     return;
+                // } else {
+                //     window.location.reload();
+                //     return;
+                // }
             }
 
             ButtonLock.UnlockButton();
@@ -493,7 +570,7 @@ export function FulFillView({ userId, expense, defaultVenmo, hideParent }) {
         <div className={styles.transaction_background} id="submit_expense">
             <div className={styles.transaction_large}>
                 <div className={styles.x_button} onClick={() => { hideParent(null) }}></div>
-                {(defaultVenmo) ?
+                {(usingVenmo) ?
                     <div className={styles.payment_method} ><button onClick={(e) => toggle(e, false)}>BillMates</button><button style={{ background: "var(--green-background)", color: "#FFF" }} onClick={(e) => toggle(e, true)}>Venmo</button></div>
                     :
                     <div className={styles.payment_method} ><button style={{ background: "var(--green-background)", color: "#FFF" }} onClick={(e) => toggle(e, false)}>BillMates</button><button onClick={(e) => toggle(e, true)}>Venmo</button></div>
