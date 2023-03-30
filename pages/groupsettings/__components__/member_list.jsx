@@ -1,10 +1,11 @@
 import styles from '@/styles/Group.module.css'
 import { useState, useEffect } from 'react';
-import { useStore } from 'react-redux';
 
 export default function MemberList({ groupMembers, groupOwnerId, currentUserId, onKickUser }) {
-  const store = useStore();
-  //const state = store.getState().groupData;
+  console.log("groupMembers:", groupMembers);
+  console.log("groupOwnerId:", groupOwnerId); //not working yet.. manager not getting called in properly
+  console.log("currentUserId:", currentUserId);
+  
 
   return (
     <div>
@@ -13,7 +14,7 @@ export default function MemberList({ groupMembers, groupOwnerId, currentUserId, 
         {Object.keys(groupMembers).map((member) => (
           <li key={member}>
             {groupMembers[member]}
-            {currentUserId === groupOwnerId && currentUserId !== member && (
+            {currentUserId == groupOwnerId && currentUserId != groupMembers && (
               <button onClick={() => onKickUser(member)}>Kick</button>
             )}
           </li>

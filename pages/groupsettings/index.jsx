@@ -7,7 +7,8 @@ import CustomHead from "../global_components/head";
 import LoadingCircle from '../global_components/loading_circle.jsx';
 
 import React, { useEffect, useState } from "react";
-import { useStore } from 'react-redux';
+//import { useStore } from 'react-redux'; //might not be needed
+import { useSelector } from 'react-redux'; //replacement for above... fixes refresh
 import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/router.js';
 import { user_methods } from '@/lambda_service/userService.js';
@@ -18,6 +19,7 @@ import MaxCommentLen from "./__components__/max_comment_length_input";
 import AllowedFulfillmentOptions from "./__components__/allowed_fulfillment_options";
 import AutoApprove from "./__components__/autoapprove_toggle";
 import MemberList from "./__components__/member_list";
+import SaveQuit from "./__components__/savequit_button";
 
 export default function GroupSettings() {
   const router = useRouter();
@@ -40,14 +42,16 @@ export default function GroupSettings() {
   }, [isAuthenticated]) //not being used here
 
   //get redux state
-  const store = useStore();
+  //const store = useStore();
   const dispatch = useDispatch();
   const userId = (isAuthenticated) ? localStorage.getItem("tempId") : null;
   const groupId = (isAuthenticated) ? window.location.href.match('[a-zA-Z0-9\-]*$')[0] : null;
+  
   //const state = store.getState().groupData;
 
   //API call and populate group information to trigger redraw
-  let response_data = store.getState().groupData;
+  //let response_data = store.getState().groupData; 
+  const response_data = useSelector((state) => state.groupData);
   const fetchData = async () => {
       console.log("fetching data");
       let response = await group_methods.getGroupInfo(groupId, userId); //getGroupInfo(groupId, userId);
@@ -55,11 +59,11 @@ export default function GroupSettings() {
           console.log("An error occured, check logs");
           return;
       } else if (response.success) {
-          response_data = response;
-          response_data["groupId"] = groupId;
+          updated_response_data = response;
+          updated_response_data["groupId"] = groupId;
           setLoading(false);
           dispatch(
-              groupDataAction.setGroupData(response_data)
+              groupDataAction.setGroupData(updated_response_data)
           );
       } else {
           //router.push("/home/");
@@ -76,24 +80,30 @@ export default function GroupSettings() {
       }
   }, [isAuthenticated]);
     
-
   return (
-    <>
-    <CustomHead title={"Group Settings"} description={"Customize your individual group preferences"}></CustomHead>
-      <Header />
-      <SettingsWrapper>
-        <SettingsForm>
-          <h2>Group Settings</h2>
-          <MaxCommentLen></MaxCommentLen>
-          <AllowedFulfillmentOptions></AllowedFulfillmentOptions>
-          <AutoApprove></AutoApprove>
-          <MemberList groupMembers = {response_data.members} groupOwnerId = {Object.keys(response_data.manager)} currentUserId = {userId}></MemberList>
-          <a href={"/groups/"+ response_data.groupId} class="button">[SAVE AND GO BACK BUTTON]</a>
-        </SettingsForm>
-        <Space />
-      </SettingsWrapper>
-      <Footer />
-    </>
+      <>
+      <CustomHead title={"Group Settings"} description={"Customize your individual group preferences"}></CustomHead>
+        <Header />
+        <SettingsWrapper>
+          <SettingsForm>
+            <h2>Group Settings</h2>
+            <MaxCommentLen></MaxCommentLen>
+            <AllowedFulfillmentOptions></AllowedFulfillmentOptions>
+            <AutoApprove></AutoApprove>
+            {response_data.members && (
+              <MemberList
+                groupMembers={response_data.members}
+                groupOwnerId={response_data.manager}
+                currentUserId={userId}
+              ></MemberList>
+            )}
+            <SaveQuit />
+          </SettingsForm>
+          <Space />
+        </SettingsWrapper>
+        <Footer />
+      </>
+
   );
 }
 
