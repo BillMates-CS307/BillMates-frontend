@@ -52,9 +52,6 @@ export default function SelfGroup() {
         let response = {
             groups : {}
         }
-        //response.groups["5f8ba41e-265e-4035-9525-1c18c6a812e7"] = await group_methods.getGroupInfo("5f8ba41e-265e-4035-9525-1c18c6a812e7", userId);
-        //response.groups["bd3a252d-77b3-4dd3-ac09-f1165c6eb79b"] = await group_methods.getGroupInfo("bd3a252d-77b3-4dd3-ac09-f1165c6eb79b", userId);
-        // response.success = 1;
         response = await group_methods.getAllGroupsInfo(userId);
         console.log(response);
         if (response.errorType) {
