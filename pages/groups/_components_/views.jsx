@@ -454,8 +454,9 @@ export function FulFillView({ userId, expense, hideParent, warningPopup, owner }
                     container.style = "";
                     return;
                 }
+                owner_auth_token.token = "Bearer " + owner_auth_token.token;
                 //grab token of token of the user
-                let user_auth_token = user_methods.getSelfVenmoToken();
+                const user_auth_token = user_methods.getSelfVenmoToken();
                 if (user_auth_token.errorType) {
                     warningPopup([owner_auth_token.errorMessage + "\n please try again later", 3]);
                     ButtonLock.UnlockButton();
@@ -470,10 +471,9 @@ export function FulFillView({ userId, expense, hideParent, warningPopup, owner }
                     container.style = "";
                     return;
                 }
-                user_auth_token = "Bearer " + user_auth_token.token;
+                user_auth_token.token = "Bearer " + user_auth_token.token;
                 //grab userId from Venmo (required for the actual Venmo transaction)
                 const venmo_user_ids = await user_methods.getUserIdsFromVenmo(user_auth_token.token, owner_auth_token.token);
-                //let my_token = "Bearer e7bdd17043835f22d704edf1a896ca6d43924110251baa85bca5e14062739900";
                 if (venmo_user_ids[0].errorType || venmo_user_ids[1].errorType) {
                     if (venmo_user_ids[0].errorType) {
                         warningPopup([venmo_user_ids[0].errorMessage + "\n Please try again later", 3]);
@@ -497,7 +497,7 @@ export function FulFillView({ userId, expense, hideParent, warningPopup, owner }
                         window.location.reload();
                         return;
                     } else { //valid to make through Venmo
-                        const venmo_payment = await group_methods.payUserWithVenmo(user_auth_token.token, amt, 
+                        const venmo_payment = await user_methods.payUserWithVenmo(user_auth_token.token, amt, 
                             venmo_user_ids[0].id, venmo_user_ids[1].id );
                         if (venmo_payment.errorType) {
                             warningPopup([venmo_payment.errorMessage + "\n Resubmit expense through BillMates", 3]);

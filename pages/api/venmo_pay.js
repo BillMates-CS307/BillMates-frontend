@@ -56,11 +56,9 @@ export default async function handler(req, res) {
         response_body.errorType = 401;
         return response_body;
       }
-      response_body.errorMessage = "Received an error";
+      response_body.errorMessage = "Received a " + response.status + " error";
       response_body.errorType = response.status;
-      console.log(response);
       return response_body;
-      //return response.json();
     }).then((result) => {
       return res.status(200).json(result);
     }).catch((error) => { console.log(error); return res.status(500).json({ errorMessage: 'Internal API error' }) })

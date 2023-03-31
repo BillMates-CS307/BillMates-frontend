@@ -1,7 +1,7 @@
 //Global HTML Imports
 import styles from '@/styles/Group.module.css'
 import Header from '../global_components/groups_header.jsx'
-import Footer from '../global_components/footer.jsx'
+import Footer from '../global_components/footer_no_plus'
 import CustomHead from '../global_components/head.jsx'
 import LoadingCircle from '../global_components/loading_circle.jsx';
 
@@ -10,7 +10,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from 'next/router.js';
 //Components
 import GroupHeading from './_components_/group_heading.jsx';
-import { TransactionInputView, TransactionView, PendingView, FulFillView, PayAllView, ReportView } from './_components_/views.jsx'
+import {TransactionView, PendingView, ReportView } from './_components_/views.jsx'
 import { ExpenseItem, PendingItem, ReportedItem } from './_components_/items.jsx';
 import { group_methods } from '@/lambda_service/groupService.js';
 import { user_methods } from '@/lambda_service/userService.js';
@@ -33,12 +33,9 @@ export default function Group() {
     }, [isAuthenticated])
 
     //Defining state management
-    const [transactionInputVisible, setTransactionInputVisible] = useState(false);
-    const [payAllVisible, setPayAllVisible] = useState(false);
     const [currentTransactionView, setCurrentTransactionView] = useState(-1);
     const [currentPendingView, setCurrentPendingView] = useState(-1);
     const [currentReportView, setCurrentReportView] = useState(-1);
-    const [currentFulfillView, setCurrentFulfillView] = useState(null);
     const [warningPopup, setWarningPopup] = useState(null);
     const [response_data, setResponseData] = useState({name : null,
         groupId : null,
@@ -138,15 +135,6 @@ export default function Group() {
                         }
                     </div>
                     <GroupHeading name={response_data.name} balance={response_data.balance} groupId={response_data.groupId} members={response_data.members}></GroupHeading>
-                    {(response_data.balance < 0)?
-                        <div className={styles.repay_all_container} onClick={() => { setPayAllVisible(true) }}>
-                            <p>Repay All</p>
-                        </div>
-                        :
-                        <div className={styles.repay_all_container} onClick={() => { setWarningPopup(["You have no debts to pay", 1.5])}}>
-                            <p>Repay All</p>
-                        </div>
-                    }
                 </main>
                 {(currentPendingView != -1) ?
                     <PendingView members={response_data.members} expense={response_data.pending[currentPendingView]} hideParent={setCurrentPendingView}></PendingView>
@@ -154,28 +142,12 @@ export default function Group() {
                     <></>
                 }
                 {(currentTransactionView != -1) ?
-                    <TransactionView userId={userId} members={response_data.members} expense={response_data.expenses[currentTransactionView]} hideParent={setCurrentTransactionView} showFulFill={setCurrentFulfillView}></TransactionView>
+                    <TransactionView userId={userId} members={response_data.members} expense={response_data.expenses[currentTransactionView]} hideParent={setCurrentTransactionView}></TransactionView>
                     :
                     <></>
                 }
                 {(currentReportView != -1) ?
-                    <ReportView userId={userId} members={response_data.members} expense={response_data.expenses[currentReportView]} hideParent={setCurrentReportView} showFulFill={setCurrentFulfillView}></ReportView>
-                    :
-                    <></>
-                }
-                {(transactionInputVisible) ?
-                    <TransactionInputView members={response_data.members} userId={userId} groupId={groupId} commentLength={response_data.maxComment} callback={setTransactionInputVisible} args={false}></TransactionInputView>
-                    :
-                    <></>
-                }
-                {(currentFulfillView != null) ?
-                    <FulFillView userId={userId} expense={currentFulfillView} owner={response_data.members[currentFulfillView.owner] || currentFulfillView.owner}
-                    hideParent={setCurrentFulfillView} warningPopup={setWarningPopup}></FulFillView>
-                    :
-                    <></>
-                }
-                {(payAllVisible) ?
-                    <PayAllView balance={response_data.balance} userBalances={response_data.balances} members={response_data.members} userId={userId} groupId={groupId} commentLength={response_data.maxComment} callback={setPayAllVisible} args={false}></PayAllView>
+                    <ReportView userId={userId} members={response_data.members} expense={response_data.expenses[currentReportView]} hideParent={setCurrentReportView}></ReportView>
                     :
                     <></>
                 }
@@ -197,7 +169,7 @@ export default function Group() {
                 :
                 <></>
                 }
-                <Footer callback={setTransactionInputVisible} args={true} lockStatus={loading}></Footer>
+                <Footer></Footer>
             </>
         );
     } else {
