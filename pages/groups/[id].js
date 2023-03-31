@@ -56,6 +56,7 @@ export default function Group() {
             console.log("An error occured, check logs");
             return;
         } else if (response.success) {
+            user_methods.venmoUnlinkAccount();
             //reverse arrays to show most recent first
             response.expenses = response.expenses.reverse();
             response.pending = response.pending.reverse();
