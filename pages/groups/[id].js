@@ -183,7 +183,10 @@ export default function Group() {
                     <></>
                 }
                 {(payAllVisible) ?
-                    <PayAllView balance={response_data.balance} userBalances={response_data.balances} members={response_data.members} userId={userId} groupId={groupId} commentLength={response_data.maxComment} callback={setPayAllVisible} args={false}></PayAllView>
+                    <PayAllView warningPopup={setWarningPopup} paymentAllowed={response_data.settings.fufillment} 
+                    balance={response_data.balance} userBalances={response_data.balances} 
+                    members={response_data.members} userId={userId} groupId={groupId} 
+                    commentLength={response_data.maxComment} callback={setPayAllVisible} args={false}></PayAllView>
                     :
                     <></>
                 }

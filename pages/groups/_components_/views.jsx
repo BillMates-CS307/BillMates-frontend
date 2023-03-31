@@ -766,8 +766,9 @@ export function ReportView({ userId, members, expense, hideParent, showFulFill }
     );
 }
 
-export function PayAllView({ members, userId, groupId, commentLength, callback, args, balance, userBalances }) {
+export function PayAllView({ members, userId, groupId, commentLength, callback, args, balance, userBalances, paymentAllowed, warningPopup }) {
     console.log("Creating Payout All View");
+    let usingVenmo = (localStorage.getItem("payment_preference") == 'venmo');
     //remove user from the list of members
 
     let idx = 0;
@@ -848,14 +849,15 @@ export function PayAllView({ members, userId, groupId, commentLength, callback, 
             ButtonLock.LockButton();
             //grab the form and inputs
             const form = document.querySelector('#transaction_input');
-            const inputs = form.querySelectorAll('input');
+            let inputs = form.querySelectorAll('input');
             //set button visually to be locked
             form.children[0].children[5].children[0].textContent = "Submitting";
             form.children[0].children[5].style = "background-color : var(--green-muted-background)";
-
+            console.log(inputs);
             let running_sum = 0;
             loooping:
             for (let i = 0; i < inputs.length; i++) {
+                if (inputs[i].type == "radio") {continue;}
                 switch (i) {
                     case 0:
                         format.title = inputs[i].value;
@@ -867,7 +869,7 @@ export function PayAllView({ members, userId, groupId, commentLength, callback, 
                         format.comment = inputs[i].value;
                         break;
                     default:
-                        if (!format.members[i - 3].selected || inputs[i].value == "" || parseFloat(inputs[i].value) == 0) { break; }
+                        if (!format.members[i - 5].selected || inputs[i].value == "" || parseFloat(inputs[i].value) == 0) { break; }
                         if (inputs[i].value.search(/^[0-9]*[.][0-9]{2}$/g) == -1 && inputs[i].value.search(/^[0-9]*$/g) == -1) {
                             inputs[i].style = "outline: 2px solid var(--red-background);";
                             inputs[i].addEventListener('keydown', function () {
@@ -876,7 +878,7 @@ export function PayAllView({ members, userId, groupId, commentLength, callback, 
                             format.expense = {};
                             break loooping;
                         } else {
-                            format.expense[format.members[i - 3].id] = inputs[i].value;
+                            format.expense[format.members[i - 5].id] = inputs[i].value;
                             running_sum += parseFloat(inputs[i].value) || 0;
                         }
                 }
@@ -918,9 +920,6 @@ export function PayAllView({ members, userId, groupId, commentLength, callback, 
             }
 
             if (format.title != "" && format.total != "" && format.expense != {}) {
-                //why are we subtracting what the owner paid from the grand total???
-                //format.total = (Math.round((parseFloat(format.total) * 100)) / 100) - (Math.round(((parseFloat(format.expense[userId]) || 0) * 100)) / 100);
-                //delete format.expense[userId];
                 format.total = parseFloat(format.total);
                 format.request_time = "now";
                 format.due_date = "later";
@@ -928,16 +927,170 @@ export function PayAllView({ members, userId, groupId, commentLength, callback, 
                     format.expense[user] = parseFloat(format.expense[user]);
                 }
                 console.log(format);
-                const result = await group_methods.submitPayout(format);
-                if (result.errorType) {
-                    console.log(result.errorMessage);
-                    alert("Something went wrong, please try again later");
-                } else if (result.success) {
-                    window.location.reload();
-                    return;
+                if (!document.querySelector("#BillMatesPayAll").checked) {
+                    if (paymentAllowed != 'both' && paymentAllowed != 'venmo') {
+                        warningPopup(["The group does not allow you to pay with Venmo", 5]);
+                        ButtonLock.UnlockButton();
+                        form.children[0].children[5].children[0].textContent = "Submit";
+                        form.children[0].children[5].style = "";
+                        callback(args);
+                        return;
+                    }
+                    const result = await group_methods.submitPayout(format);
+                    if (result.errorType) {
+                        console.log(result.errorMessage);
+                        alert("Something went wrong, please try again later");
+                    } else if (result.success) {
+                        window.location.reload();
+                        return;
+                    } else {
+                        alert("invalid but not error");
+                    }
+                    /*
+                    // * Grab tokens of owner and user (from cookie)
+                    // * Grab userId from Venmo using tokens
+                    // * validate the userId response
+                    // *       false -> set popup warning the action
+                    // * Make BillMates fulfill requset to check if expense still exists
+                    // *       false -> relay expense no longer exists
+                    // * Make Venmo request using the API to pay
+                    // */
+
+                    // let linkedAccounts = [];
+                    // let user_auth_token;
+                    // for (let user in format.expense) {
+                    //     user_auth_token = await user_methods.getVenmoAuthToken(user);
+                    //     if (user_auth_token.errorType) {
+                    //         warningPopup([user_auth_token.errorMessage + "\n please try again later", 3]);
+                    //         ButtonLock.UnlockButton();
+                    //         container.firstChild.textContent = originalText;
+                    //         container.style = "";
+                    //         return;
+                    //     }
+                    //     if (!user_auth_token.success) {
+                    //         warningPopup(["A user has not linked their Venmo account yet", 3]);
+                    //         ButtonLock.UnlockButton();
+                    //         container.firstChild.textContent = originalText;
+                    //         container.style = "";
+                    //         return;
+                    //     }
+                    //     user_auth_token.token = "Bearer " + user_auth_token.token;
+                    //     linkedAccounts.push(user_auth_token);
+                    // }
+    
+                    // //grab token of owner of the expense
+                    // const owner_auth_token = user_methods.getSelfVenmoToken();
+                    // if (owner_auth_token.errorType) {
+                    //     warningPopup([owner_auth_token.errorMessage + "\n please try again later", 3]);
+                    //     ButtonLock.UnlockButton();
+                    //     container.firstChild.textContent = originalText;
+                    //     container.style = "";
+                    //     return;
+                    // }
+                    // if (!owner_auth_token.success) {
+                    //     warningPopup(["You have not linked your Venmo account yet", 3]);
+                    //     ButtonLock.UnlockButton();
+                    //     container.firstChild.textContent = originalText;
+                    //     container.style = "";
+                    //     return;
+                    // }
+                    // owner_auth_token.token = "Bearer " + owner_auth_token.token;
+    
+                    // //grab userId from Venmo (required for the actual Venmo transaction)
+                    // console.log(owner_auth_token);
+                    // console.log(linkedAccounts);
+
+                    // let venmo_user_ids = []
+                    // let i = 0;
+                    // for (let user of linkedAccounts) {
+                    //     venmo_user_ids.push(await user_methods.getIdsFromVenmo(owner_auth_token.token, user.token));
+                    //     if (venmo_user_ids[i][0].errorType || venmo_user_ids[i][1].errorType) {
+                    //         if (venmo_user_ids[0].errorType) {
+                    //             warningPopup([venmo_user_ids[0].errorMessage + "\n Please try again later", 3]);
+                    //         } else {
+                    //             warningPopup([venmo_user_ids[1].errorMessage + "\n Please try again later", 3]);
+                    //         }
+                    //         ButtonLock.UnlockButton();
+                    //         container.firstChild.textContent = originalText;
+                    //         container.style = "";
+                    //         return;
+                    //     }
+                    //     i++
+                    // }
+                    // console.log(venmo_user_ids);
+                    // i = 0;
+
+                    // //Pay through BillMates first to validate it can be done
+                    // const result = await group_methods.submitPayout(format);
+                    // if (result.errorType) {
+                    //     console.log(result.errorMessage);
+                    //     alert("Something went wrong, please try again later");
+                    // } else if (!result.success) {
+                    //     alert("invalid but not error");
+                    // }
+                    // let venmo_payment;
+                    // for (let pair of venmo_user_ids) {
+                    //     console.log(pair);
+                    //     if (pair[0].success && pair[1].success) {
+                    //         console.log(format.amount * -1);
+                    //         venmo_payment = await user_methods.payUserWithVenmo(owner_auth_token.token, format.amount * -1, 
+                    //             pair[1].userId, pair[0].method );
+                    //         console.log(venmo_payment);
+                    //         if (venmo_payment.errorType) {
+                    //             warningPopup([venmo_payment.errorMessage + "\n Resubmit expense through BillMates", 3]);
+                    //             ButtonLock.UnlockButton();
+                    //             container.firstChild.textContent = originalText;
+                    //             container.style = "";
+                    //             return;
+                    //         } else if (!venmo_payment.success) {
+                    //             warningPopup(["Could not complete this action\n Resubmit expense through BillMates", 3]);
+                    //             ButtonLock.UnlockButton();
+                    //             container.firstChild.textContent = originalText;
+                    //             container.style = "";
+                    //             return;
+                    //         }
+                    //     } else {
+                    //         if (pair[0].success) { //other person invalid token
+                    //             warningPopup(["The owner of this expense has not linked their Venmo account yet", 3]);
+                    //             ButtonLock.UnlockButton();
+                    //             //set button visually to be unlocked
+                    //             form.children[0].children[5].children[0].textContent = "Submit";
+                    //             form.children[0].children[5].style = "";
+                    //             return;
+                    //         } else {
+                    //             warningPopup(["You have not linked your Venmo account yet", 2]);
+                    //             ButtonLock.UnlockButton();
+                    //             //set button visually to be unlocked
+                    //             form.children[0].children[5].children[0].textContent = "Submit";
+                    //             form.children[0].children[5].style = "";
+                    //             return;
+                    //         }
+                    //     }
+                    //     i++;
+                    // }
+                    // window.location.reload();
+                    // return;
                 } else {
-                    alert("invalid but not error");
+                    if (paymentAllowed != 'both' && paymentAllowed != 'billmates') {
+                        warningPopup(["The group does not allow you to pay with BillMates", 5]);
+                        ButtonLock.UnlockButton();
+                        form.children[0].children[5].children[0].textContent = "Submit";
+                        form.children[0].children[5].style = "";
+                        callback(args);
+                        return;
+                    }
+                    const result = await group_methods.submitPayout(format);
+                    if (result.errorType) {
+                        console.log(result.errorMessage);
+                        alert("Something went wrong, please try again later");
+                    } else if (result.success) {
+                        window.location.reload();
+                        return;
+                    } else {
+                        alert("invalid but not error");
+                    }
                 }
+
             }
 
 
@@ -976,6 +1129,16 @@ export function PayAllView({ members, userId, groupId, commentLength, callback, 
                         </>
                     }
                     <p>{members[userId]}</p>
+                    <form className={styles.radio_div}>
+                        <label>
+                            <input id="BillMatesPayAll" type='radio' name="radio" defaultChecked={!usingVenmo}></input>
+                                BillMates
+                        </label>
+                        <label>
+                            <input type='radio' name="radio" defaultChecked={usingVenmo}></input>
+                                Venmo
+                        </label>
+                    </form>
                 </div>
                 <div className={styles.split_button_container}>
                     <button onClick={() => splitEven()}>Split Even</button>
