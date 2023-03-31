@@ -1,0 +1,14 @@
+A. Identification and classification
+Test Case: 6002
+System: Group Settings
+Unauthorized members archiving group from group settings
+Severity: 3
+
+B. Instructions
+	1. Log in to your billmates account
+    2. Join a group using the provided "join group" url
+    3. Go to group settings
+    5. Attempt to archive the group from the settings
+
+C. Expected Result:
+	1. Nothing should happen since the user is not the group manager/owner

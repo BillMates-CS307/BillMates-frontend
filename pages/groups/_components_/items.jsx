@@ -69,7 +69,7 @@ export function ExpenseItem({ id, index, title, date, owner, amount, isOwner, us
                     <p>${amount}</p>
                 </div>
                 <div className={styles.transaction_owner_date}>
-                    <p>{owner}</p>
+                    <p>{owner || "(Not In Group)"}</p>
                     <p>{date}</p>
                 </div>
             </div>

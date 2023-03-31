@@ -126,13 +126,14 @@ export function TransactionInputView({ members, userId, groupId, commentLength, 
             }
 
             if (format.total == "" || parseFloat(format.total) <= 0) {
-                inputs[1].nextElementSibling.textContent = "Cannot be blank";
+                inputs[1].nextElementSibling.textContent = "Has to be more than 0.00";
                 inputs[1].style = "outline: 2px solid var(--red-background);";
                 inputs[1].nextElementSibling.style = "display:block";
                 inputs[1].addEventListener('keydown', function () {
                     this.style = "";
                     this.nextElementSibling.style = "";
                 }, { once: true });
+                format.total = "";
             } else if (format.total.search(/^[0-9]*[.][0-9]{2}$/g) == -1 && format.total.search(/^[0-9]*$/g) == -1) {
                 inputs[1].nextElementSibling.textContent = "Invalid Number";
                 inputs[1].style = "outline: 2px solid var(--red-background);";
@@ -151,8 +152,9 @@ export function TransactionInputView({ members, userId, groupId, commentLength, 
             }
 
             if (format.title != "" && format.total != "" && format.expense != {}) {
-                //why are we subtracting what the owner paid from the grand total???
-                //format.total = (Math.round((parseFloat(format.total) * 100)) / 100) - (Math.round(((parseFloat(format.expense[userId]) || 0) * 100)) / 100);
+                if (format.comment.trim() == "") {
+                    format.comment = "No Additional Comments";
+                }
                 delete format.expense[userId];
                 format.total = parseFloat(format.total);
                 format.request_time = "now";
@@ -173,6 +175,7 @@ export function TransactionInputView({ members, userId, groupId, commentLength, 
             }
 
 
+
             ButtonLock.UnlockButton();
             //set button visually to be unlocked
             form.children[0].children[5].children[0].textContent = "Submit";
@@ -186,34 +189,6 @@ export function TransactionInputView({ members, userId, groupId, commentLength, 
         const target = event.target;
         target.nextElementSibling.textContent = target.value.length + "/" + commentLength;
         return;
-    }
-
-    const hideView = (elm) => {
-        format = {
-            title: "",
-            amount: "",
-            comment: "",
-            members: Object.keys(members).map((id, idx) => {
-                return { id: id, name: members[id], position: idx, selected: false, amount: 0 }
-            }),
-            owner: userId,
-            groupId: groupId,
-            expense: {},
-            numSelected: 0
-        }
-        //reset input fields
-        const inputs = elm.querySelectorAll("input");
-        for (let i = 0; i < inputs.length; i++) {
-            inputs[i].value = "";
-            if (i == 2) {
-                inputs[i].nextElementSibling.textContent = "0/" + commentLength;
-            } else if (i > 2) {
-                inputs[i].parentNode.firstChild.className = styles.radio;
-            }
-        }
-        elm.children[0].children[4].style = "";
-        elm.style = "";
-
     }
 
     return (
@@ -284,7 +259,7 @@ export function TransactionView({ userId, members, expense, hideParent, showFulF
             container.style = "background-color : var(--green-muted-background)";
 
             //TODO: check api call
-            const result = await group_methods.reportExpense(expense._id);
+            const result = await group_methods.reportExpense(expense._id, userId);
             //const result = {success : false};
             if (result.errorType) {
                 console.log(result.errorMessage);
@@ -350,13 +325,9 @@ export function TransactionView({ userId, members, expense, hideParent, showFulF
                 <div className={styles.transaction_heading} id="view_item_info">
                     <p>{expense.title}</p>
                     <p>${expense.amount.toFixed(2)}</p>
-                    {(expense.comments) ?
-                        <p>{expense.comments}</p>
-                        :
-                        <></>
-                    }
+                    <p style={{color : "var(--neutral-background)"}}>{expense.comment}</p>
                     <div className={styles.name_email_combo}>
-                        <p>{members[expense.owner]}</p>
+                        <p>{members[expense.owner] || "(Not In Group)"}</p>
                         <p>{expense.owner}</p>
                     </div>
                 </div>
@@ -376,7 +347,7 @@ export function TransactionView({ userId, members, expense, hideParent, showFulF
                                 return (
                                     <div className={styles.person + " " + styles.person_view}>
                                         <div className={styles.name_email_combo}>
-                                            <p>{members[id]}</p>
+                                            <p>{members[id] || "(Not In Group)"}</p>
                                             <p>{id}</p>
                                         </div>
                                         <p>${amt_remaining.toFixed(2)}</p>
@@ -413,23 +384,13 @@ export function TransactionView({ userId, members, expense, hideParent, showFulF
     );
 }
 
-export function FulFillView({ userId, expense, defaultVenmo, hideParent }) {
-    let usingVenmo = defaultVenmo;
+export function FulFillView({ userId, expense, hideParent, warningPopup, owner, paymentAllowed }) {
+    let usingVenmo = (localStorage.getItem("payment_preference") == 'venmo');
     let amt = 0;
     for (let pair of expense.users) {
         if (pair[0] == userId) {
             amt = pair[1];
             break;
-        }
-    }
-    const toggle = (event, isVenmo) => {
-        const elm = event.target;
-        elm.style = "background:var(--green-background); color : #FFF";
-        usingVenmo = isVenmo;
-        if (isVenmo) {
-            elm.previousElementSibling.style = "";
-        } else {
-            elm.nextElementSibling.style = "";
         }
     }
 
@@ -466,42 +427,148 @@ export function FulFillView({ userId, expense, defaultVenmo, hideParent }) {
             
             */
 
-            if (usingVenmo) {
-                let my_token = "Bearer e7bdd17043835f22d704edf1a896ca6d43924110251baa85bca5e14062739900";
-                let result = await user_methods.getUserIdsFromVenmo(my_token, my_token);
-                console.log(result);
-                if (result[0].success && result[1].success) { //both users had valid tokens and linked to Venmo
-                    let payment = await user_methods.payUserWithVenmo(my_token, "1", result[0].userId, result[1].userId);
-                    console.log(payment);
+            if (!document.querySelector("#BillMates").checked) {
+                if (paymentAllowed != 'both' && paymentAllowed != 'venmo') {
+                    warningPopup(["The group does not allow you to pay with Venmo", 5]);
+                    ButtonLock.UnlockButton();
+                    container.firstChild.textContent = originalText;
+                    container.style = "";
+                    return;
                 }
-            
+                /*
+                * Grab tokens of owner and user (from cookie)
+                * Grab userId from Venmo using tokens
+                * validate the userId response
+                *       false -> set popup warning the action
+                * Make BillMates fulfill requset to check if expense still exists
+                *       false -> relay expense no longer exists
+                * Make Venmo request using the API to pay
+                */
 
-                //check if login credentials work
-                // let result = await user_methods.loginVenmoWithCredentials("coverlog555@gmail.com", "Logcov210117?");
-                // if (result.error) {
-                //     alert("We got an error");
-                //     console.log(result.errorMessage);
-                // } else if (!result.success) {
-                //     console.log("invalid credentials");
-                // } else if (result.otpSecret) {
-                //     console.log(result);
-                //     let smsResult = await user_methods.sendVenmoSms(result.deviceId, result.otpSecret);
-                //     if (smsResult.success) {
-                //         console.log("sent the text");
-                //     } else {
-                //         console.log("secret expired somehow");
-                //     }
+                //grab token of owner of the expense
+                const owner_auth_token = await user_methods.getVenmoAuthToken(expense.owner);
+                if (owner_auth_token.errorType) {
+                    warningPopup([owner_auth_token.errorMessage + "\n please try again later", 3]);
+                    ButtonLock.UnlockButton();
+                    container.firstChild.textContent = originalText;
+                    container.style = "";
+                    return;
+                }
+                if (!owner_auth_token.success) {
+                    warningPopup(["The owner of this expense has not linked their Venmo account yet", 3]);
+                    ButtonLock.UnlockButton();
+                    container.firstChild.textContent = originalText;
+                    container.style = "";
+                    return;
+                }
+                owner_auth_token.token = "Bearer " + owner_auth_token.token;
+                //grab token of token of the user
+                const user_auth_token = user_methods.getSelfVenmoToken();
+                if (user_auth_token.errorType) {
+                    warningPopup([owner_auth_token.errorMessage + "\n please try again later", 3]);
+                    ButtonLock.UnlockButton();
+                    container.firstChild.textContent = originalText;
+                    container.style = "";
+                    return;
+                }
+                if (!user_auth_token.success) {
+                    warningPopup(["You not have linked your Venmo account yet", 3]);
+                    ButtonLock.UnlockButton();
+                    container.firstChild.textContent = originalText;
+                    container.style = "";
+                    return;
+                }
+                user_auth_token.token = "Bearer " + user_auth_token.token;
+
+                //testing
+                // const testing_response = await user_methods.getUserByUsername(user_auth_token.token, "Ben-Lilley-4");
+                // if (user_auth_token.errorType) {
+                //     warningPopup([owner_auth_token.errorMessage + "\n please try again later", 3]);
+                //     ButtonLock.UnlockButton();
+                //     container.firstChild.textContent = originalText;
+                //     container.style = "";
+                //     return;
                 // }
-                // let finalResult = await user_methods.loginVenmoWithOtp("357113572186890509257930635223921221", "MeyN16znRPaIl7AdULCSfTpoFK2smvQTOSdRbcgnANxXUJBoaRXPLq2iaotQQ7AV", "990700");
-                // console.log(finalResult);
+                // if (!user_auth_token.success) {
+                //     warningPopup(["You not have linked your Venmo account yet", 3]);
+                //     ButtonLock.UnlockButton();
+                //     container.firstChild.textContent = originalText;
+                //     container.style = "";
+                //     return;
+                // }
+                // return;
+
+                //grab userId from Venmo (required for the actual Venmo transaction)
+                const venmo_user_ids = await user_methods.getIdsFromVenmo(user_auth_token.token, owner_auth_token.token);
+                console.log(venmo_user_ids);
+                if (venmo_user_ids[0].errorType || venmo_user_ids[1].errorType) {
+                    if (venmo_user_ids[0].errorType) {
+                        warningPopup([venmo_user_ids[0].errorMessage + "\n Please try again later", 3]);
+                    } else {
+                        warningPopup([venmo_user_ids[1].errorMessage + "\n Please try again later", 3]);
+                    }
+                    ButtonLock.UnlockButton();
+                    container.firstChild.textContent = originalText;
+                    container.style = "";
+                    return;
+                }
+                if (venmo_user_ids[0].success && venmo_user_ids[1].success) {
+                    //Pay through BillMates first to validate it can be done
+                    const fulfill_request = await group_methods.fulfillExpense(userId, expense._id, amt, 'Venmo');
+                    if (fulfill_request.errorType) {
+                        warningPopup([fulfill_request.errorMessage + "\n Please try again later", 3]);
+                        ButtonLock.UnlockButton();
+                        container.firstChild.textContent = originalText;
+                        container.style = "";
+                    } else if (!fulfill_request.success) { //expense does not exist
+                        window.location.reload();
+                        return;
+                    } else { //valid to make through Venmo
+                        console.log(user_auth_token);
+                        console.log(amt);
+                        console.log(venmo_user_ids);
+                        const venmo_payment = await user_methods.payUserWithVenmo(user_auth_token.token, amt, 
+                            venmo_user_ids[0].method, venmo_user_ids[1].userId );
+                        console.log(venmo_payment);
+                        if (venmo_payment.errorType) {
+                            warningPopup([venmo_payment.errorMessage + "\n Resubmit expense through BillMates", 3]);
+                            ButtonLock.UnlockButton();
+                            container.firstChild.textContent = originalText;
+                            container.style = "";
+                            return;
+                        } else if (venmo_payment.success) {
+                            window.location.reload();
+                            return;
+                        } else {
+                            warningPopup(["Could not complete this action\n Resubmit expense through BillMates", 3]);
+                            ButtonLock.UnlockButton();
+                            container.firstChild.textContent = originalText;
+                            container.style = "";
+                            return;
+                        }
+                    }
+                } else {
+                    if (venmo_user_ids[0].success) { //other person invalid token
+                        warningPopup(["The owner of this expense has not linked their Venmo account yet", 3]);
+                    } else {
+                        warningPopup(["You have not linked your Venmo account yet", 2]);
+                    }
+                }
             } else {
-                console.log("using billmates");
-                let result = await group_methods.fulfillExpense(userId, expense._id, amt);
+                if (paymentAllowed != 'both' && paymentAllowed != 'billmates') {
+                    warningPopup(["The group does not allow you to pay with BillMates", 5]);
+                    ButtonLock.UnlockButton();
+                    container.firstChild.textContent = originalText;
+                    container.style = "";
+                    return;
+                }
+                let result = await group_methods.fulfillExpense(userId, expense._id, amt, 'BillMates');
                 if (result.errorType) {
                     console.log(result.errorMessage);
                     alert("Something went wrong, please try again later");
-                } else if (!result.success) {
-                    console.log("Unsuccessful (this should be impossible)");
+                } else if (!result.success) { //expense does not exist
+                    window.location.reload();
+                    return;
                 } else {
                     window.location.reload();
                     return;
@@ -516,17 +583,32 @@ export function FulFillView({ userId, expense, defaultVenmo, hideParent }) {
         }
     }
 
+    const closeParent = () => {
+        sessionStorage.removeItem("isVenmo");
+        hideParent(null);
+    }
+
     return (
         <div className={styles.transaction_background} id="submit_expense">
-            <div className={styles.transaction_large}>
-                <div className={styles.x_button} onClick={() => { hideParent(null) }}></div>
-                {(defaultVenmo) ?
-                    <div className={styles.payment_method} ><button onClick={(e) => toggle(e, false)}>BillMates</button><button style={{ background: "var(--green-background)", color: "#FFF" }} onClick={(e) => toggle(e, true)}>Venmo</button></div>
-                    :
-                    <div className={styles.payment_method} ><button style={{ background: "var(--green-background)", color: "#FFF" }} onClick={(e) => toggle(e, false)}>BillMates</button><button onClick={(e) => toggle(e, true)}>Venmo</button></div>
-                }
+            <div className={styles.transaction_large} action="">
+                <div className={styles.x_button} onClick={closeParent}></div>
+                <div className={styles.payment_option_container} id="radio_container">
+                    <p>Payment Method:</p>
+                    <form className={styles.radio_div}>
+                        <label>
+                            <input id="BillMates" type='radio' name="radio" defaultChecked={!usingVenmo}></input>
+                                BillMates
+                        </label>
+                        <label>
+                            <input type='radio' name="radio" defaultChecked={usingVenmo}></input>
+                                Venmo
+                        </label>
+                    </form>
+                </div>
                 <div className={styles.expense_payment_form}>
                     <p>Amount Paying: ${amt.toFixed(2)}</p>
+                    <p>To: {owner}</p>
+                    <p>Item: {expense.title}</p>
                 </div>
                 <div className={styles.submit_expense_container} onClick={(e) => { handleExpensePay(e) }}><p>Bill Me</p></div>
             </div>
@@ -535,7 +617,6 @@ export function FulFillView({ userId, expense, defaultVenmo, hideParent }) {
 }
 
 export function PendingView({ members, expense, hideParent }) {
-    console.log(expense);
     const handlePendingPay = async (event, isAccept) => {
         //make API call
         if (!ButtonLock.isLocked()) {
@@ -576,6 +657,110 @@ export function PendingView({ members, expense, hideParent }) {
                 <div><p className={styles.debt_remaining_text + " " + styles.pending_larger_p}>Amount Paying: $ {expense.amount_paid.toFixed(2)}</p></div>
                 <div className={styles.submit_expense_container} onClick={(e) => { handlePendingPay(e, true) }}><p>Accept</p></div>
                 <div className={styles.submit_expense_container + " " + styles.negative} onClick={(e) => { handlePendingPay(e, false) }}><p>Reject</p></div>
+            </div>
+        </div>
+    );
+}
+
+export function ReportView({ userId, members, expense, hideParent, showFulFill }) {
+    const handleReport = async (event, isAccept) => {
+        //make API call
+        if (!ButtonLock.isLocked()) {
+            ButtonLock.LockButton();
+            let container = event.target;
+            let originalText = container.firstChild.textContent;
+            //set button visually to be locked
+            container.firstChild.textContent = (isAccept) ? "Accepting" : "Rejecting";
+            container.style = (isAccept) ? "background-color : var(--green-muted-background)" : "background-color : var(--red-muted-background)";
+
+
+            const result = await group_methods.updateReportStatus(!isAccept, expense._id);
+            //const result = {success : false};
+            if (result.errorType) {
+                console.log(result.errorMessage);
+            } else if (!result.success) {
+                alert("Something went wrong");
+            } else { //went through and status has changed
+                window.location.reload();
+                return;
+            }
+            ButtonLock.UnlockButton();
+            container.firstChild.textContent = originalText;
+            container.style = "";
+            hideParent(-1);
+        }
+        return;
+    }
+    const closeContainer = () => {
+        if (!ButtonLock.isLocked()) {
+            hideParent(-1);
+        }
+    }
+
+    return (
+        <div className={styles.transaction_background} id="transaction_view">
+            <div className={styles.transaction_large}>
+                <div className={styles.x_button} onClick={closeContainer}></div>
+                <div className={styles.transaction_heading} id="view_item_info">
+                    <p>{expense.title}</p>
+                    <p>${expense.amount.toFixed(2)}</p>
+                    {(expense.comments) ?
+                        <p>{expense.comments}</p>
+                        :
+                        <></>
+                    }
+                    <div className={styles.name_email_combo}>
+                        <p>{members[expense.owner]}</p>
+                        <p>{expense.owner}</p>
+                    </div>
+                </div>
+                {(expense.is_payout)?
+                    <div><p className={styles.debt_remaining_text}>Paid To</p></div>
+                :
+                    <div><p className={styles.debt_remaining_text}>Debts Remaining</p></div>
+                }
+                
+                <div className={styles.transaction_people} id="view_transaction_people">
+                    {
+                        expense.users.map(([id, amt_remaining]) => {
+                            if (amt_remaining != 0) {
+                                return (
+                                    <div className={styles.person + " " + styles.person_view}>
+                                        <div className={styles.name_email_combo}>
+                                            <p>{members[id]}</p>
+                                            <p>{id}</p>
+                                        </div>
+                                        <p>${amt_remaining.toFixed(2)}</p>
+                                    </div>
+                                )
+                            } else {
+                                return <></>
+                            }
+                        })
+                    }
+                </div>
+                <div className={styles.submit_expense_container} onClick={(e) => { handleReport(e, true) }}><p>Accept</p></div>
+                <div className={styles.submit_expense_container + " " + styles.negative} onClick={(e) => { handleReport(e, false) }}><p>Void</p></div>
+                {/* {(userId == expense.owner) ?
+                    <>
+                        <div className={styles.submit_expense_container} onClick={(event) => { confirmAction(event) }}><p>Void Expense</p></div>
+                        <div className={styles.confirm_void_container}><p onClick={(event) => { voidAction(event) }}>Confirm</p><p onClick={closeContainer}>Cancel</p></div>
+                    </>
+                    :
+                    (hasDebt) ?
+                        <>
+                            {(!expense.is_payout)?
+                                <div className={styles.submit_expense_container} onClick={(event) => { fulfillAction(event, false) }}><p>Bill Me</p></div>
+                            :
+                                <></>
+                            }
+                            <div style={{ backgroundColor: "var(--red-background)" }} className={styles.submit_expense_container} onClick={(event) => { confirmAction(event) }}><p>Report</p></div>
+                            <div className={styles.confirm_void_container}><p onClick={(event) => { reportAction(event) }}>Confirm</p><p onClick={closeContainer}>Cancel</p></div>
+                        </>
+                        :
+                        <></>
+                } */}
+
             </div>
         </div>
     );
@@ -821,7 +1006,6 @@ export function PayAllView({ members, userId, groupId, commentLength, callback, 
 
     );
 }
-
 
 export default function ViewsPage() {
     return <></>;

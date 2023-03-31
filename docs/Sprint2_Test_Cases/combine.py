@@ -11,7 +11,7 @@ for file in dir_list:
     if (file != 'combine.py' and file != 'TEST_PLAN.txt'):
         test_case = open(file, "r")
         combined_file.writelines(test_case.readlines())
-        combined_file.write("\n")
+        combined_file.write("\n==============================================\n")
         test_case.close()
 
 

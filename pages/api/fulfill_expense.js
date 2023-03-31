@@ -7,7 +7,7 @@ export default async function handler(req, res) {
   }
 
   // Get data submitted in request's body.
-  const { email, expense_id, amount } = JSON.parse(req.body);
+  const { email, expense_id, amount, payment_method } = JSON.parse(req.body);
 
   // Guard clause checks for first and last name,
   // and returns early if they are not found
@@ -37,6 +37,8 @@ export default async function handler(req, res) {
   }
 
   return await fetch(url, options).then((response) => {
+    console.log("======================FULFILL_EXPENSE_RESPONSE======================");
+    console.log(response);
     if (response.status == 500) {
       response_body.errorType = 500;
       return response_body;

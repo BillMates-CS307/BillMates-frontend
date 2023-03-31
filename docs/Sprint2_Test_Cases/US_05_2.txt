@@ -1,0 +1,14 @@
+A. Identification and classification
+Test Case: 5002
+System: Group Settings
+Unauthorized users kicking members
+Severity: 1
+
+B. Instructions
+	1. Log in to your billmates account
+    2. Join a group using the provided "join group" url
+    3. Go to group settings
+    5. Attempt to find the button to kick a user from the group
+
+C. Expected Result:
+	1. Since this is a normal group member, they will not be able to see an option to kick a user from the group

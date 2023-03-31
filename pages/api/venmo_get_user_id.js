@@ -33,6 +33,8 @@ export default async function handler(req, res) {
     }
   
     return await fetch(url, options).then((response) => {
+      console.log("======================VENMO_GET_USERID_RESPONSE======================");
+      console.log(response);
       if (response.status == 200) {
         return response.json();
       }
@@ -46,7 +48,7 @@ export default async function handler(req, res) {
       return response_body;
       //return response.json();
     }).then((result) => {
-        //console.log(result);
+        console.log(result);
         if (result.errorType == undefined) {
             response_body.userId = result.data.user.id;
             response_body.success = true;

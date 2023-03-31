@@ -7,11 +7,10 @@ export default async function handler(req, res) {
   }
 
   // Get data submitted in request's body.
-  const { title, group_id, expense, total, owner } = JSON.parse(req.body);
-  console.log(req.body);
+  const { title, group_id, expense, total, owner, comment } = JSON.parse(req.body);
   // Guard clause checks for first and last name,
   // and returns early if they are not found
-  if (title == null || group_id == null || expense == null || total == null || owner == null) {
+  if (title == null || group_id == null || expense == null || total == null || owner == null || comment == null) {
     // Sends a HTTP bad request error code
     return res.status(400).json({ message: 'email or password not found' })
   }
@@ -37,6 +36,8 @@ export default async function handler(req, res) {
   }
 
   return await fetch(url, options).then((response) => {
+    console.log("======================CREATE_EXPENSE_RESPONSE======================");
+    console.log(response);
     if (response.status == 500) {
       response_body.errorType = 500;
       return response_body;

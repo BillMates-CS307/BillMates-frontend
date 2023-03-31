@@ -33,7 +33,7 @@ export default function JoinGroup() {
         } else if (result.success) {
             router.push("../groups/" + groupId);
         } else {
-            alert("Already in group or banned?");
+            router.push("/home/");
         }
     }
     useEffect(() => {

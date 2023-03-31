@@ -535,3 +535,73 @@
     color: #FFF;
     /* white just looks good with both green backgrounds */
 }
+
+.warningPopup {
+    padding: 15px;
+height: 100px;
+width: 50%;
+margin: 10px auto;
+background: var(--red-background);
+display: flex;
+align-items: center;
+justify-content: center;
+text-align: center;
+border-radius: var(--border-radius);
+}
+.warningPopup p {
+    color: #FFF;
+}
+
+.groupNameHeading {
+    width: 98%;
+    margin-left: 1%;
+    border-bottom: 2px solid var(--neutral-background);
+    margin-bottom: 5px;
+}
+.groupNameHeading p {
+    color : var(--neutral-background)
+}
+
+
+.radio_div {
+    margin-left: 20px;
+  }
+  
+  .radio_div label {
+    margin: 0;
+    align-items: center;
+    display: flex;
+    cursor: pointer;
+    width: fit-content;
+  }
+  
+  .radio_div input[type="radio"] {
+    appearance: none;
+    background-color: var(--main-background);
+    margin: 0 5px 0 0;
+    width: 1rem;
+    height: 1rem;
+    border: 3px solid var(--neutral-background);
+    border-radius: 3px;
+    display: grid;
+    place-content: center;
+    cursor: pointer;
+  }
+  .radio_div input[type="radio"]::before {
+    content: "";
+    width: 1rem;
+    height: 1rem;
+    border-radius: 3px;
+    transform: scale(0);
+    transition: 120ms transform ease-in-out;
+    box-shadow: inset 1rem 1rem var(--green-background);
+  }
+
+  .radio_div input[type="radio"]:checked::before {
+    transform: scale(1);
+  }
+    
+  /* .radio_div span + .radio_div input:checked {
+    background: var(--green-background);
+    color: white;
+  } */

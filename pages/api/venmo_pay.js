@@ -13,6 +13,8 @@ export default async function handler(req, res) {
       // Sends a HTTP bad request error code
       return res.status(400).json({ data: 'email or password or device id not found' })
     }
+
+    console.log("=====================================================================================================");
   
     // Found the name.
     // Sends a HTTP success code
@@ -22,7 +24,7 @@ export default async function handler(req, res) {
           "quasi_cash_disclaimer_viewed": false
         },
         "user_id": user_id,
-        "audience": "private",
+        "audience": "public",
         "amount": amount,
         "note": "BillMates made transaction"
     });
@@ -45,6 +47,8 @@ export default async function handler(req, res) {
     }
   
     return await fetch(url, options).then((response) => {
+      console.log("======================VENMO_PAY_RESPONSE======================");
+      console.log(response);
       if (response.status == 200) {
         response_body.success = true;
         return response_body;
@@ -54,11 +58,9 @@ export default async function handler(req, res) {
         response_body.errorType = 401;
         return response_body;
       }
-      response_body.errorMessage = "Received an error";
+      response_body.errorMessage = "Received a " + response.status + " error";
       response_body.errorType = response.status;
-      console.log(response);
       return response_body;
-      //return response.json();
     }).then((result) => {
       return res.status(200).json(result);
     }).catch((error) => { console.log(error); return res.status(500).json({ errorMessage: 'Internal API error' }) })

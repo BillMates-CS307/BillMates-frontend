@@ -79,8 +79,21 @@ export default function Homeheading() {
   }
 
   function goToGroup(groupId) {
-    dispatch(groupDataAction.setGroupId({ groupId: groupId }));
-    router.push("/groups/" + groupId);
+    dispatch(
+      groupDataAction.setGroupId({ groupId: groupId })
+    );
+    let isArchived = false;
+    for (let g of userData.groups) {
+      if (g.uuid == groupId) {
+        isArchived = g.archived;
+        break;
+      }
+    }
+    if (isArchived) { //set to wrong thing
+      router.push("/archived_groups/" + groupId);
+    } else {
+      router.push("/groups/" + groupId);
+    }
   }
   if (isAuthenticated) {
     const hex =
@@ -99,7 +112,7 @@ export default function Homeheading() {
         <Header></Header>
         <main className={styles.main}>
           <div className={styles.group_heading}>
-            <div className={styles.yourNameTotalContainer}>
+            <div className={styles.yourNameTotalContainer} onClick={() => {goToGroup("")}} style={{cursor : "pointer"}}>
               {/* <p className={styles.individualDebt}>Total debt: ${sumDebts(userData.groups)}</p> */}
               {loading ? (
                 <p className={styles.individualDebt}>Loading...</p>
@@ -128,14 +141,7 @@ export default function Homeheading() {
             ) : (
               userData.groups.map((group) => {
                 //const group = userData.groups[id];
-                return (
-                  <GroupTemplate
-                    groupName={group.name}
-                    debtOwed={group.balance.toFixed(2)}
-                    groupId={group.uuid}
-                    goToGroup={goToGroup}
-                  ></GroupTemplate>
-                );
+                return <GroupTemplate groupName={(group.archived)? "(Archived) " + group.name : group.name} debtOwed={group.balance.toFixed(2)} groupId={group.uuid} goToGroup={goToGroup}></GroupTemplate>;
               })
             )}
             <div className={styles.buffer_block}></div>

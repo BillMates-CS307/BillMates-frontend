@@ -1,0 +1,21 @@
+A. Identification and classification
+Test Case: 4003
+System: Group Settings
+Max characters for comment toggle
+Severity: 3
+
+B. Instructions
+	1. Log in to your billmates account
+    2. Click on a group you created, or create a new group
+    3. Go to group settings on the top right of the screen
+	5. Change the value of the "Expense Comment Length" to 201
+    6. Change the value to 50
+    7. Create an expense and write more than 50 characters
+    8. Log out
+    9. Log back in and see if settings persist
+
+C. Expected Result:
+	1. The program will not let you input an save a value greater than 200 characters
+    2. The program will let you save 50 characters
+    3. The program should only let you submit the expense request if the character count is within the given limit
+    4. Settings should persist if you log out and log back in to your account

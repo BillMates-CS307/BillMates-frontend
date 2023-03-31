@@ -1,16 +1,19 @@
 A. Identification and classification
 Test Case: 5001
-System: Group Management
-Desired user is kicked from group
-Severity: 3
+System: Group Settings
+Kicking members from groups
+Severity: 1
 
 B. Instructions
-	1. Alter 'kickuser.py' fields to match group_id and user email 
-  2. Run 'kickuser.py'
+	1. Log in to your billmates account
+    2. Create a group or go to a group you created
+    3. Invite other users to join the group (add a user 2)
+    4. Go to group settings
+    5. Find the name of the user you want to kick from the group in the roster (kick user 2)
+    6. Click on the "kick" button next to user 2's name
+    7. As user 2: try to rejoin the group using the invite link
 
 C. Expected Result:
-	Case Error token validation
-		1. Program prints out 'token_success:false'
-    Case Success:
-		1. User being kicked persists in the db
-    2. Program prints out 'delete_success:true'
+	1. The kicked user should no longer appear on the group roster
+    2. The kicked user should not be able to access the group
+    3. The kicked user should not be able to rejoin the group

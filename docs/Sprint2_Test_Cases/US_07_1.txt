@@ -1,16 +1,20 @@
 A. Identification and classification
 Test Case: 7001
-System: Group Management
-Resetting a group while persisting the members
-Severity: 3
+System: Group Settings
+Reset group from group settings
+Severity: 2
 
 B. Instructions
-	1. Alter 'resetgroup.py' fields to match group_id
-  2. Run 'resetgroup.py'
+	1. User 1: Log in to your billmates account
+    2. User 1: Create a group or go to a group you created
+    3. User 2: Join the group and make an expense request with a value of your choosing. Split the expense amongst the group
+    4. User 1: Go to group settings
+    5. User 1: Click on the reset group button
+    6. User 1: Go back to home screen and see how the reset group is shown
+    7. User 1: Click on the group that was reset and see how the debts were changed
+    8. User 1/2: Check your notifications to see if you got an message about the group being reset
 
 C. Expected Result:
-	Case Error token validation
-		1. Program prints out 'token_success:false'
-    Case Success:
-		1. Group is reset and persisted in db; users remain
-    2. Program prints out 'reset_success:true'
+	1. Balances should all default back to $0.00
+    2. All members in the group should get a notification saying the group was reset
+    3. All members should remain in the group

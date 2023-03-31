@@ -7,11 +7,11 @@ export default async function handler(req, res) {
   }
 
   // Get data submitted in request's body.
-  const { expense_id } = JSON.parse(req.body);
+  const { expense_id, remove } = JSON.parse(req.body);
 
   // Guard clause checks for first and last name,
   // and returns early if they are not found
-  if (expense_id == null) {
+  if (expense_id == null || remove == null) {
     // Sends a HTTP bad request error code
     return res.status(400).json({ message: 'email or password not found' })
   }
@@ -20,7 +20,7 @@ export default async function handler(req, res) {
   // Sends a HTTP success code
 
   //make request to Lambda
-  const url = 'placeholder';
+  const url = 'https://2xtgpr37spnenjmrurwm26mel40apwki.lambda-url.us-east-2.on.aws/';
   const options = {
     method: 'POST',
     mode: 'cors',
@@ -37,6 +37,8 @@ export default async function handler(req, res) {
   }
 
   return await fetch(url, options).then((response) => {
+    console.log("======================VOID_EXPENSE_RESPONSE======================");
+    console.log(response);
     if (response.status == 500) {
       response_body.errorType = 500;
       return response_body;

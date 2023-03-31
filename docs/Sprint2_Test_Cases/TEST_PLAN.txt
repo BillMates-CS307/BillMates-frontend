@@ -1,0 +1,742 @@
+A. Identification and classification
+Test Case: 1001
+System: Login
+User is able to see and click "Remember me" button
+Severity: 3
+
+B. Instructions
+	1. Verify there are no cookies
+	2. Go to the root index page (localhost:8000/)
+	3. Locate "Remember Me" text and checkbox
+	4. Click it
+
+C. Expected Result:
+	1. Checkbox turns a different color indicating the action was successful
+==============================================
+A. Identification and classification
+Test Case: 1002
+System: Login
+User is automatically redirected to the home page on visit
+Severity: 2
+
+B. Instructions
+	1. Verify there is a cookie named "JWT_Token"
+	2. Go to the root index page (localhost:8000/)
+
+C. Expected Result:
+	1. User is redirected to "localhost:8000/home"
+	2. Correct information from home page is displayed
+==============================================
+A. Identification and classification
+Test Case: 1003
+System: Login
+User is automatically redirected to sign in on visit without saved login
+Severity: 1
+
+B. Instructions
+	1. Verify there is not a cookie named "JWT_Token"
+	2. Go to the home page (localhost:8000/home)
+		*note: any page can be used as the same code is used to detect and redirect
+C. Expected Result:
+	1. User is redirected to "localhost:8000/"
+	2. Sign in page is displayed
+==============================================
+A. Identification and classification
+Test Case: 2001
+System: User Settings
+User is warned if invalid credentials are provided
+Severity: 3
+
+B. Instructions
+	1. Log into a valid account or go to the home page if already logged in
+	2. Click on the gear in the top right
+	3. Click Venmo on the Account section
+	4. Enter an invalid username and password combo in the appropriate fields
+
+C. Expected Result:
+	1. A popup message states "Check your inputs"
+
+==============================================
+A. Identification and classification
+Test Case: 2002
+System: User Settings
+When user does not need 2 factor auth
+Severity: 2
+
+B. Instructions
+	1. Log into a valid account or go to the home page if already logged in
+	2. Click on the gear in the top right
+	3. Click Venmo on the Account section
+	4. Enter a valid username and password combo in the appropriate fields
+
+C. Expected Result:
+	Case Error to store in DB:
+		1. A popup message states "Fail to store data in db"
+	Case Success:
+		1. Store token in db
+		2. Route to home
+==============================================
+A. Identification and classification
+Test Case: 2003
+System: User Settings
+User is prompted and receives 2-factor authentication message
+Severity: 2
+
+B. Instructions
+	1. Log into a valid account or go to the home page if already logged in
+	2. Click on the gear in the top right
+	3. Click Venmo on the Account section
+	4. Enter a valid username and password combo in the appropriate fields
+
+C. Expected Result:
+	1. The username and password fields disappear
+	2. Another input for a 6-digit number is shown
+	3. User receives an SMS text from Venmo services
+
+==============================================
+A. Identification and classification
+Test Case: 2004
+System: User Settings
+User enters invalid 2-factor code or not in time
+Severity: 2
+
+B. Instructions
+	1. Repeat instructions of test case 2003
+	2. Enter in a code that is not shown in the SMS text
+		*note: providing an invalid code and not entering it in time triggers the same error code from Venmo
+
+C. Expected Result:
+	1. A popup message states "Sign in again then send new code"
+	2. The token field disappear
+	3. The username and password fields shown
+
+
+==============================================
+A. Identification and classification
+Test Case: 2005
+System: User Settings
+User enters valid 2-factor code
+Severity: 2
+
+B. Instructions
+	1. Enter in a code that is shown in the SMS text
+	2. Click on the "Send Token" button
+
+C. Expected Result:
+	Case Error to store in DB:
+		1. A popup message states "Fail to store data in db"
+	Case Success:
+		1. Store token in db
+		2. Route to home
+
+==============================================
+A. Identification and classification
+Test Case: 3001
+System: User Settings
+User clicks delete button
+Severity: 3
+
+B. Instructions
+	1. Navigate to the home page
+	2. Click on the gear in the top right
+	3. Click Venmo on the Account section
+	4. Click Delete User Button
+
+C. Expected Result:
+	1. Delete user from db
+	2. User is taken to the Sign In page
+
+==============================================
+A. Identification and classification
+Test Case: 3002
+System: User Settings
+User clicks delete button but failed
+Severity: 3
+
+B. Instructions
+	1. Navigate to the home page
+	2. Click on the gear in the top right
+	3. Click Venmo on the Account section
+	4. Click Delete User Button
+
+C. Expected Result:
+	1. A popup message states "Server issue"
+
+==============================================
+A. Identification and classification
+Test Case: 4001
+System: Group Settings
+Group manager is able to toggle between payment options
+Severity: 3
+
+B. Instructions
+	1. Log in to your billmates account
+    2. Click on a group you created, or create a new group
+    3. Go to group settings on the top right of the screen
+	5. Select which payment options you'd like to have for your group
+    6. Click on "save settings"
+
+C. Expected Result:
+	1. Users should only be able to make payments using the payment option you selected
+==============================================
+A. Identification and classification
+Test Case: 4002
+System: Group Settings
+Group manager is able to toggle whether to autoapprove pending requests
+Severity: 3
+
+B. Instructions
+	1. Log in to your billmates account
+    2. Click on a group you created, or create a new group
+    3. Go to group settings on the top right of the screen
+	5. Toggle the checkmark for whether or not you want to autoapprove pending requests
+    6. Click on "save settings"
+
+C. Expected Result:
+	1. When a payment request is sent out, you should only see a message for "approving the pending request" if autoapprove is toggled off
+==============================================
+A. Identification and classification
+Test Case: 4003
+System: Group Settings
+Max characters for comment toggle
+Severity: 3
+
+B. Instructions
+	1. Log in to your billmates account
+    2. Click on a group you created, or create a new group
+    3. Go to group settings on the top right of the screen
+	5. Change the value of the "Expense Comment Length" to 201
+    6. Change the value to 50
+    7. Create an expense and write more than 50 characters
+    8. Log out
+    9. Log back in and see if settings persist
+
+C. Expected Result:
+	1. The program will not let you input an save a value greater than 200 characters
+    2. The program will let you save 50 characters
+    3. The program should only let you submit the expense request if the character count is within the given limit
+    4. Settings should persist if you log out and log back in to your account
+==============================================
+A. Identification and classification
+Test Case: 4004
+System: Group Settings
+Group settings lock for group members
+Severity: 1
+
+B. Instructions
+	1. Log in to your billmates account
+    2. Join a group created by another user
+    3. Go to the group page
+    4. Click on the group settings
+    5. Attempt to change the user settings
+    6. Click exit
+    7. Return back to the user settings to see if anything changes
+
+C. Expected Result:
+	1. Settings should not change if an unauthorized user attempts to adjust them
+
+==============================================
+A. Identification and classification
+Test Case: 5001
+System: Group Settings
+Kicking members from groups
+Severity: 1
+
+B. Instructions
+	1. Log in to your billmates account
+    2. Create a group or go to a group you created
+    3. Invite other users to join the group (add a user 2)
+    4. Go to group settings
+    5. Find the name of the user you want to kick from the group in the roster (kick user 2)
+    6. Click on the "kick" button next to user 2's name
+    7. As user 2: try to rejoin the group using the invite link
+
+C. Expected Result:
+	1. The kicked user should no longer appear on the group roster
+    2. The kicked user should not be able to access the group
+    3. The kicked user should not be able to rejoin the group
+
+==============================================
+A. Identification and classification
+Test Case: 5002
+System: Group Settings
+Unauthorized users kicking members
+Severity: 1
+
+B. Instructions
+	1. Log in to your billmates account
+    2. Join a group using the provided "join group" url
+    3. Go to group settings
+    5. Attempt to find the button to kick a user from the group
+
+C. Expected Result:
+	1. Since this is a normal group member, they will not be able to see an option to kick a user from the group
+
+==============================================
+A. Identification and classification
+Test Case: 6001
+System: Group Settings
+Archive group from group settings
+Severity: 3
+
+B. Instructions
+	1. Log in to your billmates account
+    2. Create a group or go to a group you created
+    3. Go to group settings
+    5. Click on the archive group button
+    6. Go back to home screen and see how the archived group is shown
+    7. Click on the archived groups and attempt to make a transaction
+
+C. Expected Result:
+	1. An archived group should be shown as such from the user's home page
+    2. No new transactions should be able to be made
+    3. User's debt in the group defaults to $0.00 after archive
+
+==============================================
+A. Identification and classification
+Test Case: 6002
+System: Group Settings
+Unauthorized members archiving group from group settings
+Severity: 3
+
+B. Instructions
+	1. Log in to your billmates account
+    2. Join a group using the provided "join group" url
+    3. Go to group settings
+    5. Attempt to archive the group from the settings
+
+C. Expected Result:
+	1. Nothing should happen since the user is not the group manager/owner
+==============================================
+A. Identification and classification
+Test Case: 7001
+System: Group Settings
+Reset group from group settings
+Severity: 2
+
+B. Instructions
+	1. User 1: Log in to your billmates account
+    2. User 1: Create a group or go to a group you created
+    3. User 2: Join the group and make an expense request with a value of your choosing. Split the expense amongst the group
+    4. User 1: Go to group settings
+    5. User 1: Click on the reset group button
+    6. User 1: Go back to home screen and see how the reset group is shown
+    7. User 1: Click on the group that was reset and see how the debts were changed
+    8. User 1/2: Check your notifications to see if you got an message about the group being reset
+
+C. Expected Result:
+	1. Balances should all default back to $0.00
+    2. All members in the group should get a notification saying the group was reset
+    3. All members should remain in the group
+
+==============================================
+A. Identification and classification
+Test Case: 7002
+System: Group Settings
+Unauthorized user attempting to reset group from group settings
+Severity: 2
+
+B. Instructions
+	1. Log in to your billmates account
+    2. Join a group using the provided "join group" url
+    3. Go to group settings
+    5. Attempt to reset the group from the settings
+
+C. Expected Result:
+	1. Nothing should happen since the user is not the group manager/owner
+==============================================
+A. Identification and classification
+Test Case: 8001
+System: Group Expense Management
+User's total is altered when included in an expense
+Severity: 3
+
+B. Instructions
+	1. Go to a group with more than one people
+		(or create a and invite another user if needed)
+	2. User 1, create an expense and include User 2
+	3. User 2, go to the Home page
+
+C. Expected Result:
+	1. User is shown an element on the page with the group name and new balance
+		relative to what was requested in the expense
+	2. User is shown a total amount that is the sum of all group balances
+	 
+
+
+==============================================
+A. Identification and classification
+Test Case: 8002
+System: Group Expense Management
+User is able to see all expenses they are a part of in all groups they are a part of
+Severity: 3
+
+B. Instructions
+	1. Navigate to the home page
+	2. User 1, create two new groups and invite User 2 to both
+	3. User 1, in one group, create an expense and include User 2
+	4. User 2, in the other group, create an expense and include User 1
+	5. User 1, navigate to the home page
+	6. User 1, click on the top most element containg your name and total balance
+
+C. Expected Result:
+	1. User 1 is shown a display of the expenses created above, labeled by group
+	2. User 1 is shown a total amount owed from each expense
+	 
+
+
+==============================================
+A. Identification and classification
+Test Case:9001
+System: Expense Payment
+User is able to pay for an expense through Venmo
+Severity: 3
+
+B. Instructions
+	1. Go to a group with more than one person 
+		(or create a and invite another user if needed)
+	2. Ensure both users have their Venmo accounts linked through Settings
+	3. User 1, create an expense and include User 2	
+	4. User 2, access the group and select the newly created expense
+	5. User 2, select "Bill Me"
+	6. User 2, select "Venmo" and submit
+
+C. Expected Result:
+	1. The balances of User 1 and 2 are updated accordingly
+	2. The expense is removed (if User 2 was the only person involved)
+	3. Venmo shows a transaction for the amount specified in BillMates
+
+
+==============================================
+A. Identification and classification
+Test Case: 9002
+System: Expense Payment
+User is unable to pay with Venmo if the User or receiver has not linked thier Venmo account
+Severity: 2
+
+B. Instructions
+	1. Go to a group with more than one person 
+		(or create a and invite another user if needed)
+	2. Ensure at least one user has not linked their account
+		(unlink one if neccesary)
+	3. User 1, create an expense and include User 2	
+	4. User 2, access the group and select the newly created expense
+	5. User 2, select "Bill Me"
+	6. User 2, select "Venmo" and submit
+
+C. Expected Result:
+	1. User 2 is shown a message that "[user] has not linked their account"
+
+
+
+==============================================
+A. Identification and classification
+Test Case: 11001
+System: Group Expense Management
+User is able to select BillMates as the payment method
+Severity: 1
+
+B. Instructions
+	1. User 1, create a group
+	2. User 2, join the group with the join link
+	3. User 1, create an expense with the following inputs
+		title = "test case"
+		amount = 10.00
+		comment = "testing payment methods"
+		User 2 = 10.00
+	4. Submit the expense
+	5. User 2, select the newly created expense
+	6. Select "BillMe" and then "BillMates"
+		
+
+C. Expected Result:
+	1. The toggle is highlighted green over "BillMates"
+	
+	
+
+==============================================
+A. Identification and classification
+Test Case: 11002
+System: Group Expense Management
+User is able to select Venmo as the payment method
+Severity: 3
+
+B. Instructions
+	1. User 1, create a group
+	2. User 2, join the group with the join link
+	3. User 1, create an expense with the following inputs
+		title = "test case"
+		amount = 10.00
+		comment = "testing payment methods"
+		User 2 = 10.00
+	4. Submit the expense
+	5. User 2, select the newly created expense
+	6. Select "BillMe" and then "Venmo"
+		
+
+C. Expected Result:
+	1. The toggle is highlighted green over "Venmo"
+	
+	
+
+==============================================
+A. Identification and classification
+Test Case: 12001
+System: Group Expense Management
+User is prompted to confirm the action to report the expense
+Severity: 3
+
+B. Instructions
+	1. User 1, create a new group
+	2. User 2, join the group from the join link
+	3. User 3, join the group from the join link
+	4. User 3, create a valid expense and select User 2
+		to be billed a non-zero amount
+	5. User 2, reload the group page and select the expense
+		created in step 4
+	6. Click the "Report Expense" button
+
+C. Expected Result:
+	1. Two new buttons appear with the text "Report" and "Cancel"
+
+==============================================
+A. Identification and classification
+Test Case: 12002
+System: Group Exepense Management
+User is able to cancel reporting the expense
+Severity: 2
+
+B. Instructions
+	1. Repeat test case 12001
+	2. User 2, Select the "Cancel" button
+
+C. Expected Result:
+	1. User 2 is shown the group page unmodified
+
+==============================================
+A. Identification and classification
+Test Case: 12003
+System: Group Exepense Management
+User is able to report the expense
+Severity: 2
+
+B. Instructions
+	1. Repeat test case 12001
+	2. User 2, Select the "Report" button
+
+C. Expected Result:
+	1. The expense is removed from the group page for Users 2 and 3
+	2. The balances of User 3 and User 2 are reverted to the amount
+		before the reported expense was made
+	3. The expense appears for User 1 as "Needs Review"
+
+
+==============================================
+A. Identification and classification
+Test Case: 12004
+System: Group Exepense Management
+Group manager is able to remove an expense by approving the report
+Severity: 2
+
+B. Instructions
+	1. Repeat test case 12003
+	2. User 1, reload the group page
+	3. User 1, select the reported expense
+	4. User 1, select the "Approve" button
+
+C. Expected Result:
+	1. The expense is removed from User 1's group page
+
+
+==============================================
+A. Identification and classification
+Test Case: 12005
+System: Group Exepense Management
+Group manager is able to restore an expense by denying the report
+Severity: 2
+
+B. Instructions
+	1. Repeat test case 12003
+	2. User 1, reload the group page
+	3. User 1, select the reported expense
+	4. User 1, select the "Deny" button
+
+C. Expected Result:
+	1. The expense is restored to the group page for all users
+	2. The balances of User 2 and 3 are updated to the state
+		that they were after the expense was originall created
+
+
+==============================================
+A. Identification and classification
+Test Case: 13001
+System: Group Expense Management
+User is unable to void an expense that they did not submit
+Severity: 1
+
+B. Instructions
+	1. User 1, create a group
+	2. User 2, join the group with the join link
+	3. User 1, submit an expense (any valid combination of inputs)
+	4. User 2, refresh the page
+	5. User 2, click on the newly created expense
+
+C. Expected Result:
+	1. User 2 is unable to see the option to void the expense
+	   (only "Bill Me" and "Report" buttons are visible) 
+
+==============================================
+A. Identification and classification
+Test Case: 13002
+System: Group Expense Management
+User is prompted to confirm voiding the expense
+Severity: 1
+
+B. Instructions
+	1. Using the same users from test case 13001, User 1 navigate 
+		to the group created in test case 13001
+	2. User 1, click an expense that was submitted by User 1
+	3. Click on "Void Expense"
+	4. Click on "Confirm"
+
+C. Expected Result:
+	1. Two new buttons appear reading "Confirm" and "Cancel"
+	2. The expense that was voided no longer appears
+	3. The balances of User 1 and User 2 are updated 
+		(relative to the amount specified in test case 13001)
+
+==============================================
+A. Identification and classification
+Test Case: 13003
+System: Group Expense Management
+User is able to cancel voiding an expense when prompted
+Severity: 3
+
+B. Instructions
+	1. Repeat test case 13002 until step 4
+	2. Click "Cancel"
+
+C. Expected Result:
+	1. The group page appears the same as before the test case
+
+==============================================
+A. Identification and classification
+Test Case: 14001
+System: Notifications
+User receives a notification when included in an expense
+Severity: 3
+
+B. Instructions
+	1. User 1, create a group
+	2. User 2, join the group from the join link
+	3. User 1, create an expense and include User 2 with a non-zero dollar amount
+	4. User 2, navigate to the notifications page
+
+C. Expected Result:
+	1. At least one notification highlighted green will appear
+	2. The given notification shows the amount paid, which group, and what service was used (BillMates or Venmo)
+
+==============================================
+A. Identification and classification
+Test Case: 14002
+System: Notifications
+User does not receive a notification if they opt out of it
+Severity: 3
+
+B. Instructions
+	1. User 2, go to the settings page and select the notifications
+		option "Email Only"
+	2. Repeat test case 14001
+
+C. Expected Result:
+	1. No new notification related to the previous action appears
+	
+
+==============================================
+A. Identification and classification
+Test Case: 15001
+System: Group Expense Management
+User is unable to submit the form with empty information
+Severity: 1
+
+B. Instructions
+	1. User 1, create a group
+	2. User 2, join the group with the join link
+	3. User 1, create 2-3 expenses and assign debt to User 2
+	4. User 2, reload the group
+	5. User 2, select the "Payout Debt" button at the bottom
+	6. User 2, hit the "Submit" button
+
+C. Expected Result:
+	1. Expense name field will be highlighted red and stated as "required"
+	2. Red text will appear stating "Amount remaining: $##.##"
+	
+
+==============================================
+A. Identification and classification
+Test Case: 15002
+System: Group Exepense Management
+User is unable to submit the expense with (bad) inputs
+Severity: 1
+
+B. Instructions
+	1. Repeat steps 1-5 in test case 15001
+	2. User 2, select a user in the members list
+	3. Type the word "money" in the corresponding input field
+	4. Click the "Submit" button
+
+C. Expected Result:
+	1. Expense name field will be highlighted red and stated as "required"
+	2. Red text will appear stating "Amount remaining: $##.##"
+	3. The input field will be highlighted red
+	
+
+==============================================
+A. Identification and classification
+Test Case: 15003
+System: Group Exepense Management
+User is able to use this feature with BillMates payment (in-cash)
+Severity: 2
+
+B. Instructions
+	1. Repeat steps 1-5 in test case 15001
+	2. User 2, type "Test Case" in as the title
+	3. User 2, select one or more users in the members list
+	4. User 2, Click the "Split Even" button
+		(note: this can be uneven, it just has to sum to the total)
+	5. User 2, Click the "Submit" button
+
+C. Expected Result:
+	1. A new expense appears in the history with the total amount
+		owed by User 2
+	2. The balance of User 2 is $0.00 and the balance of other 
+		users who were included in the expense are decreased
+		by the amount specified in the expense
+	
+
+==============================================
+A. Identification and classification
+Test Case: 15004
+System: Group Exepense Management
+User is able to use this feature with Venmo
+Severity: 2
+
+B. Instructions
+	1. Repeat steps 1-5 in test case 15001
+	2. User 2, type "Test Case" in as the title
+	3. User 2, select one or more users in the members list
+	4. User 2, Click the "Split Even" button
+		(note: this can be uneven, it just has to sum to the total)
+	5. User 2, select "Venmo" as the payment option
+	5. User 2, Click the "Submit" button
+
+C. Expected Result:
+	1. A new expense appears in the history with the total amount
+		owed by User 2
+	2. The balance of User 2 is $0.00 and the balance of other 
+		users who were included in the expense are decreased
+		by the amount specified in the expense
+	3. User 2's Venmo account shows transactions made that are
+		equal to the amounts specified in the expense
+
+==============================================

@@ -1,0 +1,15 @@
+A. Identification and classification
+Test Case: 4002
+System: Group Settings
+Group manager is able to toggle whether to autoapprove pending requests
+Severity: 3
+
+B. Instructions
+	1. Log in to your billmates account
+    2. Click on a group you created, or create a new group
+    3. Go to group settings on the top right of the screen
+	5. Toggle the checkmark for whether or not you want to autoapprove pending requests
+    6. Click on "save settings"
+
+C. Expected Result:
+	1. When a payment request is sent out, you should only see a message for "approving the pending request" if autoapprove is toggled off

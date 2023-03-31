@@ -12,4 +12,4 @@ B. Instructions
 
 C. Expected Result:
 	1. At least one notification highlighted green will appear
-	2. The given notification shows the ...
+	2. The given notification shows the amount paid, which group, and what service was used (BillMates or Venmo)
