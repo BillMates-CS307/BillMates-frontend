@@ -107,7 +107,7 @@ export default function Group() {
                                             title={item.title}
                                             date={item.date}
                                             amount={item.amount_paid.toFixed(2)}
-                                            owner={response_data.members[item.paid_by]}
+                                            owner={response_data.members[item.paid_by] || item.paid_by}
                                             showView={setCurrentPendingView}
                                         ></PendingItem>);
                                     } else {
