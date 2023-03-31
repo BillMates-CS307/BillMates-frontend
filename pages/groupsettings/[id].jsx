@@ -49,13 +49,13 @@ export default function GroupSettings() {
   //get redux state
   const dispatch = useDispatch();
   const userId = (isAuthenticated) ? localStorage.getItem("tempId") : null;
-  const groupId = (isAuthenticated) ? response_data.groupId : null;
-  //const groupId = (isAuthenticated) ? window.location.href.match('[a-zA-Z0-9\-]*$')[0] : null;
-
+  //const groupId = (isAuthenticated) ? response_data.groupId : null;
+  const groupId = (isAuthenticated) ? window.location.href.match('[a-zA-Z0-9\-]*$')[0] : null;
   //console.log("what the fuck: " + JSON.stringify(response_data)); //debugging..
 
   const fetchData = async () => {
       console.log("fetching data");
+      console.log("groupID pls: " + groupId);
       let response = await group_methods.getGroupInfo(groupId, userId);
       if (response.errorType) {
           console.log("An error occured, check logs");

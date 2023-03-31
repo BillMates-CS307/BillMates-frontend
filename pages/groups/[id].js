@@ -76,12 +76,17 @@ export default function Group() {
             fetchData(); //make the call
         }
     }, [isAuthenticated]);
+    
+    function holdGroupID() {
+        console.log("please god: " + groupId);
+        router.push("/groupsettings/" + groupId);
+    }
 
     if (isAuthenticated) {
         return (
             <>
                 <CustomHead title={"Group"} description={"A BillMates group"}></CustomHead>
-                <Header></Header>
+                <Header groupId = {holdGroupID}></Header>
 
                 <main className={styles.main}>
                     <div className={styles.transaction_history}>
@@ -118,7 +123,7 @@ export default function Group() {
                             <></>
                         }
                     </div>
-                    <GroupHeading></GroupHeading>
+                    <GroupHeading groupId = {holdGroupID}></GroupHeading>
                     <div className={styles.repay_all_container} onClick={() => { setPayAllVisible(true) }}>
                         <p>Repay All</p>
                     </div>
