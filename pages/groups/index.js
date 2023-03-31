@@ -1,6 +1,6 @@
 //Global HTML Imports
 import styles from '@/styles/Group.module.css'
-import Header from '../global_components/groups_header.jsx'
+import Header from '../global_components/header.jsx'
 import Footer from '../global_components/footer_no_plus'
 import CustomHead from '../global_components/head.jsx'
 import LoadingCircle from '../global_components/loading_circle.jsx';
@@ -147,7 +147,7 @@ export default function SelfGroup() {
                     <></>
                 } */}
                 {(currentFulfillView != null) ?
-                    <FulFillView userId={userId} expense={currentFulfillView} hideParent={setCurrentFulfillView}></FulFillView>
+                    <FulFillView userId={userId} expense={currentFulfillView} hideParent={setCurrentFulfillView} warningPopup={setWarningPopup}></FulFillView>
                     :
                     <></>
                 }
@@ -159,7 +159,7 @@ export default function SelfGroup() {
                 { (warningPopup != null)?
                 <>
                 <div className={styles.transaction_background} style={{background : "transparent"}}>
-                    <div className={styles.warningPopup} style={{animation : "popup"  + warningPopup[1] + "s ease-in forwards"}}>
+                    <div className={styles.warningPopup} style={{animation : "popup "  + warningPopup[1] + "s ease-in forwards"}}>
                         <p>{warningPopup[0]}</p>
                     </div>
                     <div style={{display : "none"}}>

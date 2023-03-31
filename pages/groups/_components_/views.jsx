@@ -428,13 +428,13 @@ export function FulFillView({ userId, expense, hideParent, warningPopup, owner, 
             */
 
             if (!document.querySelector("#BillMates").checked) {
-                // if (paymentAllowed != 'both' && paymentAllowed != 'venmo') {
-                //     warningPopup(["The group does not allow you to pay with Venmo", 5]);
-                //     ButtonLock.UnlockButton();
-                //     container.firstChild.textContent = originalText;
-                //     container.style = "";
-                //     return;
-                // }
+                if (paymentAllowed != 'both' && paymentAllowed != 'venmo') {
+                    warningPopup(["The group does not allow you to pay with Venmo", 5]);
+                    ButtonLock.UnlockButton();
+                    container.firstChild.textContent = originalText;
+                    container.style = "";
+                    return;
+                }
                 /*
                 * Grab tokens of owner and user (from cookie)
                 * Grab userId from Venmo using tokens
