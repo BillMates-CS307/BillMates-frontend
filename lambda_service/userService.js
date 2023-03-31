@@ -209,8 +209,14 @@ async function getIdsFromVenmo(selfToken, targetToken) {
         console.log(error);
         response_body.errorType = LAMBDA_RESP.ERROR;
         return response_body;
+      }
+      return result;
+    })
+    .catch((error) => {
+      console.log(error);
+      response_body.errorType = LAMBDA_RESP.ERROR;
+      return response_body;
     });
-
     request_body = JSON.stringify(
         {
             token : targetToken
@@ -242,6 +248,13 @@ async function getIdsFromVenmo(selfToken, targetToken) {
         console.log(error);
         response_body.errorType = LAMBDA_RESP.ERROR;
         return response_body;
+      }
+      return result;
+    })
+    .catch((error) => {
+      console.log(error);
+      response_body.errorType = LAMBDA_RESP.ERROR;
+      return response_body;
     });
 
     //const final_response = getUserByUsername(selfToken, target_response.userId);
@@ -302,7 +315,14 @@ async function payUserWithVenmo(token, amount, sourceId, targetId) {
         response_body.errorType = 1;
         response_body.errorMessage = "Error in userServer parse";
         return response_body;
-    });     
+      }
+      return result;
+    })
+    .catch((error) => {
+      console.log(error);
+      response_body.errorType = LAMBDA_RESP.ERROR;
+      return response_body;
+    });
 }
 
 /*
