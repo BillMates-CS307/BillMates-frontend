@@ -1,7 +1,7 @@
 A. Identification and classification
-Test Case: 3001
+Test Case: 3002
 System: User Settings
-User clicks delete button
+User clicks delete button but failed
 Severity: 3
 
 B. Instructions
@@ -11,5 +11,4 @@ B. Instructions
 	4. Click Delete User Button
 
 C. Expected Result:
-	1. Delete user from db
-	2. User is taken to the Sign In page
+	1. A popup message states "Server issue"
