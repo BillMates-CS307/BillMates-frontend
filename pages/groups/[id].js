@@ -78,8 +78,11 @@ export default function Group() {
     }, [isAuthenticated]);
     
     function holdGroupID() {
-        console.log("please god: " + groupId);
-        router.push("/groupsettings/" + groupId);
+        if (userId == response_data.manager) {
+            router.push("/groupsettings/" + groupId);
+        } else {
+            router.push("/groupsettings_members/" + groupId);
+        }
     }
 
     if (isAuthenticated) {
