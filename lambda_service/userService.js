@@ -1,6 +1,12 @@
 import { LAMBDA_RESP } from "@/lib/constants";
-import { getCookies, setCookie, deleteCookie, hasCookie, getCookie } from 'cookies-next';
-
+import {
+  getCookies,
+  setCookie,
+  deleteCookie,
+  hasCookie,
+  getCookie,
+} from "cookies-next";
+import { isNil } from "lodash";
 
 /*
 
@@ -299,6 +305,56 @@ async function payUserWithVenmo(token, amount, sourceId, targetId) {
     });     
 }
 
+async function payUserWithVenmo(token, amount, sourceId, targetId) {
+  let response_body = {
+    errorType: 0,
+    success: false,
+  };
+  if (token == null || sourceId == null || targetId == null) {
+    response_body.errorType = LAMBDA_RESP.MALFORMED;
+    return response_body;
+  }
+
+  let request_body = JSON.stringify({
+    token: token,
+    funding_source_id: sourceId,
+    user_id: targetId,
+    amount: amount,
+  });
+
+  const path = "/api/venmo_pay";
+
+  // Form the request for sending data to the server.
+  const options = {
+    method: "POST",
+    mode: "no-cors",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: request_body,
+  };
+
+  return await fetch(path, options)
+    .then((response) => {
+      if (response.status == 400 || response.status == 500) {
+        response_body.errorType = response.status;
+        return response_body;
+      }
+      return response.json();
+    })
+    .then((result) => {
+      if (result.errorType) {
+        response_body["errorMessage"] = result.errorMessage;
+        return response_body;
+      }
+      return result;
+    })
+    .catch((error) => {
+      console.log(error);
+      response_body.errorType = LAMBDA_RESP.ERROR;
+      return response_body;
+    });
+}
 
 /*
 Attemps login with one time password sent via text
@@ -323,52 +379,42 @@ Interpretation:
 TODO : actually test this
 */
 async function loginVenmoWithOtp(device_id, secret, otpCode) {
-    let response_body = {
-        errorType : 0,
-        success : false
-    }
-    if (device_id == null || secret == null || otpCode == null) {
-        response_body.errorType = LAMBDA_RESP.MALFORMED;
-        return response_body;
-    }
+  //   let response_body = {
+  //     errorType: 0,
+  //     success: false,
+  //   };
+  //   if (device_id == null || secret == null || otpCode == null) {
+  //     response_body.errorType = LAMBDA_RESP.MALFORMED;
+  //     return response_body;
+  //   }
 
-   let request_body = JSON.stringify(
-    {
-        secret : secret,
-        device_id : device_id,
-        otp_code : otpCode
-    }
-   )
+  let request_body = JSON.stringify({
+    secret,
+    device_id,
+    otp_code: otpCode,
+  });
 
-   const path = '/api/venmo_otp_login'
+  const path = "/api/venmo_otp_login";
 
-   // Form the request for sending data to the server.
-   const options = {
-     method: 'POST',
-     mode : 'no-cors',
-     headers: {
-       'Content-Type': 'application/json',
-     },
-     body: request_body
-   }
+  // Form the request for sending data to the server.
+  const options = {
+    method: "POST",
+    mode: "no-cors",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: request_body,
+  };
 
-   return await fetch(path, options).then( (response) => {
-        if (response.status == 400 || response.status == 500) {
-            response_body.errorType = response.status;
-            return response_body;
-        }
-        return response.json();
-    }).then((result) => {
-        if (result.errorType) {
-            response_body["errorMessage"] = "Received a " + result.errorType + " error";
-            return response_body;
-        }
-        return result;
-    }).catch( (error) => {
-        console.log(error);
-        response_body.errorType = LAMBDA_RESP.ERROR;
-        return response_body;
-    });  
+  const response = await fetch(path, options);
+  console.log(response);
+  const result = await response.json();
+
+  if (!isNil(result.error)) {
+    result.status = response.status;
+  }
+
+  return result;
 }
 /*
 Sends otp via sms
@@ -389,53 +435,36 @@ Interpretation:
     success false -> secret has expired
 
 */
-async function sendVenmoSms(device_id, secret) {
-    let response_body = {
-        errorType : 0,
-        success : false
-    }
-    if (device_id == null || secret == null) {
-        response_body.errorType = LAMBDA_RESP.MALFORMED;
-        return response_body;
-    }
+async function sendVenmoSms(secret, deviceId) {
+  const body = JSON.stringify({
+    secret,
+    deviceId,
+  });
 
-   let request_body = JSON.stringify(
-    {
-        secret : secret,
-        device_id : device_id
-    }
-   )
+  //   console.log("userService venmo SMS");
+  //   console.log(request_body);
 
-   const path = '/api/venmo_send_text'
+  const path = "/api/venmo_send_text";
 
-   // Form the request for sending data to the server.
-   const options = {
-     method: 'POST',
-     mode : 'no-cors',
-     headers: {
-       'Content-Type': 'application/json',
-     },
-     body: request_body
-   }
+  // Form the request for sending data to the server.
+  const options = {
+    method: "POST",
+    mode: "no-cors",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body,
+  };
 
-   return await fetch(path, options).then( (response) => {
-        if (response.status == 400 || response.status == 500) {
-            response_body.errorType = response.status;
-            return response_body;
-        }
-        return response.json();
-    }).then((result) => {
-        if (result.errorType) {
-            response_body["errorMessage"] = "Received a " + result.errorType + " error";
-            return response_body;
-        }
-        return result;
-    }).catch( (error) => {
-        console.log(error);
-        response_body.errorType = LAMBDA_RESP.ERROR;
-        return response_body;
-    });
+  const response = await fetch(path, options);
+  console.log(response);
+  const result = await response.json();
 
+  if (!isNil(result.error)) {
+    result.status = response.status;
+  }
+
+  return result;
 }
 /*
 Attempts login with username and password to Venmo
@@ -457,83 +486,84 @@ Interpretation:
 
 */
 async function loginVenmoWithCredentials(email, password) {
-    const TWO_FACTOR_ERROR_CODE = 81109;
-    const random_device_id = () => {
-
+  const TWO_FACTOR_ERROR_CODE = 81109;
+  const random_device_id = () => {
     const BASE_DEVICE_ID = "88884260-05O3-8U81-58I1-2WA76F357GR9";
-    const letters = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","P","Q","R","S","T","U","V","W","X","Y","Z","O"];
+    const letters = [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "J",
+      "K",
+      "L",
+      "M",
+      "N",
+      "P",
+      "Q",
+      "R",
+      "S",
+      "T",
+      "U",
+      "V",
+      "W",
+      "X",
+      "Y",
+      "Z",
+      "O",
+    ];
     let result = [];
     for (let char in BASE_DEVICE_ID) {
-        const code = char.charCodeAt(0);
-        if ( code > 47 && code < 58) {
-            result.push( Math.trunc(Math.random() * 10).toString() );
-        } else if (code == 45) {
-            result.push('-');
-        }
-        else {
-            result.push( letters[ Math.trunc(Math.random() * 26) ] );
-        }
+      const code = char.charCodeAt(0);
+      if (code > 47 && code < 58) {
+        result.push(Math.trunc(Math.random() * 10).toString());
+      } else if (code == 45) {
+        result.push("-");
+      } else {
+        result.push(letters[Math.trunc(Math.random() * 26)]);
+      }
     }
     return result.join("");
+  };
+
+  const device_id = random_device_id();
+  let request_body = JSON.stringify({
+    email,
+    password,
+    device_id,
+  });
+
+  const path = "/api/venmo_login";
+
+  // Form the request for sending data to the server.
+  const options = {
+    method: "POST",
+    mode: "no-cors",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: request_body,
+  };
+
+  const response = await fetch(path, options);
+  //   console.log(response.headers);
+  const result = await response.json();
+
+  if (!isNil(result.error)) {
+    result.status = response.status;
+
+    if (!isNil(response.headers["venmo-otp-secret"])) {
+      result.otpSecret = response.headers["venmo-otp-secret"];
     }
+  }
 
-    let response_body = {
-        errorType : 0,
-        success : false
-    }
-    if (email == null || password == null) {
-        response_body.errorType = LAMBDA_RESP.MALFORMED;
-        return response_body;
-    }
-    const deviceId  = random_device_id();
-   let request_body = JSON.stringify(
-    {
-        email : email,
-        password : password,
-        device_id : deviceId
-    }
-   )
-
-   const path = '/api/venmo_login'
-
-   // Form the request for sending data to the server.
-   const options = {
-     method: 'POST',
-     mode : 'no-cors',
-     headers: {
-       'Content-Type': 'application/json',
-     },
-     body: request_body
-   }
-
-   return await fetch(path, options).then( (response) => {
-        if (response.status == 400 || response.status == 500) {
-            response_body.errorType = response.status;
-            return response_body;
-        }
-        return response.json();
-    }).then((result) => {
-        if (result.errorType) {
-            response_body["errorMessage"] = "Received a " + result.errorType + " error";
-            return response_body;
-        }
-        if (!result.validLogin) {
-            return response_body;
-        }
-        result = {
-            errorType : 0,
-            success : true,
-            ...result
-        }
-        return result;
-    }).catch( (error) => {
-        console.log(error);
-        response_body.errorType = LAMBDA_RESP.ERROR;
-        return response_body;
-    });
-
+  return result;
 }
-
 
 // function getUserId() {
 //     let token = null;
@@ -545,15 +575,15 @@ async function loginVenmoWithCredentials(email, password) {
 //             errorType : 0,
 //             success : false
 //         }
-    
+
 //        let request_body = JSON.stringify(
 //         {
 //             token : value
 //         }
 //        )
-    
+
 //        const path = '/api/validate_token'
-    
+
 //        // Form the request for sending data to the server.
 //        const options = {
 //          method: 'POST',
@@ -563,7 +593,7 @@ async function loginVenmoWithCredentials(email, password) {
 //          },
 //          body: request_body
 //        }
-    
+
 //        return await fetch(path, options).then( (response) => {
 //             if (response.status == 400 || response.status == 500) {
 //                 response_body.errorType = response.status;
@@ -576,12 +606,12 @@ async function loginVenmoWithCredentials(email, password) {
 //                 return response_body;
 //             } else if (result.ERROR == "No user found") {
 //                 return response_body;
-//             } 
+//             }
 //             // else if (!result.login_success) {
 //             //     response_body["attemps"] = result.user_data.attempts;
 //             //     return response_body;
 //             // }
-    
+
 //             result = {
 //                 errorType : 0,
 //                 success : true,
@@ -594,301 +624,319 @@ async function loginVenmoWithCredentials(email, password) {
 //             console.log(error);
 //             response_body.errorType = LAMBDA_RESP.ERROR;
 //             return response_body;
-//         }); 
+//         });
 //     }
 //     return token;
 // }
 
 async function createGroup(email, name) {
-    let response_body = {
-        errorType : 0,
-        success : false
-    }
-    // if (email == null) {
-    //     response_body.errorType = LAMBDA_RESP.MALFORMED;
-    //     return response_body;
-    // }
+  let response_body = {
+    errorType: 0,
+    success: false,
+  };
+  // if (email == null) {
+  //     response_body.errorType = LAMBDA_RESP.MALFORMED;
+  //     return response_body;
+  // }
 
-   let request_body = JSON.stringify(
-    {
-        manager : email,
-        name : name
-    }
-   )
+  let request_body = JSON.stringify({
+    manager: email,
+    name: name,
+  });
 
-   const path = '/api/create_group'
+  const path = "/api/create_group";
 
-   // Form the request for sending data to the server.
-   const options = {
-     method: 'POST',
-     mode : 'no-cors',
-     headers: {
-       'Content-Type': 'application/json',
-     },
-     body: request_body
-   }
+  // Form the request for sending data to the server.
+  const options = {
+    method: "POST",
+    mode: "no-cors",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: request_body,
+  };
 
-   return await fetch(path, options).then( (response) => {
-        if (response.status == 400 || response.status == 500) {
-            response_body.errorType = response.status;
-            return response_body;
-        }
-        return response.json();
-    }).then((result) => {
-        if (result.errorType) {
-            response_body["errorMessage"] = "Received a " + result.errorType + " error";
-            return response_body;
-        }
-        console.log(result);
-        result = {
-            errorType : 0,
-            success : result.make_group_success,
-        }
-        return result;
-    }).catch( (error) => {
-        console.log(error);
-        response_body.errorType = LAMBDA_RESP.ERROR;
+  return await fetch(path, options)
+    .then((response) => {
+      if (response.status == 400 || response.status == 500) {
+        response_body.errorType = response.status;
         return response_body;
+      }
+      return response.json();
+    })
+    .then((result) => {
+      if (result.errorType) {
+        response_body["errorMessage"] =
+          "Received a " + result.errorType + " error";
+        return response_body;
+      }
+      console.log(result);
+      result = {
+        errorType: 0,
+        success: result.make_group_success,
+      };
+      return result;
+    })
+    .catch((error) => {
+      console.log(error);
+      response_body.errorType = LAMBDA_RESP.ERROR;
+      return response_body;
     });
 }
 
 function setJWT(token, isPersistant) {
-    //localStorage.setItem("token",token_l);
-    if (isPersistant) {
-        setCookie("JWT_Token", token, {maxAge: 60 * 60 * 24 * 7, sameSite:"strict"});
-    } else {
-        setCookie("JWT_Token", token, {sameSite:"strict"});
-    }
+  //localStorage.setItem("token",token_l);
+  if (isPersistant) {
+    setCookie("JWT_Token", token, {
+      maxAge: 60 * 60 * 24 * 7,
+      sameSite: "strict",
+    });
+  } else {
+    setCookie("JWT_Token", token, { sameSite: "strict" });
+  }
 }
 
-async function validateLoginCredential (email, password, createJWT=false, persistant=false) {
-    let response_body = {
-        errorType : 0,
-        success : false
-    }
-    if (email == null) {
-        response_body.errorType = LAMBDA_RESP.MALFORMED;
+async function validateLoginCredential(
+  email,
+  password,
+  createJWT = false,
+  persistant = false
+) {
+  let response_body = {
+    errorType: 0,
+    success: false,
+  };
+  if (email == null) {
+    response_body.errorType = LAMBDA_RESP.MALFORMED;
+    return response_body;
+  }
+
+  let request_body = JSON.stringify({
+    email: email,
+    password: password,
+    createJWT: createJWT,
+  });
+
+  const path = "/api/validate_login";
+
+  // Form the request for sending data to the server.
+  const options = {
+    method: "POST",
+    mode: "no-cors",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: request_body,
+  };
+
+  return await fetch(path, options)
+    .then((response) => {
+      if (response.status == 400 || response.status == 500) {
+        response_body.errorType = response.status;
         return response_body;
-    }
-
-   let request_body = JSON.stringify(
-    {
-        email : email,
-        password : password,
-        createJWT : createJWT
-    }
-   )
-
-   const path = '/api/validate_login'
-
-   // Form the request for sending data to the server.
-   const options = {
-     method: 'POST',
-     mode : 'no-cors',
-     headers: {
-       'Content-Type': 'application/json',
-     },
-     body: request_body
-   }
-
-   return await fetch(path, options).then( (response) => {
-        if (response.status == 400 || response.status == 500) {
-            response_body.errorType = response.status;
-            return response_body;
-        }
-        return response.json();
-    }).then((result) => {
-        if (result.errorType) {
-            response_body["errorMessage"] = "Received a " + result.errorType + " error";
-            return response_body;
-        } else if (result.ERROR == "No user found") {
-            return response_body;
-        } 
-        else if (!result.login_success) {
-            response_body["attempsLeft"] = 2 - ((result.user_data.attempts - 1) % 3);
-            return response_body;
-        }
-
-        result = {
-            errorType : 0,
-            success : true,
-            ...result
-        }
-        //set JWT token based on cookie preference
-        setJWT(result.token, persistant);
-        return result;
-    }).catch( (error) => {
-        console.log(error);
-        response_body.errorType = LAMBDA_RESP.ERROR;
+      }
+      return response.json();
+    })
+    .then((result) => {
+      if (result.errorType) {
+        response_body["errorMessage"] =
+          "Received a " + result.errorType + " error";
         return response_body;
+      } else if (result.ERROR == "No user found") {
+        return response_body;
+      } else if (!result.login_success) {
+        response_body["attempsLeft"] =
+          2 - ((result.user_data.attempts - 1) % 3);
+        return response_body;
+      }
+
+      result = {
+        errorType: 0,
+        success: true,
+        ...result,
+      };
+      //set JWT token based on cookie preference
+      setJWT(result.token, persistant);
+      return result;
+    })
+    .catch((error) => {
+      console.log(error);
+      response_body.errorType = LAMBDA_RESP.ERROR;
+      return response_body;
     });
 }
 
-async function validateLoginJWT(router=null){
-    //check if cookie is assigned and valid
-    let token = null;
-    if (!hasCookie("JWT_Token")) { //both persistant and session will have same name
-        if (router) {
-            router.replace("/");
-            return false;
-        }
-        return false;
-    } else {
-        token = getCookie("JWT_Token");
+async function validateLoginJWT(router = null) {
+  //check if cookie is assigned and valid
+  let token = null;
+  if (!hasCookie("JWT_Token")) {
+    //both persistant and session will have same name
+    if (router) {
+      router.replace("/");
+      return false;
     }
-    let response_body = {
-        errorType : 0,
-        success : false
-    }
+    return false;
+  } else {
+    token = getCookie("JWT_Token");
+  }
+  let response_body = {
+    errorType: 0,
+    success: false,
+  };
 
-   let request_body = JSON.stringify(
-    {
-        token : token
-    }
-   )
+  let request_body = JSON.stringify({
+    token: token,
+  });
 
-   const path = '/api/validate_jwt'
+  const path = "/api/validate_jwt";
 
-   // Form the request for sending data to the server.
-   const options = {
-     method: 'POST',
-     mode : 'no-cors',
-     headers: {
-       'Content-Type': 'application/json',
-     },
-     body: request_body
-   }
-   return await fetch(path, options).then( (response) => {
-        if (response.status == 400 || response.status == 500) {
-            response_body.errorType = response.status;
-            return response_body;
-        }
-        return response.json();
-    }).then((result) => {
-        if (result.errorType) {
-            response_body["errorMessage"] = "Received a " + result.errorType + " error";
-            return response_body;
-        }
-        if (!result.success) {
-            deleteCookie("JWT_Token");
-        }
-        return result;
-    }).catch( (error) => {
-        console.log(error);
-        response_body.errorType = LAMBDA_RESP.ERROR;
+  // Form the request for sending data to the server.
+  const options = {
+    method: "POST",
+    mode: "no-cors",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: request_body,
+  };
+  return await fetch(path, options)
+    .then((response) => {
+      if (response.status == 400 || response.status == 500) {
+        response_body.errorType = response.status;
         return response_body;
+      }
+      return response.json();
+    })
+    .then((result) => {
+      if (result.errorType) {
+        response_body["errorMessage"] =
+          "Received a " + result.errorType + " error";
+        return response_body;
+      }
+      if (!result.success) {
+        deleteCookie("JWT_Token");
+      }
+      return result;
+    })
+    .catch((error) => {
+      console.log(error);
+      response_body.errorType = LAMBDA_RESP.ERROR;
+      return response_body;
     });
 }
 
+async function getUserData(email) {
+  let response_body = {
+    errorType: 0,
+    success: false,
+  };
+  if (email == null) {
+    response_body.errorType = LAMBDA_RESP.MALFORMED;
+    return response_body;
+  }
 
-async function getUserData(email){
-    let response_body = {
-        errorType : 0,
-        success : false
-    }
-    if (email == null) {
-        response_body.errorType = LAMBDA_RESP.MALFORMED;
+  let request_body = JSON.stringify({
+    email: email,
+  });
+
+  const path = "/api/get_user_data";
+
+  // Form the request for sending data to the server.
+  const options = {
+    method: "POST",
+    mode: "no-cors",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: request_body,
+  };
+
+  return await fetch(path, options)
+    .then((response) => {
+      if (response.status == 400 || response.status == 500) {
+        response_body.errorType = response.status;
         return response_body;
-    }
-
-   let request_body = JSON.stringify(
-    {
-        email : email
-    }
-   )
-
-   const path = '/api/get_user_data'
-
-   // Form the request for sending data to the server.
-   const options = {
-     method: 'POST',
-     mode : 'no-cors',
-     headers: {
-       'Content-Type': 'application/json',
-     },
-     body: request_body
-   }
-
-   return await fetch(path, options).then( (response) => {
-        if (response.status == 400 || response.status == 500) {
-            response_body.errorType = response.status;
-            return response_body;
-        }
-        return response.json();
-    }).then((result) => {
-        if (result.errorType) {
-            response_body["errorMessage"] = "Received a " + result.errorType + " error";
-            return response_body;
-        }
-        result = {
-            errorType : 0,
-            success : true,
-            ...result
-        }
-        return result;
-    }).catch( (error) => {
-        console.log(error);
-        response_body.errorType = LAMBDA_RESP.ERROR;
+      }
+      return response.json();
+    })
+    .then((result) => {
+      if (result.errorType) {
+        response_body["errorMessage"] =
+          "Received a " + result.errorType + " error";
         return response_body;
+      }
+      result = {
+        errorType: 0,
+        success: true,
+        ...result,
+      };
+      return result;
+    })
+    .catch((error) => {
+      console.log(error);
+      response_body.errorType = LAMBDA_RESP.ERROR;
+      return response_body;
     });
 }
 
-async function registerAccount(email, password, name){
-    let response_body = {
-        errorType : 0,
-        success : false
-    }
-    // if (email == null) {
-    //     response_body.errorType = LAMBDA_RESP.MALFORMED;
-    //     return response_body;
-    // }
+async function registerAccount(email, password, name) {
+  let response_body = {
+    errorType: 0,
+    success: false,
+  };
+  // if (email == null) {
+  //     response_body.errorType = LAMBDA_RESP.MALFORMED;
+  //     return response_body;
+  // }
 
-   let request_body = JSON.stringify(
-    {
-        email : email,
-        password : password,
-        name : name
-    }
-   )
+  let request_body = JSON.stringify({
+    email: email,
+    password: password,
+    name: name,
+  });
 
-   const path = '/api/register_account'
+  const path = "/api/register_account";
 
-   // Form the request for sending data to the server.
-   const options = {
-     method: 'POST',
-     mode : 'no-cors',
-     headers: {
-       'Content-Type': 'application/json',
-     },
-     body: request_body
-   }
+  // Form the request for sending data to the server.
+  const options = {
+    method: "POST",
+    mode: "no-cors",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: request_body,
+  };
 
-   return await fetch(path, options).then( (response) => {
-        if (response.status == 400 || response.status == 500) {
-            response_body.errorType = response.status;
-            return response_body;
-        }
-        return response.json();
-    }).then((result) => {
-        if (result.errorType) {
-            response_body["errorMessage"] = "Received a " + result.errorType + " error";
-            return response_body;
-        }
-        if (!result.signup_success || !result.token_success) {
-            return response_body;
-        }
-        response_body.success = true;
+  return await fetch(path, options)
+    .then((response) => {
+      if (response.status == 400 || response.status == 500) {
+        response_body.errorType = response.status;
         return response_body;
-    }).catch( (error) => {
-        console.log(error);
-        response_body.errorType = LAMBDA_RESP.ERROR;
+      }
+      return response.json();
+    })
+    .then((result) => {
+      if (result.errorType) {
+        response_body["errorMessage"] =
+          "Received a " + result.errorType + " error";
         return response_body;
+      }
+      if (!result.signup_success || !result.token_success) {
+        return response_body;
+      }
+      response_body.success = true;
+      return response_body;
+    })
+    .catch((error) => {
+      console.log(error);
+      response_body.errorType = LAMBDA_RESP.ERROR;
+      return response_body;
     });
 }
-async function updateSettings(){
-    return;
+async function updateSettings() {
+  return;
 }
 async function signOut() {
-    deleteCookie("JWT_Token");
-    return;
+  deleteCookie("JWT_Token");
+  return;
 }

@@ -7,10 +7,8 @@ Severity: 3
 B. Instructions
 	1. Log into a valid account or go to the home page if already logged in
 	2. Click on the gear in the top right
-	3. Scroll and locate the section titled "Link Venmo Account"
+	3. Click Venmo on the Account section
 	4. Enter an invalid username and password combo in the appropriate fields
 
 C. Expected Result:
-	1. The password field is cleared
-	2. Input boxes are highlighted red
-	3. A message states "Invalid username and password combo"
+	1. A popup message states "Check your inputs"

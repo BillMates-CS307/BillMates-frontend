@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { isEmpty, isUndefined } from "lodash";
 import styled from "@emotion/styled";
-import Header from '../global_components/header.jsx'
-import Footer from '../global_components/footer_no_plus.jsx'
+import Header from "../global_components/header.jsx";
+import Footer from "../global_components/footer_no_plus.jsx";
 import NotificationItem from "./__components__/NotificationItem";
 import NotificationDetail from "./__components__/NotificationDetail.jsx";
-import { selectUserData } from "@/lib/store/userData.slice";
+import { selectUserData } from "@/lib/store/userData/userData.slice";
 import CustomHead from "../global_components/head.jsx";
 import { user_methods } from "@/lambda_service/userService.js";
 import { useRouter } from "next/router.js";
@@ -29,11 +29,11 @@ export default function Notifications() {
     }
   }, [isAuthenticated]);
 
-
-  const email = (isAuthenticated) ? localStorage.getItem("tempId") : null;
+  const email = isAuthenticated ? localStorage.getItem("tempId") : null;
   const [notifications, setNotifications] = useState([]);
   const [isEmptyNotifications, setIsEmptyNotifications] = useState(false);
-  const [currentNotificationDetail, setCurrentNotificationDetail] = useState(-1);
+  const [currentNotificationDetail, setCurrentNotificationDetail] =
+    useState(-1);
 
   const getAllNotifications = async (email) => {
     console.log("fetching notifications...");
@@ -71,11 +71,9 @@ export default function Notifications() {
   const readNotification = (index) => {
     if (!notifications[index].isread) {
       const id = notifications[index]._id;
-      const data = JSON.stringify(
-        {
-          object_id: id
-        }
-      )
+      const data = JSON.stringify({
+        object_id: id,
+      });
       const endpoint = "/api/read_notification";
       // Form the request for sending data to the server.
       const options = {
@@ -91,7 +89,7 @@ export default function Notifications() {
 
     notifications[index].isread = true;
     setCurrentNotificationDetail(index);
-  }
+  };
   const deleteNotification = (index) => {
     const data = {
       object_id: notifications[index]._id,
@@ -112,12 +110,15 @@ export default function Notifications() {
 
     notifications.splice(index, 1);
     setCurrentNotificationDetail(-1);
-  }
+  };
 
   if (isEmptyNotifications) {
     return (
       <>
-        <CustomHead title={"Notifications"} description={"Shows BillMates notifications"}></CustomHead>
+        <CustomHead
+          title={"Notifications"}
+          description={"Shows BillMates notifications"}
+        ></CustomHead>
         <Header />
         <NotificationsWrapper>No Notifications</NotificationsWrapper>
         <Footer />
@@ -127,21 +128,32 @@ export default function Notifications() {
 
   return (
     <>
-      <CustomHead title={"Notifications"} description={"Shows BillMates notifications"}></CustomHead>
+      <CustomHead
+        title={"Notifications"}
+        description={"Shows BillMates notifications"}
+      ></CustomHead>
       <Header></Header>
-      {(currentNotificationDetail != -1) ?
-        <NotificationDetail closePanel={setCurrentNotificationDetail}
+      {currentNotificationDetail != -1 ? (
+        <NotificationDetail
+          closePanel={setCurrentNotificationDetail}
           deleteNotification={deleteNotification}
           index={currentNotificationDetail}
-          {...notifications[currentNotificationDetail]}></NotificationDetail>
-        :
+          {...notifications[currentNotificationDetail]}
+        ></NotificationDetail>
+      ) : (
         <></>
-      }
+      )}
       <NotificationsWrapper>
         <NotificationsList>
           {!isUndefined(notifications) &&
             notifications.map((noti, i) => (
-              <NotificationItem key={i} index={i} isfirst={i == 0} showDetail={readNotification} {...noti} />
+              <NotificationItem
+                key={i}
+                index={i}
+                isfirst={i == 0}
+                showDetail={readNotification}
+                {...noti}
+              />
             ))}
         </NotificationsList>
       </NotificationsWrapper>
@@ -151,9 +163,9 @@ export default function Notifications() {
 }
 
 const NotificationsWrapper = styled.div`
-  width : 90%;
-  max-width : 700px;
-  height : fit-content;
+  width: 90%;
+  max-width: 700px;
+  height: fit-content;
   max-height: calc(100% - 20px);
   overflow-y: scroll;
   margin: 10px auto;
@@ -161,7 +173,7 @@ const NotificationsWrapper = styled.div`
   border-radius: var(--border-radius);
   box-shadow: 1px 2px 15px 0 #949494;
   background: var(--main-background);
-  color : var(--main-background-font-color);
+  color: var(--main-background-font-color);
 `;
 
 const NotificationsList = styled.ul`

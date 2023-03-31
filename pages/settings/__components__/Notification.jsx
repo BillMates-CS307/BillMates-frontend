@@ -4,7 +4,10 @@ import { css } from "@emotion/react";
 import { useTheme } from "next-themes";
 import { THEME, NOTIFICATION_PREFERENCE } from "@/lib/constants";
 import { useSelector, useDispatch } from "react-redux";
-import { selectUserData, userDataAction } from "@/lib/store/userData.slice";
+import {
+  selectUserData,
+  userDataAction,
+} from "@/lib/store/userData/userData.slice";
 
 export default function Notification() {
   const { theme } = useTheme();

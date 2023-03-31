@@ -2,7 +2,7 @@ import React from "react";
 import styled from "@emotion/styled";
 import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
-import { userDataAction } from "@/lib/store/userData.slice";
+import { userDataAction } from "@/lib/store/userData/userData.slice";
 import { user_methods } from "@/lambda_service/userService";
 
 export default function LogoutSection() {
