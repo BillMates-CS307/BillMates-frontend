@@ -116,6 +116,8 @@ export default function GroupSettings() {
                   currentUserId = {userId}
                 ></MemberList>
               )}
+              <button onClick={response_data.settings.leave_group}> Leave group</button>
+              <button onClick={response_data.settings.reset_group}>Reset Group</button>
               <SaveQuit />
             </SettingsForm>
             <Space />
