@@ -77,7 +77,14 @@ export default function Homeheading() {
     dispatch(
       groupDataAction.setGroupId({ groupId: groupId })
     );
-    if (userData.groups[groupId].archived) { //set to wrong thing
+    let isArchived = false;
+    for (let g in userData.groups) {
+      if (g.uuid == groupId) {
+        isArchived = g.archived;
+        break;
+      }
+    }
+    if (isArchived) { //set to wrong thing
       router.push("/archived_groups/" + groupId);
     } else {
       router.push("/groups/" + groupId);
