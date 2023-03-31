@@ -78,7 +78,7 @@ export default function Homeheading() {
       groupDataAction.setGroupId({ groupId: groupId })
     );
     let isArchived = false;
-    for (let g in userData.groups) {
+    for (let g of userData.groups) {
       if (g.uuid == groupId) {
         isArchived = g.archived;
         break;

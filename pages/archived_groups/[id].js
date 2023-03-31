@@ -53,7 +53,6 @@ export default function Group() {
         } else if (response.success) {
             //reverse arrays to show most recent first
             response.expenses = response.expenses.reverse();
-            delete response.members["test@email.com"];
             for (let i = 0; i < response.expenses.length; i++) { //have to push reported items to the front
                 if (response.expenses[i].contested) {
                     response.expenses.unshift(response.expenses.splice(i,1)[0]);

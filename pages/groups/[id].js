@@ -64,7 +64,7 @@ export default function Group() {
             }
             response.pending = response.pending.reverse();
             response["groupId"] = groupId;
-            response.maxComment = 10;
+            response.maxComment = response.settings.max_char;
             setResponseData(response);
             setLoading(false);
         } else {
@@ -170,7 +170,7 @@ export default function Group() {
                 }
                 {(currentFulfillView != null) ?
                     <FulFillView userId={userId} expense={currentFulfillView} owner={response_data.members[currentFulfillView.owner] || currentFulfillView.owner}
-                    hideParent={setCurrentFulfillView} warningPopup={setWarningPopup}></FulFillView>
+                    hideParent={setCurrentFulfillView} warningPopup={setWarningPopup} paymentAllowed={response_data.settings.fufillment}></FulFillView>
                     :
                     <></>
                 }

@@ -384,7 +384,7 @@ export function TransactionView({ userId, members, expense, hideParent, showFulF
     );
 }
 
-export function FulFillView({ userId, expense, hideParent, warningPopup, owner }) {
+export function FulFillView({ userId, expense, hideParent, warningPopup, owner, paymentAllowed }) {
     let usingVenmo = (localStorage.getItem("payment_preference") == 'venmo');
     let amt = 0;
     for (let pair of expense.users) {
@@ -428,6 +428,13 @@ export function FulFillView({ userId, expense, hideParent, warningPopup, owner }
             */
 
             if (!document.querySelector("#BillMates").checked) {
+                if (paymentAllowed != 'both' && paymentAllowed != 'venmo') {
+                    warningPopup(["The group does not allow you to pay with Venmo", 5]);
+                    ButtonLock.UnlockButton();
+                    container.firstChild.textContent = originalText;
+                    container.style = "";
+                    return;
+                }
                 /*
                 * Grab tokens of owner and user (from cookie)
                 * Grab userId from Venmo using tokens
@@ -518,7 +525,13 @@ export function FulFillView({ userId, expense, hideParent, warningPopup, owner }
                     }
                 }
             } else {
-                console.log("using billmates");
+                if (paymentAllowed != 'both' && paymentAllowed != 'billmates') {
+                    warningPopup(["The group does not allow you to pay with BillMates", 5]);
+                    ButtonLock.UnlockButton();
+                    container.firstChild.textContent = originalText;
+                    container.style = "";
+                    return;
+                }
                 let result = await group_methods.fulfillExpense(userId, expense._id, amt, 'BillMates');
                 if (result.errorType) {
                     console.log(result.errorMessage);
