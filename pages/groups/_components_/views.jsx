@@ -428,13 +428,13 @@ export function FulFillView({ userId, expense, hideParent, warningPopup, owner, 
             */
 
             if (!document.querySelector("#BillMates").checked) {
-                if (paymentAllowed != 'both' && paymentAllowed != 'venmo') {
-                    warningPopup(["The group does not allow you to pay with Venmo", 5]);
-                    ButtonLock.UnlockButton();
-                    container.firstChild.textContent = originalText;
-                    container.style = "";
-                    return;
-                }
+                // if (paymentAllowed != 'both' && paymentAllowed != 'venmo') {
+                //     warningPopup(["The group does not allow you to pay with Venmo", 5]);
+                //     ButtonLock.UnlockButton();
+                //     container.firstChild.textContent = originalText;
+                //     container.style = "";
+                //     return;
+                // }
                 /*
                 * Grab tokens of owner and user (from cookie)
                 * Grab userId from Venmo using tokens
@@ -479,8 +479,28 @@ export function FulFillView({ userId, expense, hideParent, warningPopup, owner, 
                     return;
                 }
                 user_auth_token.token = "Bearer " + user_auth_token.token;
+
+                //testing
+                // const testing_response = await user_methods.getUserByUsername(user_auth_token.token, "Ben-Lilley-4");
+                // if (user_auth_token.errorType) {
+                //     warningPopup([owner_auth_token.errorMessage + "\n please try again later", 3]);
+                //     ButtonLock.UnlockButton();
+                //     container.firstChild.textContent = originalText;
+                //     container.style = "";
+                //     return;
+                // }
+                // if (!user_auth_token.success) {
+                //     warningPopup(["You not have linked your Venmo account yet", 3]);
+                //     ButtonLock.UnlockButton();
+                //     container.firstChild.textContent = originalText;
+                //     container.style = "";
+                //     return;
+                // }
+                // return;
+
                 //grab userId from Venmo (required for the actual Venmo transaction)
-                const venmo_user_ids = await user_methods.getUserIdsFromVenmo(user_auth_token.token, owner_auth_token.token);
+                const venmo_user_ids = await user_methods.getIdsFromVenmo(user_auth_token.token, owner_auth_token.token);
+                console.log(venmo_user_ids);
                 if (venmo_user_ids[0].errorType || venmo_user_ids[1].errorType) {
                     if (venmo_user_ids[0].errorType) {
                         warningPopup([venmo_user_ids[0].errorMessage + "\n Please try again later", 3]);
