@@ -25,7 +25,7 @@ export default function VenmoToken() {
         <VenmoTitle>Venmo Token</VenmoTitle>
       </VenmoTitleWrapper>
       <VenmoInputSectionWrapper marginTop={10}>
-        <VenmoInputLabel>token (if needed)</VenmoInputLabel>
+        <VenmoInputLabel>token</VenmoInputLabel>
         <VenmoInputWrapper>
           <VenmoInput
             type="text"

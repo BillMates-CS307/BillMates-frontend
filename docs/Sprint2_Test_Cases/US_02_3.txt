@@ -1,15 +1,16 @@
 A. Identification and classification
 Test Case: 2003
 System: User Settings
-User enters invalid 2-factor code or not in time
+User is prompted and receives 2-factor authentication message
 Severity: 2
 
 B. Instructions
-	1. Repeat instructions of test case 2002
-	2. Enter in a code that is not shown in the SMS text
-		*note: providing an invalid code and not entering it in time triggers the same error code from Venmo
+	1. Log into a valid account or go to the home page if already logged in
+	2. Click on the gear in the top right
+	3. Click Venmo on the Account section
+	4. Enter a valid username and password combo in the appropriate fields
 
 C. Expected Result:
-	1. The input field is cleared and highlighted red
-	2. A message states that "Invalid code provided or ran out of time"
-
+	1. The username and password fields disappear
+	2. Another input for a 6-digit number is shown
+	3. User receives an SMS text from Venmo services
