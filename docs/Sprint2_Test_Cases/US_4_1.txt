@@ -1,0 +1,15 @@
+A. Identification and classification
+Test Case: 4001
+System: Group Settings
+Group manager is able to toggle between payment options
+Severity: 3
+
+B. Instructions
+	1. Log in to your billmates account
+    2. Click on a group you created, or create a new group
+    3. Go to group settings on the top right of the screen
+	5. Select which payment options you'd like to have for your group
+    6. Click on "save settings"
+
+C. Expected Result:
+	1. Users should only be able to make payments using the payment option you selected

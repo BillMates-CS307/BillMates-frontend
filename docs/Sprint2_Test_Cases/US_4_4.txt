@@ -1,0 +1,17 @@
+A. Identification and classification
+Test Case: 4004
+System: Group Settings
+Group settings lock for group members
+Severity: 1
+
+B. Instructions
+	1. Log in to your billmates account
+    2. Join a group created by another user
+    3. Go to the group page
+    4. Click on the group settings
+    5. Attempt to change the user settings
+    6. Click exit
+    7. Return back to the user settings to see if anything changes
+
+C. Expected Result:
+	1. Settings should not change if an unauthorized user attempts to adjust them

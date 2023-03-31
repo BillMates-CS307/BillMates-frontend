@@ -1,0 +1,18 @@
+A. Identification and classification
+Test Case: 6001
+System: Group Settings
+Archive group from group settings
+Severity: 3
+
+B. Instructions
+	1. Log in to your billmates account
+    2. Create a group or go to a group you created
+    3. Go to group settings
+    5. Click on the archive group button
+    6. Go back to home screen and see how the archived group is shown
+    7. Click on the archived groups and attempt to make a transaction
+
+C. Expected Result:
+	1. An archived group should be shown as such from the user's home page
+    2. No new transactions should be able to be made
+    3. User's debt in the group defaults to $0.00 after archive
