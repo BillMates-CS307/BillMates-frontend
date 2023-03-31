@@ -6,6 +6,7 @@ import Footer from '../global_components/footer_no_plus.jsx';
 import CustomHead from "../global_components/head";
 import LoadingCircle from '../global_components/loading_circle.jsx';
 
+//React + Redux
 import React, { useEffect, useState } from "react";
 //import { useStore } from 'react-redux'; //might not be needed
 import { useSelector } from 'react-redux'; //replacement for above... fixes refresh
@@ -13,6 +14,7 @@ import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/router.js';
 import { user_methods } from '@/lambda_service/userService.js';
 import { group_methods } from '@/lambda_service/groupService.js';
+import { groupDataAction } from "@/lib/store/groupData.slice.js";
 
 //From components...
 import MaxCommentLen from "./__components__/max_comment_length_input";
@@ -41,29 +43,29 @@ export default function GroupSettings() {
     }
   }, [isAuthenticated]) //not being used here
 
+  //API call and populate group information to trigger redraw
+  let response_data = useSelector((state) => state.groupData); //grabs settings from specific group
+
   //get redux state
-  //const store = useStore();
   const dispatch = useDispatch();
   const userId = (isAuthenticated) ? localStorage.getItem("tempId") : null;
-  const groupId = (isAuthenticated) ? window.location.href.match('[a-zA-Z0-9\-]*$')[0] : null;
-  
-  //const state = store.getState().groupData;
+  const groupId = (isAuthenticated) ? response_data.groupId : null;
+  //const groupId = (isAuthenticated) ? window.location.href.match('[a-zA-Z0-9\-]*$')[0] : null;
 
-  //API call and populate group information to trigger redraw
-  //let response_data = store.getState().groupData; 
-  const response_data = useSelector((state) => state.groupData);
+  //console.log("what the fuck: " + JSON.stringify(response_data)); //debugging..
+
   const fetchData = async () => {
       console.log("fetching data");
-      let response = await group_methods.getGroupInfo(groupId, userId); //getGroupInfo(groupId, userId);
+      let response = await group_methods.getGroupInfo(groupId, userId);
       if (response.errorType) {
           console.log("An error occured, check logs");
           return;
       } else if (response.success) {
-          updated_response_data = response;
-          updated_response_data["groupId"] = groupId;
+          response_data = response;
+          response_data["groupId"] = groupId;
           setLoading(false);
           dispatch(
-              groupDataAction.setGroupData(updated_response_data)
+              groupDataAction.setGroupData(response_data)
           );
       } else {
           //router.push("/home/");
@@ -72,39 +74,42 @@ export default function GroupSettings() {
       console.log(response);
   }
 
-  //leading circle
+  //loading circle
   const [loading, setLoading] = useState(true);
   useEffect(() => {
       if (isAuthenticated) {
           fetchData(); //make the call
       }
   }, [isAuthenticated]);
-    
-  return (
-      <>
-      <CustomHead title={"Group Settings"} description={"Customize your individual group preferences"}></CustomHead>
-        <Header />
-        <SettingsWrapper>
-          <SettingsForm>
-            <h2>Group Settings</h2>
-            <MaxCommentLen></MaxCommentLen>
-            <AllowedFulfillmentOptions></AllowedFulfillmentOptions>
-            <AutoApprove></AutoApprove>
-            {response_data.members && (
-              <MemberList
-                groupMembers={response_data.members}
-                groupOwnerId={response_data.manager}
-                currentUserId={userId}
-              ></MemberList>
-            )}
-            <SaveQuit />
-          </SettingsForm>
-          <Space />
-        </SettingsWrapper>
-        <Footer />
-      </>
 
-  );
+  if (isAuthenticated) {
+    return (
+        <>
+        <CustomHead title={"Group Settings"} description={"Customize your individual group preferences"}></CustomHead>
+          <Header />
+          <SettingsWrapper>
+            <SettingsForm>
+              <h2>Group Settings</h2>
+              <MaxCommentLen></MaxCommentLen>
+              <AllowedFulfillmentOptions></AllowedFulfillmentOptions>
+              <AutoApprove></AutoApprove>
+              {response_data.members && (
+                <MemberList
+                  groupMembers={response_data.members}
+                  groupOwnerId={response_data.manager}
+                  currentUserId={userId}
+                ></MemberList>
+              )}
+              <SaveQuit />
+            </SettingsForm>
+            <Space />
+          </SettingsWrapper>
+          <Footer />
+        </>
+    );
+  } else {
+    return <></>
+  }
 }
 
 const SettingsWrapper = styled.div`

@@ -5,7 +5,6 @@ export default function MemberList({ groupMembers, groupOwnerId, currentUserId, 
   console.log("groupMembers:", groupMembers);
   console.log("groupOwnerId:", groupOwnerId); //not working yet.. manager not getting called in properly
   console.log("currentUserId:", currentUserId);
-  
 
   return (
     <div>
