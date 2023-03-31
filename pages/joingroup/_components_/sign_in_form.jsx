@@ -159,7 +159,7 @@ export default function SignIn({ groupId }) {
             </form>
           </div>
           <p>
-            New to BillMates? <a href="/Register">Create Account</a>
+            New to BillMates? <a href="/register">Create Account</a>
           </p>
         </div>
       </main>

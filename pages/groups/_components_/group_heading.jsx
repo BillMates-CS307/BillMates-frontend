@@ -9,16 +9,16 @@ export default function GroupHeading({name, members, balance, groupId}) {
         navigator.clipboard.writeText(target.textContent);
     }
 
-    const renderGroupHeading = () => {
-        const heading = document.querySelector("#group_heading");
-        const state = store.getState().groupData;
-        heading.children[0].children[0].children[0].textContent = state.name;
-        heading.children[0].children[0].children[1].textContent = "Members: " + Object.keys(state.members).length;
-        let hex = (state.balance == 0) ? "var(--main-background-font-color)" : (state.balance < 0) ? "var(--red-background)" : "var(--green-background)";
-        heading.children[0].children[1].children[0].textContent = `$${((state.balance < 0) ? state.balance * -1 : state.balance * 1).toFixed(2)}`;
-        heading.children[0].children[1].children[0].style = `color:${hex}`;
-        heading.children[1].children[0].children[1].textContent = "localhost:8000/joingroup/" + state.groupId;
-    }
+    // const renderGroupHeading = () => {
+    //     const heading = document.querySelector("#group_heading");
+    //     const state = store.getState().groupData;
+    //     heading.children[0].children[0].children[0].textContent = state.name;
+    //     heading.children[0].children[0].children[1].textContent = "Members: " + Object.keys(state.members).length;
+    //     let hex = (state.balance == 0) ? "var(--main-background-font-color)" : (state.balance < 0) ? "var(--red-background)" : "var(--green-background)";
+    //     heading.children[0].children[1].children[0].textContent = `$${((state.balance < 0) ? state.balance * -1 : state.balance * 1).toFixed(2)}`;
+    //     heading.children[0].children[1].children[0].style = `color:${hex}`;
+    //     heading.children[1].children[0].children[1].textContent = "localhost:8000/joingroup/" + state.groupId;
+    // }
     //set to update when getting the data
     //store.subscribe(renderGroupHeading);
 

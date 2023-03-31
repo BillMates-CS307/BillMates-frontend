@@ -15,7 +15,242 @@ export const group_methods = {
     updateGroupSettings,
     updatePendingStatus,
     updateReportStatus,
-    voidExpense
+    voidExpense,
+    updateGroupSettings,
+    kickUserFromGroup
+}
+
+async function resetGroup(groudId) {
+    let response_body = {
+        errorType : 0,
+        errorMessage : "",
+        success : false
+    }
+    // if (email == null) {
+    //     response_body.errorType = LAMBDA_RESP.MALFORMED;
+    //     return response_body;
+    // }
+
+   let request_body = JSON.stringify(
+    {
+        group_id : groudId
+    }
+   )
+
+   const path = '/api/reset_group'
+
+   // Form the request for sending data to the server.
+   const options = {
+     method: 'POST',
+     mode : 'no-cors',
+     headers: {
+       'Content-Type': 'application/json',
+     },
+     body: request_body
+   }
+
+   return await fetch(path, options).then( (response) => {
+        if (response.status == 400 || response.status == 500) {
+            response_body.errorType = response.status;
+            return response_body;
+        }
+        return response.json();
+    }).then((result) => {
+        console.log(result);
+        if (result.errorType) {
+            response_body["errorMessage"] = "Received a " + result.errorType + " error";
+            return response_body;
+        } else if (!result.reset_success) {
+            response_body.errorType = 1;
+            response_body["errorMessage"] = "Could reset group";
+            return response_body;
+        }
+        result = {
+            errorType : 0,
+            success : true,
+            ...result
+        }
+        return result;
+    }).catch( (error) => {
+        console.log(error);
+        response_body.errorType = LAMBDA_RESP.ERROR;
+        return response_body;
+    });
+}
+
+async function deleteGroup(groudId) {
+    let response_body = {
+        errorType : 0,
+        errorMessage : "",
+        success : false
+    }
+    // if (email == null) {
+    //     response_body.errorType = LAMBDA_RESP.MALFORMED;
+    //     return response_body;
+    // }
+
+   let request_body = JSON.stringify(
+    {
+        group_id : groudId
+    }
+   )
+
+   const path = '/api/delete_group'
+
+   // Form the request for sending data to the server.
+   const options = {
+     method: 'POST',
+     mode : 'no-cors',
+     headers: {
+       'Content-Type': 'application/json',
+     },
+     body: request_body
+   }
+
+   return await fetch(path, options).then( (response) => {
+        if (response.status == 400 || response.status == 500) {
+            response_body.errorType = response.status;
+            return response_body;
+        }
+        return response.json();
+    }).then((result) => {
+        console.log(result);
+        if (result.errorType) {
+            response_body["errorMessage"] = "Received a " + result.errorType + " error";
+            return response_body;
+        } else if (!result.delete_success) {
+            response_body.errorType = 1;
+            response_body["errorMessage"] = "Could not kick user";
+            return response_body;
+        }
+        result = {
+            errorType : 0,
+            success : true,
+            ...result
+        }
+        return result;
+    }).catch( (error) => {
+        console.log(error);
+        response_body.errorType = LAMBDA_RESP.ERROR;
+        return response_body;
+    });
+}
+
+async function archiveGroup(groudId) {
+    let response_body = {
+        errorType : 0,
+        errorMessage : "",
+        success : false
+    }
+    // if (email == null) {
+    //     response_body.errorType = LAMBDA_RESP.MALFORMED;
+    //     return response_body;
+    // }
+
+   let request_body = JSON.stringify(
+    {
+        group_id : groudId
+    }
+   )
+
+   const path = '/api/archive_group'
+
+   // Form the request for sending data to the server.
+   const options = {
+     method: 'POST',
+     mode : 'no-cors',
+     headers: {
+       'Content-Type': 'application/json',
+     },
+     body: request_body
+   }
+
+   return await fetch(path, options).then( (response) => {
+        if (response.status == 400 || response.status == 500) {
+            response_body.errorType = response.status;
+            return response_body;
+        }
+        return response.json();
+    }).then((result) => {
+        console.log(result);
+        if (result.errorType) {
+            response_body["errorMessage"] = "Received a " + result.errorType + " error";
+            return response_body;
+        } else if (!result.group_archive_success) {
+            response_body.errorType = 1;
+            response_body["errorMessage"] = "Could not kick user";
+            return response_body;
+        }
+        result = {
+            errorType : 0,
+            success : true,
+            ...result
+        }
+        return result;
+    }).catch( (error) => {
+        console.log(error);
+        response_body.errorType = LAMBDA_RESP.ERROR;
+        return response_body;
+    });
+}
+
+async function kickUserFromGroup(groudId, userId) {
+    let response_body = {
+        errorType : 0,
+        errorMessage : "",
+        success : false
+    }
+    // if (email == null) {
+    //     response_body.errorType = LAMBDA_RESP.MALFORMED;
+    //     return response_body;
+    // }
+
+   let request_body = JSON.stringify(
+    {
+        group_id : groudId,
+        email : userId
+    }
+   )
+
+   const path = '/api/kick_user'
+
+   // Form the request for sending data to the server.
+   const options = {
+     method: 'POST',
+     mode : 'no-cors',
+     headers: {
+       'Content-Type': 'application/json',
+     },
+     body: request_body
+   }
+
+   return await fetch(path, options).then( (response) => {
+        if (response.status == 400 || response.status == 500) {
+            response_body.errorType = response.status;
+            return response_body;
+        }
+        return response.json();
+    }).then((result) => {
+        console.log(result);
+        if (result.errorType) {
+            response_body["errorMessage"] = "Received a " + result.errorType + " error";
+            return response_body;
+        } else if (!result.delete_success) {
+            response_body.errorType = 1;
+            response_body["errorMessage"] = "Could not kick user";
+            return response_body;
+        }
+        result = {
+            errorType : 0,
+            success : true,
+            ...result
+        }
+        return result;
+    }).catch( (error) => {
+        console.log(error);
+        response_body.errorType = LAMBDA_RESP.ERROR;
+        return response_body;
+    });
 }
 
 async function getAllGroupsInfo (email) {
@@ -126,17 +361,65 @@ async function getGroupInfo (groudId, email) {
         return response_body;
     });
 }
-async function updateGroupSettings() {
-    return;
-}
-async function deleteGroup() {
-    return;
-}
-async function archiveGroup() {
-    return;
-}
-async function resetGroup() {
-    return;
+async function updateGroupSettings(groudId, fulfillment, autoApprove, maxChar) {
+    let response_body = {
+        errorType : 0,
+        errorMessage : "",
+        success : false
+    }
+    // if (email == null) {
+    //     response_body.errorType = LAMBDA_RESP.MALFORMED;
+    //     return response_body;
+    // }
+
+   let request_body = JSON.stringify(
+    {
+        group_id : groudId,
+        fufillment : fulfillment,
+        auto_approve : autoApprove,
+        max_char : maxChar
+    }
+   )
+
+   const path = '/api/update_settings'
+
+   // Form the request for sending data to the server.
+   const options = {
+     method: 'POST',
+     mode : 'no-cors',
+     headers: {
+       'Content-Type': 'application/json',
+     },
+     body: request_body
+   }
+
+   return await fetch(path, options).then( (response) => {
+        if (response.status == 400 || response.status == 500) {
+            response_body.errorType = response.status;
+            return response_body;
+        }
+        return response.json();
+    }).then((result) => {
+        console.log(result);
+        if (result.errorType) {
+            response_body["errorMessage"] = "Received a " + result.errorType + " error";
+            return response_body;
+        } else if (!result.change_success) {
+            response_body.errorType = 1;
+            response_body["errorMessage"] = "Could not change settings";
+            return response_body;
+        }
+        result = {
+            errorType : 0,
+            success : true,
+            ...result
+        }
+        return result;
+    }).catch( (error) => {
+        console.log(error);
+        response_body.errorType = LAMBDA_RESP.ERROR;
+        return response_body;
+    });
 }
 async function reportExpense(id, email) {
         let response_body = {

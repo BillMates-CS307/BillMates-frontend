@@ -79,12 +79,20 @@ export default function Group() {
             fetchData(); //make the call
         }
     }, [isAuthenticated]);
+    
+    function holdGroupID() {
+        if (userId == response_data.manager) {
+            router.push("/groupsettings/" + groupId);
+        } else {
+            router.push("/groupsettings_members/" + groupId);
+        }
+    }
 
     if (isAuthenticated) {
         return (
             <>
                 <CustomHead title={"Group"} description={"A BillMates group"}></CustomHead>
-                <Header></Header>
+                <Header groupId = {holdGroupID}></Header>
 
                 <main className={styles.main}>
                     <div className={styles.transaction_history}>

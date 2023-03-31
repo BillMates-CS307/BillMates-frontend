@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export default function Header() {
+export default function Header({groupId}) {
   return (
     <>
       <header>
@@ -16,11 +16,13 @@ export default function Header() {
           <p><strong>Bill</strong></p>
           <p><strong>Mates</strong></p>
         </div>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 22" fill="none">
-          <line y1="1" x2="30" y2="1" stroke="currentColor" strokeWidth="2" />
-          <line y1="11" x2="30" y2="11" stroke="currentColor" strokeWidth="2" />
-          <line y1="21" x2="30" y2="21" stroke="currentColor" strokeWidth="2" />
-        </svg>
+        <a>
+          <svg onClick={groupId} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 22" fill="none">
+            <line y1="1" x2="30" y2="1" stroke="currentColor" strokeWidth="2" />
+            <line y1="11" x2="30" y2="11" stroke="currentColor" strokeWidth="2" />
+            <line y1="21" x2="30" y2="21" stroke="currentColor" strokeWidth="2" />
+          </svg>
+        </a>
       </header>
     </>
   );
