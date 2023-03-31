@@ -243,7 +243,7 @@ async function voidExpense(id) {
     });
 }
 
-async function fulfillExpense(email, expense_id, amount) {
+async function fulfillExpense(email, expense_id, amount, type) {
     let response_body = {
         errorType : 0,
         success : false
@@ -258,7 +258,8 @@ async function fulfillExpense(email, expense_id, amount) {
     {
         email : email,
         expense_id : expense_id,
-        amount : amount
+        amount : amount,
+        payment_method : type
     }
    )
 

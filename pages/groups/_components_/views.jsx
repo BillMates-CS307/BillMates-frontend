@@ -487,7 +487,7 @@ export function FulFillView({ userId, expense, hideParent, warningPopup, owner }
                 }
                 if (venmo_user_ids[0].success && venmo_user_ids[1].success) {
                     //Pay through BillMates first to validate it can be done
-                    const fulfill_request = await group_methods.fulfillExpense(userId, expense._id, amt);
+                    const fulfill_request = await group_methods.fulfillExpense(userId, expense._id, amt, 'Venmo');
                     if (fulfill_request.errorType) {
                         warningPopup([fulfill_request.errorMessage + "\n Please try again later", 3]);
                         ButtonLock.UnlockButton();
@@ -497,8 +497,12 @@ export function FulFillView({ userId, expense, hideParent, warningPopup, owner }
                         window.location.reload();
                         return;
                     } else { //valid to make through Venmo
-                        const venmo_payment = await user_methods.payUserWithVenmo(user_auth_token.token, amt, 
-                            venmo_user_ids[0].id, venmo_user_ids[1].id );
+                        console.log(user_auth_token);
+                        console.log(amt);
+                        console.log(venmo_user_ids);
+                        const venmo_payment = await user_methods.payUserWithVenmo(user_auth_token.token, '1', 
+                            venmo_user_ids[0].method, venmo_user_ids[1].userId );
+                        console.log(venmo_payment);
                         if (venmo_payment.errorType) {
                             warningPopup([venmo_payment.errorMessage + "\n Resubmit expense through BillMates", 3]);
                             ButtonLock.UnlockButton();
@@ -515,17 +519,17 @@ export function FulFillView({ userId, expense, hideParent, warningPopup, owner }
                 }
             } else {
                 console.log("using billmates");
-                // let result = await group_methods.fulfillExpense(userId, expense._id, amt);
-                // if (result.errorType) {
-                //     console.log(result.errorMessage);
-                //     alert("Something went wrong, please try again later");
-                // } else if (!result.success) { //expense does not exist
-                //     window.location.reload();
-                //     return;
-                // } else {
-                //     window.location.reload();
-                //     return;
-                // }
+                let result = await group_methods.fulfillExpense(userId, expense._id, amt, 'BillMates');
+                if (result.errorType) {
+                    console.log(result.errorMessage);
+                    alert("Something went wrong, please try again later");
+                } else if (!result.success) { //expense does not exist
+                    window.location.reload();
+                    return;
+                } else {
+                    window.location.reload();
+                    return;
+                }
             }
 
             ButtonLock.UnlockButton();

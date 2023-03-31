@@ -131,13 +131,15 @@ async function getUserIdsFromVenmo(selfToken, targetToken) {
      body: request_body
    }
 
-   const self_response = fetch(path, options).then( (response) => {
+   const self_response = fetch('/api/venmo_get_payment_method', options).then( (response) => {
         if (response.status == 400 || response.status == 500) {
             response_body.errorType = response.status;
             return response_body;
         }
         return response.json();
     }).then((result) => {
+        console.log("====================PAYMENT_METHODS=======================================================");
+        console.log(result);
         if (result.errorType) {
             response_body["errorMessage"] = result.errorMessage;
             return response_body;
@@ -161,6 +163,8 @@ async function getUserIdsFromVenmo(selfToken, targetToken) {
         }
         return response.json();
     }).then((result) => {
+        console.log("====================TARGET_DATA=======================================================");
+        console.log(result);
         if (result.errorType) {
             response_body["errorMessage"] = result.errorMessage;
             return response_body;
@@ -176,6 +180,7 @@ async function getUserIdsFromVenmo(selfToken, targetToken) {
 }
 
 async function payUserWithVenmo(token, amount, sourceId, targetId) {
+    console.log("Inside pay with venmo ==============================================================================");
     let response_body = {
         errorType : 0,
         errorMessage : "",
@@ -194,6 +199,9 @@ async function payUserWithVenmo(token, amount, sourceId, targetId) {
         amount : amount
     }
    )
+
+
+   console.log(request_body);
 
    const path = '/api/venmo_pay'
 

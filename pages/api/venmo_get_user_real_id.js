@@ -5,7 +5,7 @@ export default async function handler(req, res) {
     }
   
     // Get data submitted in request's body.
-    const { token } = JSON.parse(req.body);
+    const { token, id } = JSON.parse(req.body);
   
     // Guard clause checks for first and last name,
     // and returns early if they are not found
@@ -15,7 +15,7 @@ export default async function handler(req, res) {
     }
   
     //make request to Venmo for source
-    const url = 'https://api.venmo.com/v1/me';
+    const url = "https://api.venmo.com/v1/users/" + id;
     const options = {
       method: 'GET',
       mode: 'cors',
@@ -33,7 +33,7 @@ export default async function handler(req, res) {
     }
   
     return await fetch(url, options).then((response) => {
-      console.log("======================VENMO_GET_USERID_RESPONSE======================");
+      console.log("======================VENMO_GET_REAL_USERID_RESPONSE======================");
       console.log(response);
       if (response.status == 200) {
         return response.json();
@@ -50,7 +50,7 @@ export default async function handler(req, res) {
     }).then((result) => {
         console.log(result);
         if (result.errorType == undefined) {
-            response_body.userId = result.data.user.id;
+            response_body.userId = result.data.id;
             response_body.success = true;
         }
       return res.status(200).json(response_body);

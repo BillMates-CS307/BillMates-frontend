@@ -7,7 +7,7 @@ export default async function handler(req, res) {
   }
 
   // Get data submitted in request's body.
-  const { email, expense_id, amount } = JSON.parse(req.body);
+  const { email, expense_id, amount, payment_method } = JSON.parse(req.body);
 
   // Guard clause checks for first and last name,
   // and returns early if they are not found
