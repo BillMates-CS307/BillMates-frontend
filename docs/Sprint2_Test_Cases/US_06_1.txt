@@ -1,0 +1,16 @@
+A. Identification and classification
+Test Case: 6001
+System: Group Management
+Desired group is marked as archived
+Severity: 3
+
+B. Instructions
+	1. Alter 'archivegroup.py' fields to match group_id
+  2. Run 'archivegroup.py'
+
+C. Expected Result:
+	Case Error token validation
+		1. Program prints out 'token_success:false'
+    Case Success:
+		1. Group archival is marked and persisted in db
+    2. Program prints out 'archive_success:true'

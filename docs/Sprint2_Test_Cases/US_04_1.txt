@@ -1,0 +1,16 @@
+A. Identification and classification
+Test Case: 4001
+System: Group Management
+Server and database handle changes to group
+Severity: 3
+
+B. Instructions
+	1. Change 'changegroupinfo.py' fields to desired change 
+  2. Run 'changegroupinfo.py'
+
+C. Expected Result:
+	Case Error token validation:
+		1. Program output of 'token_success:false'
+    Case Success:
+		1. Changes stored in db; persisted
+		2. Program output of 'change_success:true'

@@ -1,0 +1,16 @@
+A. Identification and classification
+Test Case: 7001
+System: Group Management
+Resetting a group while persisting the members
+Severity: 3
+
+B. Instructions
+	1. Alter 'resetgroup.py' fields to match group_id
+  2. Run 'resetgroup.py'
+
+C. Expected Result:
+	Case Error token validation
+		1. Program prints out 'token_success:false'
+    Case Success:
+		1. Group is reset and persisted in db; users remain
+    2. Program prints out 'reset_success:true'
