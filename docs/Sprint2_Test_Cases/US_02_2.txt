@@ -1,16 +1,18 @@
 A. Identification and classification
 Test Case: 2002
 System: User Settings
-User is prompted and receives 2-factor authentication message
+When user does not need 2 factor auth
 Severity: 2
 
 B. Instructions
 	1. Log into a valid account or go to the home page if already logged in
 	2. Click on the gear in the top right
-	3. Scroll and locate the section titled "Link Venmo Account"
+	3. Click Venmo on the Account section
 	4. Enter a valid username and password combo in the appropriate fields
 
 C. Expected Result:
-	1. The username and password fields disappear
-	2. Another input for a 6-digit number is shown
-	3. User receives an SMS text from Venmo services
+	Case Error to store in DB:
+		1. A popup message states "Fail to store data in db"
+	Case Success:
+		1. Store token in db
+		2. Route to home

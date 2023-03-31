@@ -1,13 +1,14 @@
 A. Identification and classification
 Test Case: 3002
 System: User Settings
-User is unable to delete account with wrong password
+User clicks delete button but failed
 Severity: 3
 
 B. Instructions
-	1. Repeat instructions of test case 3001
-	2. Enter in an invalid password
+	1. Navigate to the home page
+	2. Click on the gear in the top right
+	3. Click Venmo on the Account section
+	4. Click Delete User Button
 
 C. Expected Result:
-	1. Input field is cleared and highlighted red
-	2. A message is displayed saying "Incorrect password"
+	1. A popup message states "Server issue"

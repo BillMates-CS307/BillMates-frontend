@@ -1,34 +1,28 @@
 import React, { useState } from "react";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
-import { useTheme } from "next-themes";
-import { THEME } from "@/lib/constants";
-import { useDispatch } from "react-redux";
-import { userDataAction } from "@/lib/store/userData.slice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  userDataAction,
+  selectUserData,
+} from "@/lib/store/userData/userData.slice";
 import BulletLayout from "./BulletLayout";
 
-export default function UserInformation({email}) {
+export default function UserInformationContents({ email }) {
   const dispatch = useDispatch();
-  const { theme } = useTheme();
+  const { isWrongOldPassword, isWrongNewPassword, isWrongNewPasswordConfirm } =
+    useSelector(selectUserData);
   const [isWrongName, setIsWrongName] = useState(false);
   const [isNameClicked, setIsNameClicked] = useState(false);
   const [nameDescription, setNameDescription] = useState("");
-  const [isWrongOldPassword, setIsWrongOldPassword] = useState(false);
   const [isOldPasswordClicked, setOldIsPasswordClicked] = useState(false);
   const [oldPasswordDescription, setOldPasswordDescription] = useState("");
-  const [isWrongNewPassword, setIsWrongNewPassword] = useState(false);
   const [isNewPasswordClicked, setNewIsPasswordClicked] = useState(false);
   const [newPasswordDescription, setNewPasswordDescription] = useState("");
-  const [isWrongNewPasswordConfirm, setIsWrongNewPasswordConfirm] = useState(false);
-  const [isNewPasswordClickedConfirm, setNewIsPasswordClickedConfirm] = useState(false);
-  const [newPasswordDescriptionConfirm, setNewPasswordDescriptionConfirm] = useState("");
-
-
-  dispatch(
-    userDataAction.setEmail({
-      email: email,
-    })
-  );
+  const [isNewPasswordClickedConfirm, setNewIsPasswordClickedConfirm] =
+    useState(false);
+  const [newPasswordDescriptionConfirm, setNewPasswordDescriptionConfirm] =
+    useState("");
 
   const onNameBlurHandler = (e) => {
     setIsNameClicked(false);
@@ -57,7 +51,9 @@ export default function UserInformation({email}) {
       e.currentTarget.value == "" ||
       e.currentTarget.value.length < 10
     ) {
-      setIsWrongOldPassword(true);
+      dispatch(
+        userDataAction.setIsWrongOldPassword({ isWrongOldPassword: true })
+      );
       setOldPasswordDescription("password not strong enough");
       return;
     }
@@ -67,7 +63,9 @@ export default function UserInformation({email}) {
         oldPassword: e.currentTarget.value,
       })
     );
-    setIsWrongOldPassword(false);
+    dispatch(
+      userDataAction.setIsWrongOldPassword({ isWrongOldPassword: false })
+    );
   };
 
   const onOldPasswordClickHandler = (e) => {
@@ -84,7 +82,11 @@ export default function UserInformation({email}) {
       e.currentTarget.value == "" ||
       e.currentTarget.value.length < 10
     ) {
-      setIsWrongNewPasswordConfirm(true);
+      dispatch(
+        userDataAction.setIsWrongNewPasswordConfirm({
+          isWrongNewPasswordConfirm: true,
+        })
+      );
       setNewPasswordDescriptionConfirm("password not strong enough");
       return;
     }
@@ -94,7 +96,11 @@ export default function UserInformation({email}) {
         newPassword: e.currentTarget.value,
       })
     );
-    setIsWrongNewPasswordConfirm(false);
+    dispatch(
+      userDataAction.setIsWrongNewPasswordConfirm({
+        isWrongNewPasswordConfirm: false,
+      })
+    );
   };
 
   const onNewPasswordClickHandlerConfirm = (e) => {
@@ -110,7 +116,9 @@ export default function UserInformation({email}) {
       e.currentTarget.value == "" ||
       e.currentTarget.value.length < 5
     ) {
-      setIsWrongNewPassword(true);
+      dispatch(
+        userDataAction.setIsWrongNewPassword({ isWrongNewPassword: true })
+      );
       setNewPasswordDescription("password not strong enough");
       return;
     }
@@ -120,15 +128,17 @@ export default function UserInformation({email}) {
         newPassword: e.currentTarget.value,
       })
     );
-    setIsWrongNewPassword(false);
+    dispatch(
+      userDataAction.setIsWrongNewPassword({ isWrongNewPassword: false })
+    );
   };
 
   const onNewPasswordClickHandler = (e) => {
     setNewIsPasswordClicked(true);
   };
   return (
-    <UserInformationWrapper theme={theme}>
-      <UserInformationTitleWrapper theme={theme}>
+    <UserInformationWrapper>
+      <UserInformationTitleWrapper>
         <UserInformationTitle>User Information</UserInformationTitle>
       </UserInformationTitleWrapper>
 
@@ -190,7 +200,9 @@ export default function UserInformation({email}) {
         </UserInformationInputWrapper>
       </UserInformationInputSectionWrapper>
       <UserInformationInputSectionWrapper marginTop={5}>
-        <UserInformationInputLabel>new password confirm</UserInformationInputLabel>
+        <UserInformationInputLabel>
+          new password confirm
+        </UserInformationInputLabel>
         <UserInformationInputWrapper>
           <UserInformationInput
             type="password"
@@ -213,26 +225,22 @@ export default function UserInformation({email}) {
 }
 
 const UserInformationWrapper = styled.div`
-  ${({ theme }) => css`
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 5px;
-    border-radius: var(--border-radius);
-    box-shadow: 1px 2px 3px 0 #949494;
-    color: var(--main-background-font-color);
-    overflow: hidden;
-  `}
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 5px;
+  border-radius: var(--border-radius);
+  box-shadow: 1px 2px 3px 0 #949494;
+  color: var(--main-background-font-color);
+  overflow: hidden;
 `;
 
 const UserInformationTitleWrapper = styled.div`
-  ${({ theme }) => css`
-    padding: 10px;
-    width: 100%;
-    background: var(--green-background);
-    color: var(--main-background-font-color);
-  `}
+  padding: 10px;
+  width: 100%;
+  background: var(--green-background);
+  color: var(--main-background-font-color);
 `;
 
 const UserInformationTitle = styled.h3``;
@@ -273,7 +281,6 @@ const UserInformationInput = styled.input`
   padding-right: 1.5rem;
   border-radius: 5px;
   border: 1px solid #9e9e9e;
-
   :focus {
     outline: 1px solid #00c923;
   }
