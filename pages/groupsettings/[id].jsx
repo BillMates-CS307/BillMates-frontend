@@ -45,38 +45,33 @@ export default function GroupSettings() {
   }, [isAuthenticated]) //not being used here
 
   //API call and populate group information to trigger redraw
-  let response_data = useSelector((state) => state.groupData); //grabs settings from specific group
 
   //get redux state
   const dispatch = useDispatch();
   const userId = (isAuthenticated) ? localStorage.getItem("tempId") : null;
-  //const groupId = (isAuthenticated) ? response_data.groupId : null;
   const groupId = (isAuthenticated) ? window.location.href.match('[a-zA-Z0-9\-]*$')[0] : null;
-  //console.log("what the fuck: " + JSON.stringify(response_data)); //debugging..
-
+  const [response_data, setResponseData] = useState({groupId : "",
+  name : "",
+  members : {},
+  expenses: [],
+  pending : [],
+  balance : 0.00,
+  manager : "",
+  maxComment : 0, //changed from 0, set 200 as default
+  settings : {}});
   const fetchData = async () => {
       console.log("fetching data");
-      console.log("groupID pls: " + groupId);
       let response = await group_methods.getGroupInfo(groupId, userId);
       if (response.errorType) {
           console.log("An error occured, check logs");
           return;
       } else if (response.success) {
-          response_data = response;
-          response_data["groupId"] = groupId;
-          response_data["settings"] = response.settings;
+          response["groupId"] = groupId;
+          setResponseData(response);
           setLoading(false);
-          setBillmatesChecked(response_data.settings.fufillment == "both" || response_data.settings.fufillment == "billmates");
-          setVenmoChecked(response_data.settings.fufillment == "both" || response_data.settings.fufillment == "venmo");
-          setAutoApproved(response_data.settings.auto_approve == false);
-          setCommentChange(response_data.settings.max_char == 200);
-
-          dispatch(
-              groupDataAction.setGroupData(response_data)
-          );
       } else {
-          //router.push("/home/");
           console.log(response);
+          router.push("/home/");
       }
       console.log(response);
   }
@@ -90,13 +85,104 @@ export default function GroupSettings() {
       }
   }, [isAuthenticated]);
 
-  function onChange(options) {
-    
+  // const [billmatesChecked, setBillmatesChecked] = useState(true);
+  // const [venmoChecked, setVenmoChecked] = useState(true);
+  // const [autoApproved, setAutoApproved] = useState(true);
+  // const [comment, setCommentChange] = useState('200');
+
+
+  const setBillmatesChecked = () => {
+    console.log()
   }
-  const [billmatesChecked, setBillmatesChecked] = useState(true);
-  const [venmoChecked, setVenmoChecked] = useState(true);
-  const [autoApproved, setAutoApproved] = useState(true);
-  const [comment, setCommentChange] = useState('200');
+
+  const saveSettings = async () => {
+    const payment_type = document.querySelector("#payments").value;
+    const maxChar = document.querySelector("#comment").value;
+    const auto_approve = document.querySelector("#auto-approve-toggle").checked;
+
+    const save_response = await group_methods.updateGroupSettings(groupId, payment_type,
+       auto_approve, maxChar);
+    
+    if (save_response.errorType) {
+      console.log(save_response.errorMessage);
+      alert("An error occured, please try again later");
+      return;
+    } else if (!save_response.success) {
+      alert("Didn't save");
+      return;
+    } else {
+      alert("Saved");
+      return;
+    }
+  }
+
+  const kickUser = async (e, userId) => {
+    e.preventDefault();
+    const kick_response = await group_methods.kickUserFromGroup(groupId, userId);
+    console.log(kick_response);
+    if (kick_response.errorType) {
+      console.log(kick_response.errorMessage);
+      alert("An error occured, please try again later");
+      return;
+    } else if (!kick_response.success) {
+      alert("Didn't kick");
+      return;
+    } else {
+      router.reload();
+      return;
+    }
+  }
+
+  const resetGroup = async (e) => {
+    e.preventDefault();
+    const reset_response = await group_methods.resetGroup(groupId);
+    console.log(reset_response);
+    if (reset_response.errorType) {
+      console.log(reset_response.errorMessage);
+      alert("An error occured, please try again later");
+      return;
+    } else if (!reset_response.success) {
+      alert("Didn't reset");
+      return;
+    } else {
+      router.reload();
+      return;
+    }
+  }
+
+  const deleteGroup = async (e) => {
+    e.preventDefault();
+    const delete_response = await group_methods.deleteGroup(groupId);
+    console.log(delete_response);
+    if (delete_response.errorType) {
+      console.log(delete_response.errorMessage);
+      alert("An error occured, please try again later");
+      return;
+    } else if (!delete_response.success) {
+      alert("Didn't delete");
+      return;
+    } else {
+      router.reload();
+      return;
+    }
+  }
+
+  const archiveGroup = async (e) => {
+    e.preventDefault();
+    const archive_response = await group_methods.archiveGroup(groupId);
+    console.log(archive_response);
+    if (archive_response.errorType) {
+      console.log(archive_response.errorMessage);
+      alert("An error occured, please try again later");
+      return;
+    } else if (!archive_response.success) {
+      alert("Didn't reset");
+      return;
+    } else {
+      router.reload();
+      return;
+    }
+  }
   
   if (isAuthenticated) {
     return (
@@ -106,19 +192,19 @@ export default function GroupSettings() {
           <SettingsWrapper>
             <SettingsForm>
               <h2>Group Settings</h2>
-              <MaxCommentLen setCommentChange = {setCommentChange} options = {response_data.settings.max_char}></MaxCommentLen>
-              <AllowedFulfillmentOptions setBillmatesChecked={setBillmatesChecked} setVenmoChecked = {setVenmoChecked} options = {response_data.settings.fufillment}></AllowedFulfillmentOptions>
-              <AutoApprove setAutoApproved = {setAutoApproved} options = {response_data.settings.auto_approve}></AutoApprove>
-              {response_data.members && (
+              <MaxCommentLen options = {response_data.settings.max_char}></MaxCommentLen>
+              <AllowedFulfillmentOptions options = {response_data.settings.fufillment}></AllowedFulfillmentOptions>
+              <AutoApprove options = {response_data.settings.auto_approve}></AutoApprove>
                 <MemberList
                   groupMembers = {response_data.members}
                   groupOwnerId = {response_data.manager}
                   currentUserId = {userId}
+                  onKickUser = {kickUser}
                 ></MemberList>
-              )}
-              <button onClick={response_data.settings.leave_group}> Leave group</button>
-              <button onClick={response_data.settings.reset_group}>Reset Group</button>
-              <SaveQuit />
+              <button onClick={(e) => {deleteGroup(e)}}> Delete group</button>
+              <button onClick={(e) => {resetGroup(e)}}>Reset Group</button>
+              <button onClick={(e) => {archiveGroup(e)}}>Archive Group</button>
+              <SaveQuit saveData={saveSettings} />
             </SettingsForm>
             <Space />
           </SettingsWrapper>

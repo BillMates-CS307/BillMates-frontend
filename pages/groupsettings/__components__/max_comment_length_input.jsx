@@ -3,13 +3,6 @@ import React, { useState } from 'react';
 
 function MaxCommentLengthInput({ setCommentChange, options = [] }) {
 
-  const handleChange = (event) => {
-    setCommentChange(event.target.value);
-    // if (onCommentChange) {
-    //   onCommentChange(event.target.value);
-    // }
-  };
-
   return (
     <div>
       <label htmlFor="comment">Expense Comment Length:</label>
@@ -18,7 +11,6 @@ function MaxCommentLengthInput({ setCommentChange, options = [] }) {
         id="comment"
         name="comment"
         defaultValue = {options}
-        onChange={handleChange}
       />
     </div>
   );

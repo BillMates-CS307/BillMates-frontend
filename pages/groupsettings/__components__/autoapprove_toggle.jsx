@@ -1,7 +1,7 @@
 import styles from '@/styles/Group.module.css'
 import React from 'react';
 
-function AutoApproveToggle({ setAutoApproved, options = [] }) {
+function AutoApproveToggle({ setAutoApproved, options}) {
   
   const handleAutoApprove = (e) => {
     setAutoApproved(e.target.checked);
@@ -15,7 +15,6 @@ function AutoApproveToggle({ setAutoApproved, options = [] }) {
         type="checkbox"
         id="auto-approve-toggle"
         defaultChecked={options}
-        onChange={handleAutoApprove}
       />
     </div>
   );
