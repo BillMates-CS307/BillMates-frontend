@@ -98,6 +98,14 @@ export default function GroupSettings() {
   const saveSettings = async () => {
     const payment_type = document.querySelector("#payments").value;
     const maxChar = document.querySelector("#comment").value;
+    const parsed = parseInt(maxChar);
+    console.log(parsed);
+    if (isNaN(parsed) || parsed > 200 || parsed < 0) {
+      alert("Must be between 0 and 200 characters");
+      return;
+    }
+
+
     const auto_approve = document.querySelector("#auto-approve-toggle").checked;
 
     const save_response = await group_methods.updateGroupSettings(groupId, payment_type,

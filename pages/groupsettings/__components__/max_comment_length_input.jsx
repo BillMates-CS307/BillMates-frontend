@@ -7,9 +7,10 @@ function MaxCommentLengthInput({ setCommentChange, options = [] }) {
     <div>
       <label htmlFor="comment">Expense Comment Length:</label>
       <input
-        type="text"
+        type="number"
         id="comment"
         name="comment"
+        min="0" max="200"
         defaultValue = {options}
       />
     </div>
