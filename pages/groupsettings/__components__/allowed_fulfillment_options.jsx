@@ -1,18 +1,18 @@
 import styles from '@/styles/Group.module.css'
 import React, { useState } from 'react';
 
-export default function AllowedFulfillmentOptions({ options = [], onChange }) {
-  const [billmatesChecked, setBillmatesChecked] = useState(true);
-  const [venmoChecked, setVenmoChecked] = useState(true);
+export default function AllowedFulfillmentOptions({ setBillmatesChecked, setVenmoChecked, options = [] }) {
+  //const [billmatesChecked, setBillmatesChecked] = useState(true);
+  //const [venmoChecked, setVenmoChecked] = useState(true);
 
   const handleBillmatesChange = (e) => {
     setBillmatesChecked(e.target.checked);
-    onChange(getSelectedOptions());
+    //onChange(getSelectedOptions());
   };
 
   const handleVenmoChange = (e) => {
     setVenmoChecked(e.target.checked);
-    onChange(getSelectedOptions());
+    //onChange(getSelectedOptions());
   };
 
   const getSelectedOptions = () => {
@@ -25,7 +25,7 @@ export default function AllowedFulfillmentOptions({ options = [], onChange }) {
     }
     return selectedOptions;
   };
-
+  console.log("options: " + options);
   return (
     <div>
       <fieldset>
@@ -34,7 +34,7 @@ export default function AllowedFulfillmentOptions({ options = [], onChange }) {
           <input
             id="billmates"
             type="checkbox"
-            checked={billmatesChecked}
+            defaultChecked={(options == 'billmates' || options == 'both')}
             onChange={handleBillmatesChange}
           />
           BillMates/Cash
@@ -44,7 +44,7 @@ export default function AllowedFulfillmentOptions({ options = [], onChange }) {
           <input
             id="venmo"
             type="checkbox"
-            checked={venmoChecked}
+            defaultChecked={(options == 'venmo' || options == 'both')}
             onChange={handleVenmoChange}
           />
           Venmo

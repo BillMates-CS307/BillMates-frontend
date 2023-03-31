@@ -1,14 +1,13 @@
 import styles from '@/styles/Group.module.css'
 import React, { useState } from 'react';
 
-function MaxCommentLengthInput({ onCommentChange }) {
-  const [comment, setComment] = useState('200');
+function MaxCommentLengthInput({ setCommentChange, options = [] }) {
 
   const handleChange = (event) => {
-    setComment(event.target.value);
-    if (onCommentChange) {
-      onCommentChange(event.target.value);
-    }
+    setCommentChange(event.target.value);
+    // if (onCommentChange) {
+    //   onCommentChange(event.target.value);
+    // }
   };
 
   return (
@@ -18,8 +17,7 @@ function MaxCommentLengthInput({ onCommentChange }) {
         type="text"
         id="comment"
         name="comment"
-        maxLength="200"
-        value={comment}
+        defaultValue = {options}
         onChange={handleChange}
       />
     </div>

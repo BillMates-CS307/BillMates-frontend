@@ -22,6 +22,7 @@ import AllowedFulfillmentOptions from "./__components__/allowed_fulfillment_opti
 import AutoApprove from "./__components__/autoapprove_toggle";
 import MemberList from "./__components__/member_list";
 import SaveQuit from "./__components__/savequit_button";
+import { set } from "lodash";
 
 export default function GroupSettings() {
   const router = useRouter();
@@ -63,7 +64,13 @@ export default function GroupSettings() {
       } else if (response.success) {
           response_data = response;
           response_data["groupId"] = groupId;
+          response_data["settings"] = response.settings;
           setLoading(false);
+          setBillmatesChecked(response_data.settings.fufillment == "both" || response_data.settings.fufillment == "billmates");
+          setVenmoChecked(response_data.settings.fufillment == "both" || response_data.settings.fufillment == "venmo");
+          setAutoApproved(response_data.settings.auto_approve == false);
+          setCommentChange(response_data.settings.max_char == 200);
+
           dispatch(
               groupDataAction.setGroupData(response_data)
           );
@@ -79,9 +86,18 @@ export default function GroupSettings() {
   useEffect(() => {
       if (isAuthenticated) {
           fetchData(); //make the call
+          console.log(response_data);
       }
   }, [isAuthenticated]);
 
+  function onChange(options) {
+    
+  }
+  const [billmatesChecked, setBillmatesChecked] = useState(true);
+  const [venmoChecked, setVenmoChecked] = useState(true);
+  const [autoApproved, setAutoApproved] = useState(true);
+  const [comment, setCommentChange] = useState('200');
+  
   if (isAuthenticated) {
     return (
         <>
@@ -90,14 +106,14 @@ export default function GroupSettings() {
           <SettingsWrapper>
             <SettingsForm>
               <h2>Group Settings</h2>
-              <MaxCommentLen></MaxCommentLen>
-              <AllowedFulfillmentOptions></AllowedFulfillmentOptions>
-              <AutoApprove></AutoApprove>
+              <MaxCommentLen setCommentChange = {setCommentChange} options = {response_data.settings.max_char}></MaxCommentLen>
+              <AllowedFulfillmentOptions setBillmatesChecked={setBillmatesChecked} setVenmoChecked = {setVenmoChecked} options = {response_data.settings.fufillment}></AllowedFulfillmentOptions>
+              <AutoApprove setAutoApproved = {setAutoApproved} options = {response_data.settings.auto_approve}></AutoApprove>
               {response_data.members && (
                 <MemberList
-                  groupMembers={response_data.members}
-                  groupOwnerId={response_data.manager}
-                  currentUserId={userId}
+                  groupMembers = {response_data.members}
+                  groupOwnerId = {response_data.manager}
+                  currentUserId = {userId}
                 ></MemberList>
               )}
               <SaveQuit />
