@@ -32,7 +32,7 @@ export default async function handler(req, res) {
       userId : null
     }
   
-    const self_response = await fetch(url, options).then((response) => {
+    return await fetch(url, options).then((response) => {
       console.log("======================VENMO_GET_USERID_RESPONSE======================");
       console.log(response);
       if (response.status == 200) {

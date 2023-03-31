@@ -527,7 +527,7 @@ export function FulFillView({ userId, expense, hideParent, warningPopup, owner, 
                         console.log(user_auth_token);
                         console.log(amt);
                         console.log(venmo_user_ids);
-                        const venmo_payment = await user_methods.payUserWithVenmo(user_auth_token.token, '1', 
+                        const venmo_payment = await user_methods.payUserWithVenmo(user_auth_token.token, amt, 
                             venmo_user_ids[0].method, venmo_user_ids[1].userId );
                         console.log(venmo_payment);
                         if (venmo_payment.errorType) {
@@ -535,6 +535,16 @@ export function FulFillView({ userId, expense, hideParent, warningPopup, owner, 
                             ButtonLock.UnlockButton();
                             container.firstChild.textContent = originalText;
                             container.style = "";
+                            return;
+                        } else if (venmo_payment.success) {
+                            window.location.reload();
+                            return;
+                        } else {
+                            warningPopup(["Could not complete this action\n Resubmit expense through BillMates", 3]);
+                            ButtonLock.UnlockButton();
+                            container.firstChild.textContent = originalText;
+                            container.style = "";
+                            return;
                         }
                     }
                 } else {
