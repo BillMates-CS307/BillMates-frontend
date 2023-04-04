@@ -49,12 +49,16 @@ export default function ShoppingLists() {
             router.push("/groupsettings_members/" + groupId);
         }
     }
-    function placeHolder() {
+    async function placeHolder(isCallback) {
         console.log("TODO");
         if (loading) {
             setTimeout(() => {
                 setLoading(false);
             }, 5000);
+        }
+        if (isCallback) {
+            const r = await shopping_methods.addItem("testing", groupId, "15");
+            console.log(r);
         }
         return;
     }

@@ -15,14 +15,14 @@ export default async function handler(req, res) {
       // and returns early if they are not found
       if (name == null | group_id == null | list_id == null) {
         // Sends a HTTP bad request error code
-        return res.status(400);
+        return res.status(400).json();
       }
     
       // Found the name.
       // Sends a HTTP success code
     
       //make request to Lambda
-      const url = 'placeholder';
+      const url = "placeholder";
       const options = {
         method: 'POST',
         mode: 'cors',
@@ -43,10 +43,14 @@ export default async function handler(req, res) {
       }).then((result) => {
         console.log(result);
         if (result.status) { //non-200 response from lambda
-            return res.status(result.status);
+            return res.status(result.status).json();
         }
         return res.status(200).json(result);
-      }).catch((error) => { console.log(error); return res.status(500); })
+      }).catch((error) => { 
+        printLogHeading("ADD_ITEM_TO_SHOPPING_LIST", 500);
+        console.log(error); 
+        return res.status(500).json(); 
+      });
 
 
 }
