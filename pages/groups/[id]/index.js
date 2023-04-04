@@ -1,17 +1,17 @@
 //Global HTML Imports
 import styles from '@/styles/Group.module.css'
-import Header from '../global_components/groups_header.jsx'
-import Footer from '../global_components/footer.jsx'
-import CustomHead from '../global_components/head.jsx'
-import LoadingCircle from '../global_components/loading_circle.jsx';
+import Header from '../../global_components/groups_header.jsx'
+import Footer from '../../global_components/footer.jsx'
+import CustomHead from '../../global_components/head.jsx'
+import LoadingCircle from '../../global_components/loading_circle.jsx';
 
 //React and Redux stuff
 import React, { useEffect, useState } from "react";
 import { useRouter } from 'next/router.js';
 //Components
-import GroupHeading from './_components_/group_heading.jsx';
-import { TransactionInputView, TransactionView, PendingView, FulFillView, PayAllView, ReportView } from './_components_/views.jsx'
-import { ExpenseItem, PendingItem, ReportedItem } from './_components_/items.jsx';
+import GroupHeading from '../_components_/group_heading.jsx';
+import { TransactionInputView, TransactionView, PendingView, FulFillView, PayAllView, ReportView } from '../_components_/views.jsx'
+import { ExpenseItem, PendingItem, ReportedItem } from '../_components_/items.jsx';
 import { group_methods } from '@/lambda_service/groupService.js';
 import { user_methods } from '@/lambda_service/userService.js';
 
