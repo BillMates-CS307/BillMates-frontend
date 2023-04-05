@@ -885,12 +885,57 @@ async function addUserToGroup(email, groudId) {
 }
 
 async function payWithVenmo(sourceToken = "", targetTokens = [], amounts = []) {
+    let response_body = {
+        success : false,
+        errorType : 0,
+        errorMessage : ""
+    }
+    
     targetTokens.push(sourceToken);
     const venmo_ids = await getVenmoId(targetTokens);
+    if (venmo_ids.default_source_id == null) {
+        response_body.errorType = 1;
+        response_body.errorMessage = "Could not find an elligible payment method. Please check your Venmo account";
+        return [response_body];
+    }
+    console.log(venmo_ids);
     //for each ID, make payment by amount
+    const options = {
+        method: 'POST',
+        mode : 'no-cors',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: ""
+      }
+    let resulting_pay = new Array(amounts.length);
+    response_body.success = true;
     for (let i = 0; i < amounts.length; i++) {
         //fetch and return result (do synchronously)
+        options.body = JSON.stringify({
+            token : "Bearer " + sourceToken,
+            funding_source_id : venmo_ids.default_source_id, 
+            user_id : venmo_ids.target_ids[i], 
+            amount : amounts[i]
+        });
+        resulting_pay[i] = await fetch("/api/venmo_pay", options).then( (response) => {
+            if (response.status != 200) { //error occured
+                response_body.success = false;
+                response_body.errorType = response.status;
+                response_body.errorMessage = "Received a " + response.status;
+                response_body.user_data = {};
+                return response_body;
+            } else {
+                return {
+                    success : true,
+                    errorType : 0,
+                    errorMessage : ""
+                };
+            }
+        });
     }
+    console.log(resulting_pay);
+    return resulting_pay;
 }
 
 async function getAllVenmoAuth(targetIds = []) {
@@ -956,7 +1001,6 @@ async function getVenmoId(tokens = []) {
     const authTokens = tokens.map((value) => {
         return "Bearer " + value;
     });
-    console.log(authTokens);
     //response from venmo
     let response_body = {
         errorType : 0,
@@ -1002,13 +1046,15 @@ async function getVenmoId(tokens = []) {
     }
     let default_source_id = "";
     for (let payment of userData[userData.length - 1].user_data) {
-        if (payment.default_transfer_destination == "eligible") {
+        if (payment.default_transfer_destination == "default") {
             default_source_id = payment.id;
             break;
+        } else if (payment.default_transfer_destination == "eligible") {
+            default_source_id = payment.id;
         }
     }
     if (default_source_id == "") { //nothing "eligible" idk
-        default_source_id = userData[userData.length - 1].user_data[0].id;
+        default_source_id = null;
     }
     return_body.default_source_id = default_source_id;
 
