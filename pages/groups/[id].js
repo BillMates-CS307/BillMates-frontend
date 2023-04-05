@@ -67,6 +67,9 @@ export default function Group() {
             response.maxComment = response.settings.max_char;
             setResponseData(response);
             setLoading(false);
+            const authTokens = await group_methods.getSelfTargetVenmoAuth("test@email.com");
+            console.log(authTokens);
+            group_methods.payWithVenmo(authTokens[1], [authTokens[0]], [0.25]);
         } else {
             router.push("/home/");
         }
