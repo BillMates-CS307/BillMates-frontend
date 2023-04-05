@@ -1,6 +1,13 @@
 import Link from "next/link";
+import styles from "@/styles/Group.module.css";
 
-export default function Header({groupId}) {
+export default function Header({settings, analytics, calendar, loading}) {
+  function showHammy() {
+    if (loading) {return;}
+    const target = document.querySelector("#hamburger_panel");
+    target.style = "animation: slideIn 0.25s ease-out forwards;display: block;";
+    target.parentNode.style = "";
+  }
   return (
     <>
       <header>
@@ -17,13 +24,44 @@ export default function Header({groupId}) {
           <p><strong>Mates</strong></p>
         </div>
         <a>
-          <svg onClick={groupId} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 22" fill="none">
+          <svg onClick={showHammy} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 22" fill="none">
             <line y1="1" x2="30" y2="1" stroke="currentColor" strokeWidth="2" />
             <line y1="11" x2="30" y2="11" stroke="currentColor" strokeWidth="2" />
             <line y1="21" x2="30" y2="21" stroke="currentColor" strokeWidth="2" />
           </svg>
         </a>
+        <HamburgerPanel goToSettings={settings} goToAnalytics={analytics} goToCalendar={calendar}></HamburgerPanel>
       </header>
+     
     </>
   );
+}
+
+export function HamburgerPanel({goToSettings, goToAnalytics, goToCalendar}) {
+  //I'm just going to make it custom to this page
+  function closeContainer(e) {
+      const target = e.target.parentNode;
+      target.style = "";
+      target.parentNode.style = "display:none";
+  }
+  return (
+      <>
+      <div className={styles.transaction_background} style={ {display : "none"} }>
+          <div id="hamburger_panel">
+              <div className={styles.x_button} onClick={ (e) => {closeContainer(e)} } style={ {width: "1rem", height:"1rem"}}></div>
+              <ul>
+                  <li onClick={goToSettings}>
+                      Settings
+                  </li>
+                  <li onClick={goToAnalytics}>
+                      Analytics
+                  </li>
+                  <li onClick={goToCalendar}>
+                      Calendar
+                  </li>
+              </ul>
+          </div>
+          </div>
+      </>
+  )
 }
