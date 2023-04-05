@@ -17,7 +17,55 @@ export const group_methods = {
     updateReportStatus,
     voidExpense,
     updateGroupSettings,
-    kickUserFromGroup
+    kickUserFromGroup,
+    getAnalytics
+}
+
+async function getAnalytics(userId, groupId) {
+    let response_body = {
+        success : false,
+        errorType : 0,
+        errorMessage : "",
+        data : null
+    }
+
+    const request_body = JSON.stringify({
+        "user_id" : userId,
+        "group_id" : groupId
+    });
+
+    const options = {
+        method: 'POST',
+        mode : 'no-cors',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: request_body
+    }
+
+    return await fetch("/api/analytics_get_all_info", options).then( (response) => {
+        if (response.status == 400 || response.status == 500 || response.status == 502) {
+            response_body.errorMessage = "Could not service this request right now.\nPlease try again later";
+            return response_body;
+        }
+        return response.json();
+    }).then((result) => {
+        if (result.errorType) { //Lambda response doesn't have this field
+            return result;
+        } else if (!result.get_success) { //idk what would cause this besides an error
+            response_body.errorType = 1;
+            response_body.errorMessage = "Could not service this request right now.\nPlease try again later";
+            return response_body;
+        }
+        response_body.success = true;
+        response_body.data = result.data; //TODO : CHANGE TO CORRECT FIELD WHEN BACKEND IS DONE WITH IT
+        return response_body;
+    }).catch( (error) => {
+        console.log(error);
+        response_body.errorType = 2;
+        response_body.errorMessage = "Internal parsing error";
+        return response_body;
+    });
 }
 
 async function resetGroup(groudId) {
