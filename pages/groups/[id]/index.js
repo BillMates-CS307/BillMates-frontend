@@ -79,20 +79,25 @@ export default function Group() {
             fetchData(); //make the call
         }
     }, [isAuthenticated]);
-    
-    function holdGroupID() {
+    function goToSettings() {
         if (userId == response_data.manager) {
             router.push("/groupsettings/" + groupId);
         } else {
             router.push("/groupsettings_members/" + groupId);
         }
     }
+    function goToAnalytics() {
+        router.push(window.location.href + "/analytics"); //idk of a way to do relative paths with this
+    }
+    function goToCalendar() {
+        router.push(window.location.href + "/calendar");
+    }
 
     if (isAuthenticated) {
         return (
             <>
                 <CustomHead title={"Group"} description={"A BillMates group"}></CustomHead>
-                <Header groupId = {holdGroupID}></Header>
+                <Header settings={goToSettings} analytics={goToAnalytics} calendar={goToCalendar} loading={loading}></Header>
 
                 <main className={styles.main}>
                     <div className={styles.transaction_history}>
