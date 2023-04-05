@@ -605,3 +605,16 @@ border-radius: var(--border-radius);
     background: var(--green-background);
     color: white;
   } */
+
+
+  .testing {
+    width: 50vw;
+    height: 50vh;
+    margin: auto;
+  }
+
+  .gallery_item_wrapper {
+    display: none;
+    width: 50vw;
+    height: 50vh;
+  }
