@@ -39,17 +39,23 @@ export default function ShoppingLists() {
             placeHolder(); //make the call
         }
     }, [isAuthenticated]);
-
-    const matchedGroupId = (isAuthenticated) ? window.location.href.match('(groups)\/[a-zA-z\-0-9]+')[0] : null;
-    const groupId = (matchedGroupId) ? matchedGroupId.substring(7) : null;
-    const userId = (isAuthenticated) ? localStorage.getItem("tempId") : null;
-    function groupSettingsRoute() {
+    function goToSettings() {
         if (userId == response_data.manager) {
             router.push("/groupsettings/" + groupId);
         } else {
             router.push("/groupsettings_members/" + groupId);
         }
     }
+    function goToGroup() {
+        router.push("../[pid]", "../" + groupId); //idk of a way to do relative paths with this
+    }
+    function goToCalendar() {
+        router.push("/calendar");
+    }
+
+    const matchedGroupId = (isAuthenticated) ? window.location.href.match('(groups)\/[a-zA-z\-0-9]+')[0] : null;
+    const groupId = (matchedGroupId) ? matchedGroupId.substring(7) : null;
+    const userId = (isAuthenticated) ? localStorage.getItem("tempId") : null;
     async function placeHolder(isCallback) {
         console.log("TODO");
         if (loading) {
@@ -67,7 +73,7 @@ export default function ShoppingLists() {
         return (
             <>
                 <CustomHead title={"Analytics"} description={"Your group analytics"}></CustomHead>
-                <Header groupId = {groupSettingsRoute}></Header>
+                <Header group={goToGroup} settings={goToSettings} calendar={goToCalendar} loading={loading}></Header>
                 <main className={styles.main}>
                 { (loading)?
                             <LoadingCircle additionalStyles={{ margin: "15px auto" }}></LoadingCircle>

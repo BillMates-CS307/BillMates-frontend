@@ -1,9 +1,9 @@
 import Link from "next/link";
 import styles from "@/styles/Group.module.css";
 
-export default function Header({settings, analytics, calendar, loading}) {
+export default function Header({ settings, analytics, calendar, group, loading }) {
   function showHammy() {
-    if (loading) {return;}
+    if (loading) { return; }
     const target = document.querySelector("#hamburger_panel");
     target.style = "animation: slideIn 0.25s ease-out forwards;display: block;";
     target.parentNode.style = "";
@@ -30,38 +30,57 @@ export default function Header({settings, analytics, calendar, loading}) {
             <line y1="21" x2="30" y2="21" stroke="currentColor" strokeWidth="2" />
           </svg>
         </a>
-        <HamburgerPanel goToSettings={settings} goToAnalytics={analytics} goToCalendar={calendar}></HamburgerPanel>
+        <HamburgerPanel goToSettings={settings} goToAnalytics={analytics} goToCalendar={calendar} goToGroup={group}></HamburgerPanel>
       </header>
-     
+
     </>
   );
 }
 
-export function HamburgerPanel({goToSettings, goToAnalytics, goToCalendar}) {
+export function HamburgerPanel({ goToSettings, goToAnalytics, goToCalendar, goToGroup }) {
   //I'm just going to make it custom to this page
   function closeContainer(e) {
-      const target = e.target.parentNode;
-      target.style = "";
-      target.parentNode.style = "display:none";
+    const target = e.target.parentNode;
+    target.style = "";
+    target.parentNode.style = "display:none";
   }
   return (
-      <>
-      <div className={styles.transaction_background} style={ {display : "none"} }>
-          <div id="hamburger_panel">
-              <div className={styles.x_button} onClick={ (e) => {closeContainer(e)} } style={ {width: "1rem", height:"1rem"}}></div>
-              <ul>
-                  <li onClick={goToSettings}>
-                      Settings
-                  </li>
-                  <li onClick={goToAnalytics}>
-                      Analytics
-                  </li>
-                  <li onClick={goToCalendar}>
-                      Calendar
-                  </li>
-              </ul>
-          </div>
-          </div>
-      </>
+    <>
+      <div className={styles.transaction_background} style={{ display: "none" }}>
+        <div id="hamburger_panel">
+          <div className={styles.x_button} onClick={(e) => { closeContainer(e) }} style={{ width: "1rem", height: "1rem" }}></div>
+          <ul>
+            {(goToGroup == undefined) ?
+              <></>
+              :
+              <li onClick={goToGroup}>
+                My Group
+              </li>
+            }
+            {(goToAnalytics == undefined) ?
+              <></>
+              :
+              <li onClick={goToAnalytics}>
+                Analytics
+              </li>
+            }
+            {(goToSettings == undefined) ?
+              <></>
+              :
+              <li onClick={goToSettings}>
+                Settings
+              </li>
+            }
+            {(goToCalendar == undefined) ?
+              <></>
+              :
+              <li onClick={goToCalendar}>
+                Calendar
+              </li>
+            }
+          </ul>
+        </div>
+      </div>
+    </>
   )
 }
