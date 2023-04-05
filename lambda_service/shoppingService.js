@@ -8,7 +8,7 @@ export const shopping_methods = {
 };
 
 
-async function addItem(itemName, groupId, listId) {
+async function addItem(itemName, listId) {
     let response_body = {
         success : false,
         errorType : 0,
@@ -16,8 +16,8 @@ async function addItem(itemName, groupId, listId) {
     }
 
     const request_body = JSON.stringify({
-        "name" : itemName,
-        "group_id" : groupId,
+        "item_name" : itemName,
+        "remove_item" : false,
         "list_id" : listId
     });
 
@@ -30,7 +30,7 @@ async function addItem(itemName, groupId, listId) {
         body: request_body
     }
 
-    return await fetch("/api/shopping_add_item", options).then( (response) => {
+    return await fetch("/api/shopping_update_item", options).then( (response) => {
         if (response.status == 400 || response.status == 500 || response.status == 502) {
             response_body.errorType = response.status;
             response_body.errorMessage = "Could not service this request right now.\nPlease try again later";
@@ -40,7 +40,7 @@ async function addItem(itemName, groupId, listId) {
     }).then((result) => {
         if (result.errorType) { //Lambda response doesn't have this field
             return result;
-        } else if (!result.add_succes) { //list is finalized
+        } else if (!result.change_success) { //list is finalized
             response_body.errorType = 1;
             response_body.errorMessage = "This list has been finalized";
             return response_body;
@@ -56,7 +56,7 @@ async function addItem(itemName, groupId, listId) {
 
 }
 
-async function removeItem(itemId, groupId, listId) {
+async function removeItem(itemId, listId) {
     let response_body = {
         success : false,
         errorType : 0,
@@ -64,8 +64,8 @@ async function removeItem(itemId, groupId, listId) {
     }
 
     const request_body = JSON.stringify({
-        "item_id" : itemId,
-        "group_id" : groupId,
+        "item_name" : itemId,
+        "remove_item" : true,
         "list_id" : listId
     });
 
@@ -78,7 +78,7 @@ async function removeItem(itemId, groupId, listId) {
         body: request_body
     }
 
-    return await fetch("/api/shopping_remove_item", options).then( (response) => {
+    return await fetch("/api/shopping_update_item", options).then( (response) => {
         if (response.status == 400 || response.status == 500 || response.status == 502) {
             response_body.errorType = response.status;
             response_body.errorMessage = "Could not service this request right now.\nPlease try again later";
@@ -88,7 +88,7 @@ async function removeItem(itemId, groupId, listId) {
     }).then((result) => {
         if (result.errorType) { //Lambda response doesn't have this field
             return result;
-        } else if (!result.remove_success) { //list is finalized
+        } else if (!result.change_success) { //list is finalized
             response_body.errorType = 1;
             response_body.errorMessage = "This list has been finalized";
             return response_body;
@@ -108,7 +108,7 @@ async function createList(name, groupId) {
         success : false,
         errorType : 0,
         errorMessage : "",
-        listId : null
+        //listId : null
     }
 
     const request_body = JSON.stringify({
@@ -136,11 +136,11 @@ async function createList(name, groupId) {
             return result;
         } else if (!result.create_success) { //list with same name??? idk what would cause this besides an error
             response_body.errorType = 1;
-            response_body.errorMessage = "This list already exists";
+            response_body.errorMessage = "Could not create the list at this time\nPlease try again later";
             return response_body;
         }
         response_body.success = true;
-        response_body.listId = result._id;
+        //response_body.listId = result._id;
         return response_body;
     }).catch( (error) => {
         console.log(error);
@@ -150,7 +150,7 @@ async function createList(name, groupId) {
     });
 }
 
-async function updateActiveStatus(listId, groupId, isActive) {
+async function updateActiveStatus(listId, isActive) {
     let response_body = {
         success : false,
         errorType : 0,
@@ -158,8 +158,7 @@ async function updateActiveStatus(listId, groupId, isActive) {
     }
 
     const request_body = JSON.stringify({
-        "active" : isActive,
-        "group_id" : groupId,
+        "isActive" : isActive,
         "list_id" : listId
     });
 
@@ -181,12 +180,14 @@ async function updateActiveStatus(listId, groupId, isActive) {
     }).then((result) => {
         if (result.errorType) { //Lambda response doesn't have this field
             return result;
-        } else if (!result.update_success) { //idk what would cause this besides an error
+        } else if (!result.change_success) { //list doesn't exist
             response_body.errorType = 1;
-            response_body.errorMessage = "Already in a different status";
+            response_body.errorMessage = "This list has been deleted";
+            return response_body;
+        } else if (isActive ^ result.previous_status) {
+            response_body.success = true;
             return response_body;
         }
-        response_body.success = true;
         return response_body;
     }).catch( (error) => {
         console.log(error);
@@ -205,8 +206,8 @@ async function fetchListData(groupId, listId) {
     }
 
     const request_body = JSON.stringify({
-        "group_id" : groupId,
-        "list_id" : listId
+        "list_id" : listId,
+        "group_id" : groupId
     });
 
     const options = {
@@ -233,7 +234,7 @@ async function fetchListData(groupId, listId) {
             return response_body;
         }
         response_body.success = true;
-        response_body.data = result;
+        response_body.data = result.shopping_list;
         return response_body;
     }).catch( (error) => {
         console.log(error);
@@ -279,7 +280,7 @@ async function fetchAllListData(groupId) {
             return response_body;
         }
         response_body.success = true;
-        response_body.data = result;
+        response_body.data = result.shopping_lists;
         return response_body;
     }).catch( (error) => {
         console.log(error);

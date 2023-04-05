@@ -15,6 +15,8 @@ export default async function handler(req, res) {
       // and returns early if they are not found
       if ( group_id == null ) {
         // Sends a HTTP bad request error code
+        printLogHeading("GET_ALL_SHOPPING_LIST", 400);
+        console.log("Undefined parameter"); 
         return res.status(400).json();
       }
     
@@ -22,7 +24,7 @@ export default async function handler(req, res) {
       // Sends a HTTP success code
     
       //make request to Lambda
-      const url = 'placeholder';
+      const url = 'https://evu7t6kskxh6wk7tj3cwfw7dyq0tsczh.lambda-url.us-east-2.on.aws/';
       const options = {
         method: 'POST',
         mode: 'cors',
@@ -47,7 +49,7 @@ export default async function handler(req, res) {
         }
         return res.status(200).json(result);
       }).catch((error) => {
-        printLogHeading("ADD_ITEM_TO_SHOPPING_LIST", 500);
+        printLogHeading("GET_ALL_SHOPPING_LIST", 500);
         console.log(error); 
         return res.status(500).json(); 
       })

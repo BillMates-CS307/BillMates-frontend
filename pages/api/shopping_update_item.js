@@ -9,12 +9,14 @@ export default async function handler(req, res) {
       }
     
       // Get data submitted in request's body.
-      const { name, group_id, list_id } = JSON.parse(req.body);
+      const { item_name, list_id, remove_item } = JSON.parse(req.body);
     
       // Guard clause checks for first and last name,
       // and returns early if they are not found
-      if (name == null | group_id == null | list_id == null) {
+      if ( item_name == null | remove_item == null | list_id == null ) {
         // Sends a HTTP bad request error code
+        printLogHeading("UPDATE_ITEM_SHOPPING_LIST", 400);
+        console.log("Undefined parameter");
         return res.status(400).json();
       }
     
@@ -22,7 +24,7 @@ export default async function handler(req, res) {
       // Sends a HTTP success code
     
       //make request to Lambda
-      const url = "placeholder";
+      const url = 'https://ce6mzuwdkc7ebhnuxbik42hz5q0xxekz.lambda-url.us-east-2.on.aws/';
       const options = {
         method: 'POST',
         mode: 'cors',
@@ -34,7 +36,11 @@ export default async function handler(req, res) {
       }
     
       return await fetch(url, options).then((response) => {
-        printLogHeading("ADD_ITEM_TO_SHOPPING_LIST", response.status);
+        if (remove_item) {
+          printLogHeading("REMOVE_ITEM_FROM_SHOPPING_LIST", response.status);
+        } else {
+          printLogHeading("ADD_ITEM_TO_SHOPPING_LIST", response.status);
+        }
         // console.log(response);
         if (response.status != 200) {
           return response;
@@ -46,11 +52,15 @@ export default async function handler(req, res) {
             return res.status(result.status).json();
         }
         return res.status(200).json(result);
-      }).catch((error) => { 
-        printLogHeading("ADD_ITEM_TO_SHOPPING_LIST", 500);
+      }).catch((error) => {
+        if (remove_item) {
+          printLogHeading("REMOVE_ITEM_FROM_SHOPPING_LIST", 500);
+        } else {
+          printLogHeading("ADD_ITEM_TO_SHOPPING_LIST", 500);
+        }
         console.log(error); 
         return res.status(500).json(); 
-      });
+      })
 
 
 }

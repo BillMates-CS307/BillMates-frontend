@@ -9,12 +9,14 @@ export default async function handler(req, res) {
       }
     
       // Get data submitted in request's body.
-      const { active, group_id, list_id } = JSON.parse(req.body);
+      const { isActive, list_id } = JSON.parse(req.body);
     
       // Guard clause checks for first and last name,
       // and returns early if they are not found
-      if ( active == null | group_id == null | list_id == null ) {
+      if ( isActive == null | list_id == null ) {
         // Sends a HTTP bad request error code
+        printLogHeading("UPDATE_SHOPPING_LIST_STATUS", 400);
+        console.log("Undefined parameter");
         return res.status(400).json();
       }
     
@@ -22,7 +24,7 @@ export default async function handler(req, res) {
       // Sends a HTTP success code
     
       //make request to Lambda
-      const url = 'placeholder';
+      const url = 'https://gdmqnuwrzqsja2ps3zc2z2y4km0ejbyu.lambda-url.us-east-2.on.aws/';
       const options = {
         method: 'POST',
         mode: 'cors',
