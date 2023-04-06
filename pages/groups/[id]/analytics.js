@@ -48,6 +48,9 @@ export default function Analytics() {
     const matchedGroupId = (isAuthenticated) ? window.location.href.match('(groups)\/[a-zA-z\-0-9]+')[0] : null;
     const groupId = (matchedGroupId) ? matchedGroupId.substring(7) : null;
     const userId = (isAuthenticated) ? localStorage.getItem("tempId") : null;
+    var gallery_graphs = null;
+    var gallery_dots = null;
+    var galleryIdx = 0;
     function groupSettingsRoute() {
         if (userId == response_data.manager) {
             router.push("/groupsettings/" + groupId);
@@ -111,12 +114,31 @@ export default function Analytics() {
             amt: 2100,
         },
     ];
-    var galleryIdx = 0;
     function advance() {
-        const target = document.querySelector("#here");
-        target.children[galleryIdx].style = "";
+        if (gallery_graphs == null) {
+            gallery_graphs = document.querySelector("#gallery_container");
+        }
+        if (gallery_dots == null) {
+            gallery_dots = document.querySelector("#gallery_dots");
+        }
+        gallery_graphs.children[galleryIdx].style = "";
+        gallery_dots.children[galleryIdx].style = "";
         galleryIdx = (galleryIdx + 1) % 3;
-        target.children[galleryIdx].style = "display:block";
+        gallery_graphs.children[galleryIdx].style = "display:block";
+        gallery_dots.children[galleryIdx].style = "background:var(--green-background);";
+    }
+    function previous() {
+        if (gallery_graphs == null) {
+            gallery_graphs = document.querySelector("#gallery_container");
+        }
+        if (gallery_dots == null) {
+            gallery_dots = document.querySelector("#gallery_dots");
+        }
+        gallery_graphs.children[galleryIdx].style = "";
+        gallery_dots.children[galleryIdx].style = "";
+        galleryIdx = (galleryIdx + 2) % 3;
+        gallery_graphs.children[galleryIdx].style = "display:block";
+        gallery_dots.children[galleryIdx].style = "background:var(--green-background);";
     }
 
     if (isAuthenticated) {
@@ -124,71 +146,88 @@ export default function Analytics() {
             <>
                 <CustomHead title={"Analytics"} description={"Your group analytics"}></CustomHead>
                 <Header groupId={groupSettingsRoute}></Header>
-                <main className={styles.main}>
+                <main>
                     {(loading) ?
                         <LoadingCircle additionalStyles={{ margin: "15px auto" }}></LoadingCircle>
                         :
                         <>
-   <button onClick={advance}>next chart</button>
-<div className={styles.testing} id="here">
-        <div className={styles.gallery_item_wrapper}>
-        <ResponsiveContainer>
-          <AreaChart
-            data={data}
-            margin={{
-              top: 10,
-              right: 30,
-              left: 0,
-              bottom: 0,
-            }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Area type="monotone" dataKey="uv" stroke="#8884d8" fill="#8884d8" />
-          </AreaChart>
-        </ResponsiveContainer>
-        </div>
-        <div className={styles.gallery_item_wrapper}>
-        <ResponsiveContainer>
-          <AreaChart
-            data={data}
-            margin={{
-              top: 10,
-              right: 30,
-              left: 0,
-              bottom: 0,
-            }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Area type="monotone" dataKey="amt" stroke="#8884d8" fill="#8884d8" />
-          </AreaChart>
-        </ResponsiveContainer>
-        </div>
-        <div className={styles.gallery_item_wrapper}>
-        <ResponsiveContainer>
-          <AreaChart
-            data={data}
-            margin={{
-              top: 10,
-              right: 30,
-              left: 0,
-              bottom: 0,
-            }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Area type="monotone" dataKey="pv" stroke="#8884d8" fill="#8884d8" />
-          </AreaChart>
-        </ResponsiveContainer>
-        </div>
-      </div>
+                            <div className={styles.gallery_graphs_container}>
+                            <div className={styles.gallery_heading} id="gallery_heading">
+                                <div>
+                                    <select className={styles.gallery_type_select}>
+                                        <option value="0">Me</option>
+                                        <option value="1">Group</option>
+                                    </select>
+                                    <button onClick={previous}>previous</button>
+                                    <button onClick={advance}>next</button>
+                                </div>
+                                <p></p>
+                            </div>
+                            <div className={styles.gallery_container} id="gallery_container">
+                                <div className={styles.gallery_item_wrapper} style={ {display : "block"} }>
+                                    <ResponsiveContainer>
+                                        <AreaChart
+                                            data={data}
+                                            margin={{
+                                                top: 10,
+                                                right: 30,
+                                                left: 0,
+                                                bottom: 0,
+                                            }}
+                                        >
+                                            <CartesianGrid strokeDasharray="3 3" />
+                                            <XAxis dataKey="name" />
+                                            <YAxis />
+                                            <Tooltip />
+                                            <Area type="monotone" dataKey="uv" stroke="#8884d8" fill="#8884d8" />
+                                        </AreaChart>
+                                    </ResponsiveContainer>
+                                </div>
+                                <div className={styles.gallery_item_wrapper}>
+                                    <ResponsiveContainer>
+                                        <AreaChart
+                                            data={data}
+                                            margin={{
+                                                top: 10,
+                                                right: 30,
+                                                left: 0,
+                                                bottom: 0,
+                                            }}
+                                        >
+                                            <CartesianGrid strokeDasharray="3 3" />
+                                            <XAxis dataKey="name" />
+                                            <YAxis />
+                                            <Tooltip />
+                                            <Area type="monotone" dataKey="amt" stroke="#8884d8" fill="#8884d8" />
+                                        </AreaChart>
+                                    </ResponsiveContainer>
+                                </div>
+                                <div className={styles.gallery_item_wrapper}>
+                                    <ResponsiveContainer>
+                                        <AreaChart
+                                            data={data}
+                                            margin={{
+                                                top: 10,
+                                                right: 30,
+                                                left: 0,
+                                                bottom: 0,
+                                            }}
+                                        >
+                                            <CartesianGrid strokeDasharray="3 3" />
+                                            <XAxis dataKey="name" />
+                                            <YAxis />
+                                            <Tooltip />
+                                            <Area type="monotone" dataKey="pv" stroke="#8884d8" fill="#8884d8" />
+                                        </AreaChart>
+                                    </ResponsiveContainer>
+                                </div>
+                            </div>
+                            </div>
+                            <div className={styles.gallery_dots} id="gallery_dots">
+                                <span style={ {background : "var(--green-background)"}}></span>
+                                <span></span>
+                                <span></span>
+                            </div>
                         </>
                     }
                 </main>
