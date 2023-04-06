@@ -65,10 +65,10 @@ export default function Analytics() {
         }
     }
     function goToGroup() {
-        router.push("./"); //idk of a way to do relative paths with this
+        router.push("../[pid]", `../${groupId}`);
     }
     function goToCalendar() {
-        router.push("../calendar");
+        router.push("/calendar");
     }
 
     async function placeHolder(isCallback) {
