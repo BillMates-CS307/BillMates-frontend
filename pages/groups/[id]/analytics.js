@@ -57,13 +57,20 @@ export default function Analytics() {
     var gallery_graphs = null;
     var gallery_dots = null;
     var galleryIdx = 0;
-    function groupSettingsRoute() {
+    function goToSettings() {
         if (userId == response_data.manager) {
             router.push("/groupsettings/" + groupId);
         } else {
             router.push("/groupsettings_members/" + groupId);
         }
     }
+    function goToGroup() {
+        router.push("./"); //idk of a way to do relative paths with this
+    }
+    function goToCalendar() {
+        router.push("../calendar");
+    }
+
     async function placeHolder(isCallback) {
         console.log("TODO");
         if (loading) {
@@ -165,7 +172,7 @@ export default function Analytics() {
         return (
             <>
                 <CustomHead title={"Analytics"} description={"Your group analytics"}></CustomHead>
-                <Header groupId={groupSettingsRoute}></Header>
+                <Header calendar={goToCalendar} group={goToGroup} settings={goToSettings}></Header>
                 <main>
                     {(loading) ?
                         <LoadingCircle additionalStyles={{ margin: "15px auto" }}></LoadingCircle>
