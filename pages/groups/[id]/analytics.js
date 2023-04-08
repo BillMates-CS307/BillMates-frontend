@@ -19,10 +19,7 @@ import { AreaChart, Area, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tool
 
 //SHOW ANALYTICS HERE
 
-const graph_names = [
-    ["Group relative debts", "Group requests throughout the year", "Group expenses by tag"],
-    ["My relative debts", "My requests through the year", "My expenses by tag"]
-];
+
 var current_view = 0;
 
 export default function Analytics() {
@@ -56,7 +53,13 @@ export default function Analytics() {
     const userId = (isAuthenticated) ? localStorage.getItem("tempId") : null;
     var gallery_graphs = null;
     var gallery_dots = null;
+    var gallery_heading = null;
     var galleryIdx = 0;
+    const graph_names = [
+        "Group relative debts", "Group requests throughout the year", "Group expenses by tag",
+        "My relative debts", "My requests through the year", "My expenses by tag"
+    ];
+
     function goToSettings() {
         if (userId == response_data.manager) {
             router.push("/groupsettings/" + groupId);
@@ -130,41 +133,42 @@ export default function Analytics() {
     function advance() {
         if (gallery_graphs == null) {
             gallery_graphs = document.querySelector("#gallery_container");
-        }
-        if (gallery_dots == null) {
+            gallery_heading = document.querySelector("#gallery_heading");
             gallery_dots = document.querySelector("#gallery_dots");
         }
         gallery_graphs.children[galleryIdx].style = "";
         gallery_dots.children[galleryIdx % 3].style = "";
         galleryIdx = ((galleryIdx + 1) % 3) + 3 * current_view;
         gallery_graphs.children[galleryIdx].style = "display:block";
+        gallery_heading.children[1].textContent = graph_names[galleryIdx];
         gallery_dots.children[galleryIdx % 3].style = "background:var(--green-background);";
     }
     function previous() {
         if (gallery_graphs == null) {
             gallery_graphs = document.querySelector("#gallery_container");
-        }
-        if (gallery_dots == null) {
+            gallery_heading = document.querySelector("#gallery_heading");
             gallery_dots = document.querySelector("#gallery_dots");
         }
         gallery_graphs.children[galleryIdx].style = "";
         gallery_dots.children[galleryIdx % 3].style = "";
         galleryIdx = ((galleryIdx + 2) % 3) + 3 * current_view;
         gallery_graphs.children[galleryIdx].style = "display:block";
+        gallery_heading.children[1].textContent = graph_names[galleryIdx];
         gallery_dots.children[galleryIdx % 3].style = "background:var(--green-background);";
     }
     function updateView() {
         if (gallery_graphs == null) {
             gallery_graphs = document.querySelector("#gallery_container");
-        }
-        if (gallery_dots == null) {
+            gallery_heading = document.querySelector("#gallery_heading");
             gallery_dots = document.querySelector("#gallery_dots");
         }
+
         current_view = current_view ^ 1;
         gallery_graphs.children[galleryIdx].style = "";
         gallery_dots.children[galleryIdx % 3].style = "";
         galleryIdx = (current_view)? galleryIdx + 3 : galleryIdx - 3;
         gallery_graphs.children[galleryIdx].style = "display:block";
+        gallery_heading.children[1].textContent = graph_names[galleryIdx];
         gallery_dots.children[galleryIdx % 3].style = "background:var(--green-background);";
     }
 
@@ -180,17 +184,23 @@ export default function Analytics() {
                         <>
                             <div className={styles.gallery_graphs_container}>
                             <div className={styles.gallery_heading} id="gallery_heading">
-                                <div>
+                                <div className={styles.gallery_arrows_type_container}>
                                     <select className={styles.gallery_type_select} onChange={updateView}>
                                         <option value="0">Group</option>
                                         <option value="1">Me</option>
                                     </select>
-                                    <button onClick={previous}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg>
+                                    <button onClick={previous} className={styles.arrow + " " + styles.left}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                                        <path fill='currentColor' d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/>
+                                        </svg>
                                     </button>
-                                    <button onClick={advance}>next</button>
+                                    <button onClick={advance} className={styles.arrow}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                                        <path fill='currentColor' d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/>
+                                        </svg>
+                                    </button>
                                 </div>
-                                <p></p>
+                                <p style={ {textAlign : 'center'} }>Group relative debts</p>
                             </div>
                             <div className={styles.gallery_container} id="gallery_container">
                                 <div className={styles.gallery_item_wrapper} style={ {display : "block"} }>
