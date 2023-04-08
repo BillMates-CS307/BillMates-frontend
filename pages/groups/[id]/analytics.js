@@ -14,8 +14,8 @@ import { useRouter } from 'next/router.js';
 
 
 //Recharts items
-import { AreaChart, Area, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip, Legend } from 'recharts';
-
+import {CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip, Legend,
+    LineChart, Line, BarChart, Bar, PieChart, Pie, AreaChart, Area } from 'recharts';
 
 //SHOW ANALYTICS HERE
 
@@ -205,116 +205,62 @@ export default function Analytics() {
                             <div className={styles.gallery_container} id="gallery_container">
                                 <div className={styles.gallery_item_wrapper} style={ {display : "block"} }>
                                     <ResponsiveContainer>
-                                        <AreaChart
-                                            data={data}
-                                            margin={{
-                                                top: 10,
-                                                right: 30,
-                                                left: 0,
-                                                bottom: 0,
-                                            }}
-                                        >
+                                        <LineChart data={data}>
                                             <CartesianGrid strokeDasharray="3 3" />
                                             <XAxis dataKey="name" />
                                             <YAxis />
                                             <Tooltip />
-                                            <Area type="monotone" dataKey="uv" stroke="#8884d8" fill="#8884d8" />
-                                        </AreaChart>
+                                            <Line type="monotone" dataKey="uv" stroke="var(--green-muted-background)" strokeWidth={3}/>
+                                        </LineChart>
                                     </ResponsiveContainer>
                                 </div>
                                 <div className={styles.gallery_item_wrapper}>
                                     <ResponsiveContainer>
-                                        <AreaChart
-                                            data={data}
-                                            margin={{
-                                                top: 10,
-                                                right: 30,
-                                                left: 0,
-                                                bottom: 0,
-                                            }}
-                                        >
+                                        <BarChart data={data}>
                                             <CartesianGrid strokeDasharray="3 3" />
                                             <XAxis dataKey="name" />
                                             <YAxis />
                                             <Tooltip />
-                                            <Area type="monotone" dataKey="amt" stroke="#8884d8" fill="#8884d8" />
-                                        </AreaChart>
+                                            <Bar type="monotone" dataKey="amt" fill="var(--green-muted-background)" />
+                                        </BarChart>
                                     </ResponsiveContainer>
                                 </div>
                                 <div className={styles.gallery_item_wrapper}>
                                     <ResponsiveContainer>
-                                        <AreaChart
-                                            data={data}
-                                            margin={{
-                                                top: 10,
-                                                right: 30,
-                                                left: 0,
-                                                bottom: 0,
-                                            }}
-                                        >
-                                            <CartesianGrid strokeDasharray="3 3" />
-                                            <XAxis dataKey="name" />
-                                            <YAxis />
-                                            <Tooltip />
-                                            <Area type="monotone" dataKey="pv" stroke="#8884d8" fill="#8884d8" />
-                                        </AreaChart>
+                                        <PieChart>
+                                            <Pie  animationDuration={1000} animationBegin={0} data={data} dataKey="pv" nameKey="name" cx="50%" cy="50%" 
+                                            fill="var(--green-muted-background)" label></Pie>
+                                        </PieChart>
                                     </ResponsiveContainer>
                                 </div>
                                 <div className={styles.gallery_item_wrapper}>
                                     <ResponsiveContainer>
-                                        <AreaChart
-                                            data={data}
-                                            margin={{
-                                                top: 10,
-                                                right: 30,
-                                                left: 0,
-                                                bottom: 0,
-                                            }}
-                                        >
+                                        <LineChart data={data}>
                                             <CartesianGrid strokeDasharray="3 3" />
                                             <XAxis dataKey="name" />
                                             <YAxis />
                                             <Tooltip />
-                                            <Area type="monotone" dataKey="uv" stroke="var(--green-background)" fill="var(--green-background)" />
-                                        </AreaChart>
+                                            <Line type="monotone" dataKey="uv" stroke="var(--green-background)" strokeWidth={3}/>
+                                        </LineChart>
                                     </ResponsiveContainer>
                                 </div>
                                 <div className={styles.gallery_item_wrapper}>
                                     <ResponsiveContainer>
-                                        <AreaChart
-                                            data={data}
-                                            margin={{
-                                                top: 10,
-                                                right: 30,
-                                                left: 0,
-                                                bottom: 0,
-                                            }}
-                                        >
+                                        <BarChart data={data}>
                                             <CartesianGrid strokeDasharray="3 3" />
                                             <XAxis dataKey="name" />
                                             <YAxis />
                                             <Tooltip />
-                                            <Area type="monotone" dataKey="amt" stroke="var(--green-background)" fill="var(--green-background)" />
-                                        </AreaChart>
+                                            <Bar type="monotone" dataKey="amt" fill="var(--green-background)" />
+                                        </BarChart>
                                     </ResponsiveContainer>
                                 </div>
                                 <div className={styles.gallery_item_wrapper}>
                                     <ResponsiveContainer>
-                                        <AreaChart
-                                            data={data}
-                                            margin={{
-                                                top: 10,
-                                                right: 30,
-                                                left: 0,
-                                                bottom: 0,
-                                            }}
-                                        >
-                                            <CartesianGrid strokeDasharray="3 3" />
-                                            <XAxis dataKey="name" />
-                                            <YAxis />
-                                            <Tooltip />
-                                            <Area type="monotone" dataKey="pv" stroke="var(--green-background)" fill="var(--green-background)" />
-                                        </AreaChart>
+                                        <PieChart>
+                                            <Pie  animationDuration={1000} animationBegin={0} data={data} dataKey="pv" nameKey="name" cx="50%" cy="50%" 
+                                            fill="var(--green-background)" label></Pie>
+                                        </PieChart>
                                     </ResponsiveContainer>
                                 </div>
                             </div>
