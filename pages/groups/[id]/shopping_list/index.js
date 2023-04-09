@@ -4,6 +4,7 @@ import Header from '../../../global_components/groups_header.jsx'
 import Footer from '../../../global_components/footer.jsx'
 import CustomHead from '../../../global_components/head.jsx'
 import LoadingCircle from '../../../global_components/loading_circle.jsx';
+
 import { group_methods } from '@/lambda_service/groupService.js';
 import { user_methods } from '@/lambda_service/userService.js';
 import { shopping_methods } from '@/lambda_service/shoppingService';
@@ -34,6 +35,7 @@ export default function ShoppingLists() {
     }, [isAuthenticated]);
     //define loading circle and refresh when loading is done
     const [loading, setLoading] = useState(true);
+    const [makeShoppingListVisible, setMakeShoppingListVisible] = useState(false); //new --------
     useEffect(() => {
         if (isAuthenticated) {
             placeHolder(); //make the call
@@ -72,15 +74,26 @@ export default function ShoppingLists() {
                 { (loading)?
                             <LoadingCircle additionalStyles={{ margin: "15px auto" }}></LoadingCircle>
                             :
-                            <></>
+                            <>
+
+                            </>
                 }
                 </main>
+                {makeGroupVisible ? (
+                <MakeGroupView
+                    hideParent={setMakeShoppingListVisible}
+                    userId={userId}
+                ></MakeGroupView>
+                ) : (
+                <></>
+                )}
 
-
-                <Footer callback={placeHolder} args={true} lockStatus={loading}></Footer>
-            </>
-
-            
+                <Footer
+                callback={setMakeShoppingListVisible}
+                args={true}
+                lockStatus={loading}
+                ></Footer>
+            </>   
         )
     } else {
         return <></>
