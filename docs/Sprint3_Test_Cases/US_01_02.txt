@@ -1,0 +1,15 @@
+A. Identification and classification
+Test Case: 1002
+System: Shopping List
+User is unable to create a new shopping list with an invalid name
+Severity: 1
+
+B. Instructions
+    1. Log into an account and select a group (create as needed)
+    2. Click on the hamburger bar and select "Shopping Lists"
+    3. Click on the plus symbol in the bottom right
+    4. Don't enter anything, or just spaces, and hit submit
+
+C. Expected Result:
+	1. After clicking the plus symbol, the user is prompted to enter in a name
+    2. The input box is highlighted red and a message saying "Must provide a name" is shown
