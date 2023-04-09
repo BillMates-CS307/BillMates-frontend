@@ -121,7 +121,7 @@ export default function GroupSettings() {
               groupOwnerId={response_data.manager}
               currentUserId={userId}
             ></MemberList>
-            <CalendarLink href={`/groups/calendar/${router.query.id}`}>
+            <CalendarLink href={`/groups/group_calendar/${router.query.id}`}>
               Calendar
             </CalendarLink>
           </SettingsForm>

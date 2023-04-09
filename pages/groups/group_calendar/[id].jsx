@@ -12,8 +12,9 @@ import Footer from "@/pages/global_components/footer";
 import CustomHead from "@/pages/global_components/head";
 import { CommonPopup } from "@/lib/ui/CommonPopup";
 import { selectGroupData } from "@/lib/store/groupData.slice";
+import CalendarContents from "../_components_/CalendarContents";
 
-export default function Calendar() {
+export default function GroupCalendar() {
   const dispatch = useDispatch();
   const router = useRouter();
   const [isAuthenticated, setAuthentication] = useState(false);
@@ -52,7 +53,7 @@ export default function Calendar() {
       <CommonPopup />
       <Header groupId={holdGroupID} />
       <CalendarWrapper>
-        Calendar
+        <CalendarContents />
         <Space />
       </CalendarWrapper>
       <Footer />
