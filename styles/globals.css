@@ -320,6 +320,7 @@ footer div a {
   text-align: center;
   border: none;
   min-height: 40px;
+  position: relative;
  }
  
  .react-calendar__tile:enabled:hover,
