@@ -16,6 +16,8 @@ import { useRouter } from 'next/router.js';
 //Recharts items
 import {CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip, Legend,
     LineChart, Line, BarChart, Bar, PieChart, Pie, AreaChart, Area } from 'recharts';
+import { shopping_methods } from '@/lambda_service/shoppingService.js';
+import { useFileSystemPublicRoutes } from '@/next.config.js';
 
 //SHOW ANALYTICS HERE
 
@@ -27,8 +29,7 @@ export default function Analytics() {
     const router = useRouter();
     const [isAuthenticated, setAuthentication] = useState(false);
     async function check() {
-        //let result = await user_methods.validateLoginJWT(router);
-        let result = { success: true, payload: { "email": "test@test.com" } };
+        let result = await user_methods.validateLoginJWT(router);
         if (result.success) {
             localStorage.setItem("tempId", result.payload.email);
             setAuthentication(true);
@@ -42,9 +43,58 @@ export default function Analytics() {
     }, [isAuthenticated]);
     //define loading circle and refresh when loading is done
     const [loading, setLoading] = useState(true);
+    const [responseData, setResponseData] = useState(undefined);
     useEffect(() => {
         if (isAuthenticated) {
-            placeHolder(); //make the call
+            //fetchData(); //make the call
+
+            //placeholder until the backend function is finished
+            const data = [
+                {
+                    name: 'Page A',
+                    uv: 4000,
+                    pv: 2400,
+                    amt: 2400,
+                },
+                {
+                    name: 'Page B',
+                    uv: 3000,
+                    pv: 1398,
+                    amt: 2210,
+                },
+                {
+                    name: 'Page C',
+                    uv: 2000,
+                    pv: 9800,
+                    amt: 2290,
+                },
+                {
+                    name: 'Page D',
+                    uv: 2780,
+                    pv: 3908,
+                    amt: 2000,
+                },
+                {
+                    name: 'Page E',
+                    uv: 1890,
+                    pv: 4800,
+                    amt: 2181,
+                },
+                {
+                    name: 'Page F',
+                    uv: 2390,
+                    pv: 3800,
+                    amt: 2500,
+                },
+                {
+                    name: 'Page G',
+                    uv: 3490,
+                    pv: 4300,
+                    amt: 2100,
+                },
+            ];
+            setResponseData(data);
+            setLoading(false);
         }
     }, [isAuthenticated]);
 
@@ -73,63 +123,19 @@ export default function Analytics() {
     function goToCalendar() {
         router.push("/calendar");
     }
-
-    async function placeHolder(isCallback) {
-        console.log("TODO");
-        if (loading) {
-            setTimeout(() => {
-                setLoading(false);
-            }, 500);
+    const fetchData = async () => {
+        console.log("fetching data");
+        let response = await group_methods.getAnalytics(userId, groupId);
+        if (response.errorType) {
+            console.log("An error occured, check logs");
+            return;
+        } else if (response.success) {
+            setResponseData(response);
+            setLoading(false);
+        } else {
+            router.push("/home/");
         }
-        if (isCallback) {
-            console.log("Over Here!");
-        }
-        return;
     }
-    const data = [
-        {
-            name: 'Page A',
-            uv: 4000,
-            pv: 2400,
-            amt: 2400,
-        },
-        {
-            name: 'Page B',
-            uv: 3000,
-            pv: 1398,
-            amt: 2210,
-        },
-        {
-            name: 'Page C',
-            uv: 2000,
-            pv: 9800,
-            amt: 2290,
-        },
-        {
-            name: 'Page D',
-            uv: 2780,
-            pv: 3908,
-            amt: 2000,
-        },
-        {
-            name: 'Page E',
-            uv: 1890,
-            pv: 4800,
-            amt: 2181,
-        },
-        {
-            name: 'Page F',
-            uv: 2390,
-            pv: 3800,
-            amt: 2500,
-        },
-        {
-            name: 'Page G',
-            uv: 3490,
-            pv: 4300,
-            amt: 2100,
-        },
-    ];
     function advance() {
         if (gallery_graphs == null) {
             gallery_graphs = document.querySelector("#gallery_container");
@@ -205,7 +211,7 @@ export default function Analytics() {
                             <div className={styles.gallery_container} id="gallery_container">
                                 <div className={styles.gallery_item_wrapper} style={ {display : "block"} }>
                                     <ResponsiveContainer>
-                                        <LineChart data={data}>
+                                        <LineChart data={responseData}>
                                             <CartesianGrid strokeDasharray="3 3" />
                                             <XAxis dataKey="name" />
                                             <YAxis />
@@ -216,7 +222,7 @@ export default function Analytics() {
                                 </div>
                                 <div className={styles.gallery_item_wrapper}>
                                     <ResponsiveContainer>
-                                        <BarChart data={data}>
+                                        <BarChart data={responseData}>
                                             <CartesianGrid strokeDasharray="3 3" />
                                             <XAxis dataKey="name" />
                                             <YAxis />
@@ -228,14 +234,14 @@ export default function Analytics() {
                                 <div className={styles.gallery_item_wrapper}>
                                     <ResponsiveContainer>
                                         <PieChart>
-                                            <Pie  animationDuration={1000} animationBegin={0} data={data} dataKey="pv" nameKey="name" cx="50%" cy="50%" 
+                                            <Pie  animationDuration={1000} animationBegin={0} data={responseData} dataKey="pv" nameKey="name" cx="50%" cy="50%" 
                                             fill="var(--green-muted-background)" label></Pie>
                                         </PieChart>
                                     </ResponsiveContainer>
                                 </div>
                                 <div className={styles.gallery_item_wrapper}>
                                     <ResponsiveContainer>
-                                        <LineChart data={data}>
+                                        <LineChart data={responseData}>
                                             <CartesianGrid strokeDasharray="3 3" />
                                             <XAxis dataKey="name" />
                                             <YAxis />
@@ -246,7 +252,7 @@ export default function Analytics() {
                                 </div>
                                 <div className={styles.gallery_item_wrapper}>
                                     <ResponsiveContainer>
-                                        <BarChart data={data}>
+                                        <BarChart data={responseData}>
                                             <CartesianGrid strokeDasharray="3 3" />
                                             <XAxis dataKey="name" />
                                             <YAxis />
@@ -258,7 +264,7 @@ export default function Analytics() {
                                 <div className={styles.gallery_item_wrapper}>
                                     <ResponsiveContainer>
                                         <PieChart>
-                                            <Pie  animationDuration={1000} animationBegin={0} data={data} dataKey="pv" nameKey="name" cx="50%" cy="50%" 
+                                            <Pie  animationDuration={1000} animationBegin={0} data={responseData} dataKey="pv" nameKey="name" cx="50%" cy="50%" 
                                             fill="var(--green-background)" label></Pie>
                                         </PieChart>
                                     </ResponsiveContainer>
