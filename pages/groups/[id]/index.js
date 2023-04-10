@@ -92,12 +92,15 @@ export default function Group() {
     function goToCalendar() {
         router.push(window.location.href + "/calendar");
     }
+    function goToShopping() {
+        router.push(window.location.href + "/shopping_list");
+    }
 
     if (isAuthenticated) {
         return (
             <>
                 <CustomHead title={"Group"} description={"A BillMates group"}></CustomHead>
-                <Header settings={goToSettings} analytics={goToAnalytics} calendar={goToCalendar} loading={loading}></Header>
+                <Header settings={goToSettings} analytics={goToAnalytics} calendar={goToCalendar} shopping={goToShopping} loading={loading}></Header>
 
                 <main className={styles.main}>
                     <div className={styles.transaction_history}>
