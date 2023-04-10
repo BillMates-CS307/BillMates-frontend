@@ -33,6 +33,7 @@ export default function Group() {
     }, [isAuthenticated])
 
     //Defining state management
+    const [showTag, setShowTag] = useState("all");
     const [transactionInputVisible, setTransactionInputVisible] = useState(false);
     const [payAllVisible, setPayAllVisible] = useState(false);
     const [currentTransactionView, setCurrentTransactionView] = useState(-1);
@@ -107,7 +108,7 @@ export default function Group() {
                             <>
                             {
                                 response_data.pending.map((item, index) => {
-                                    if (userId == item.paid_to) {
+                                    if (userId == item.paid_to && (showTag == "all" || item.tag == showTag) ) {
                                         return (<PendingItem index={index}
                                             title={item.title}
                                             date={item.date}
@@ -122,8 +123,9 @@ export default function Group() {
                             }
                             {
                                 response_data.expenses.map((item, index) => {
+                                    item.tag = "Rent";
                                     if (item.contested) {
-                                        if (userId == response_data.manager) {
+                                        if (userId == response_data.manager  && (showTag == "all" || item.tag == showTag)) {
                                             return (<ReportedItem index={index}
                                                 title={item.title}
                                                 date={item.date}
@@ -135,6 +137,7 @@ export default function Group() {
                                             return <></>
                                         }
                                     }
+                                    if ( (showTag == "all" || item.tag == showTag)) {
                                     return (<ExpenseItem index={index} id={index}
                                         title={item.title}
                                         date={item.date}
@@ -145,12 +148,16 @@ export default function Group() {
                                         users={item.users}
                                         showExpense={setCurrentTransactionView}
                                     ></ExpenseItem>);
+                                    } else {
+                                        return <></>;
+                                    }
                                 })
                             }
                                 </>
                         }
                     </div>
-                    <GroupHeading name={response_data.name} balance={response_data.balance} groupId={response_data.groupId} members={response_data.members}></GroupHeading>
+                    <GroupHeading name={response_data.name} balance={response_data.balance} 
+                    groupId={response_data.groupId} members={response_data.members} setShowTag={setShowTag}></GroupHeading>
                     {(response_data.balance < 0)?
                         <div className={styles.repay_all_container} onClick={() => { setPayAllVisible(true) }}>
                             <p>Repay All</p>

@@ -17,7 +17,8 @@ export function TransactionInputView({ members, userId, groupId, commentLength, 
         owner: userId,
         groupId: groupId,
         expense: {},
-        numSelected: 0
+        numSelected: 0,
+        tag : "none"
     }
 
     const splitEven = () => {
@@ -159,6 +160,7 @@ export function TransactionInputView({ members, userId, groupId, commentLength, 
                 format.total = parseFloat(format.total);
                 format.request_time = "now";
                 format.due_date = "later";
+                format.tag = form.querySelector("#tag_select").value;
                 for (let user in format.expense) {
                     format.expense[user] = parseFloat(format.expense[user]);
                 }
@@ -210,6 +212,13 @@ export function TransactionInputView({ members, userId, groupId, commentLength, 
                             <input type="hidden" id="input_item_comments"></input>
                         </>
                     }
+                    <select className={styles.gallery_type_select} id="tag_select">
+                        <option value="No Tag">No Tag</option>
+                        <option value="Entertainment">Entertainment</option>
+                        <option value="Rent">Rent</option>
+                        <option value="Food">Food</option>
+                        <option value="Misc">Misc</option>
+                    </select>
                     <p>{members[userId]}</p>
                 </div>
                 <div className={styles.split_button_container}>
@@ -326,6 +335,7 @@ export function TransactionView({ userId, members, expense, hideParent, showFulF
                     <p>{expense.title}</p>
                     <p>${expense.amount.toFixed(2)}</p>
                     <p style={{color : "var(--neutral-background)"}}>{expense.comment}</p>
+                    <p>{expense.tag || "placeholder"}</p>
                     <div className={styles.name_email_combo}>
                         <p>{members[expense.owner] || "(Not In Group)"}</p>
                         <p>{expense.owner}</p>
