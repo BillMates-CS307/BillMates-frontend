@@ -9,10 +9,12 @@ import {
   selectNonrecurringCalendarData,
   selectRecurringCalendarData,
 } from "@/lib/store/calendarData/calendarData.slice";
+import { selectGroupId } from "@/lib/store/groupData.slice";
 
 export default function CalendarContents() {
   const dispatch = useDispatch();
   const router = useRouter();
+  const groupId = useSelector(selectGroupId);
   const nonrecurringCalendarData = useSelector(selectNonrecurringCalendarData);
   const recurringCalendarData = useSelector(selectRecurringCalendarData);
   const [value, setValue] = useState(new Date());
@@ -48,12 +50,22 @@ export default function CalendarContents() {
     return false;
   };
 
+  const onClickDay = (value, event) => {
+    // href={`/groups/group_calendar/${router.query.id}`}
+    router.push(
+      `/groups/group_calendar_detail/${groupId}?date=${moment(value).format(
+        "YYYY-MM-DD"
+      )}`
+    );
+  };
+
   return (
     <CalendarWrapper>
       <Calendar
         calendarType="US"
         locale="en"
         onChange={onChange}
+        onClickDay={onClickDay}
         formatDay={(locale, date) => moment(date).format("DD")}
         tileContent={({ date, view }) => {
           if (checkRecurringEventDay(date) || checkNonrecurringEventDay(date)) {
