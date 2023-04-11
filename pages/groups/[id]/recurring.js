@@ -1,6 +1,6 @@
 //Global HTML Imports
 import styles from '@/styles/Group.module.css'
-import Header from '../../global_components/groups_header.jsx'
+import Header,{HEADER_PATHS} from '../../global_components/groups_header.jsx'
 import Footer from '../../global_components/footer_no_plus.jsx'
 import CustomHead from '../../global_components/head.jsx'
 import LoadingCircle from '../../global_components/loading_circle.jsx';
@@ -48,20 +48,6 @@ export default function Recurring() {
     const groupId = (matchedGroupId) ? matchedGroupId.substring(7) : null;
     const userId = (isAuthenticated) ? localStorage.getItem("tempId") : null;
 
-
-    function goToSettings() {
-        if (userId == responseData.manager) {
-            router.push("/groupsettings/" + groupId);
-        } else {
-            router.push("/groupsettings_members/" + groupId);
-        }
-    }
-    function goToGroup() {
-        router.push("../[pid]", `../${groupId}`);
-    }
-    function goToCalendar() {
-        router.push("/calendar");
-    }
     const fetchData = async () => {
         console.log("fetching data");
         let response = await group_methods.getAnalytics(userId, groupId);
@@ -75,13 +61,17 @@ export default function Recurring() {
             router.push("/home/");
         }
     }
+    function isGroupManager() {
+        return false; //TODO : fix this
+    }
 
 
     if (isAuthenticated) {
         return (
             <>
                 <CustomHead title={"Analytics"} description={"Your group analytics"}></CustomHead>
-                <Header calendar={goToCalendar} group={goToGroup} settings={goToSettings}></Header>
+                <Header loading={loading} selected={HEADER_PATHS.ANALYTICS|HEADER_PATHS.CALENDAR|HEADER_PATHS.SETTINGS|HEADER_PATHS.SHOPPINGLIST|HEADER_PATHS.GROUP}
+                getManagerStatus={isGroupManager} groupPath={window.location.href.match(".+?(?=\/recurring)")[0]}></Header>
                 <main>
                     {(loading) ?
                         <LoadingCircle additionalStyles={{ margin: "15px auto" }}></LoadingCircle>
