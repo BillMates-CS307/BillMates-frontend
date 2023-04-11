@@ -3,10 +3,6 @@ import { useRouter } from "next/router.js";
 import styled from "@emotion/styled";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
-import {
-  selectUserData,
-  userDataAction,
-} from "@/lib/store/userData/userData.slice";
 import { user_methods } from "@/lambda_service/userService";
 import Header from "@/pages/global_components/groups_header";
 import Footer from "@/pages/global_components/footer";
@@ -16,18 +12,16 @@ import { selectGroupData } from "@/lib/store/groupData.slice";
 import CalendarContents from "../_components_/CalendarContents";
 import { selectCalendarData } from "@/lib/store/calendarData/calendarData.slice";
 import CalendarDetailItem from "../_components_/CalendarDetailItem";
+import { checkEventDayBy } from "@/lib/util/date";
 
 export default function GroupCalendarDetail() {
   const dispatch = useDispatch();
   const router = useRouter();
   const [isAuthenticated, setAuthentication] = useState(false);
   const groupData = useSelector(selectGroupData);
-  const eventsSortedByTime = useSelector(selectCalendarData)
-    .events.filter(
-      (ev) =>
-        moment(ev.date).format("YYYY-MM-DD") ===
-        moment(router.query.date).format("YYYY-MM-DD")
-    )
+  const calendarData = useSelector(selectCalendarData);
+  const eventsSortedByTime = calendarData.events
+    .filter(checkEventDayBy(router.query.date))
     .sort(({ time: a }, { time: b }) => (a > b ? 1 : a < b ? -1 : 0));
   const userId = isAuthenticated ? localStorage.getItem("tempId") : null;
 

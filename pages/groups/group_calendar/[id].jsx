@@ -12,12 +12,20 @@ import Footer from "@/pages/global_components/footer";
 import CustomHead from "@/pages/global_components/head";
 import { CommonPopup } from "@/lib/ui/CommonPopup";
 import { selectGroupData } from "@/lib/store/groupData.slice";
+import getGroupCalendar from "@/lib/api/getGroupCalendar";
+import { calendarDataAction } from "@/lib/store/calendarData/calendarData.slice";
 import CalendarContents from "../_components_/CalendarContents";
+import LoadingCircle from "../../global_components/loading_circle";
+
+let calendarData = {
+  events: [],
+};
 
 export default function GroupCalendar() {
   const dispatch = useDispatch();
   const router = useRouter();
   const [isAuthenticated, setAuthentication] = useState(false);
+  const [loading, setLoading] = useState(true);
   const groupData = useSelector(selectGroupData);
   const userId = isAuthenticated ? localStorage.getItem("tempId") : null;
 
@@ -29,12 +37,21 @@ export default function GroupCalendar() {
     }
   }
 
-  useEffect(() => {
-    if (!isAuthenticated) {
-      console.log("authenticating");
-      check();
+  async function fetchData(group_id) {
+    console.log("fetching data");
+    let lambda_resp = await getGroupCalendar({
+      email: userId,
+      group_id,
+    });
+    console.log("resp");
+    console.log(lambda_resp);
+    if (lambda_resp.token_success && lambda_resp.get_success) {
+      calendarData = lambda_resp.events;
+      dispatch(calendarDataAction.setCalendarData({ events: calendarData }));
+      console.log(calendarData);
     }
-  }, [isAuthenticated]);
+    setLoading(false);
+  }
 
   function holdGroupID() {
     if (userId == groupData.manager) {
@@ -43,6 +60,19 @@ export default function GroupCalendar() {
       router.push("/groupsettings_members/" + groupData.groupId);
     }
   }
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      console.log("authenticating");
+      check();
+    }
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchData(groupData.groupId); //make the call
+    }
+  }, [isAuthenticated]);
 
   return (
     <>
@@ -53,7 +83,13 @@ export default function GroupCalendar() {
       <CommonPopup />
       <Header groupId={holdGroupID} />
       <CalendarWrapper>
-        <CalendarContents />
+        {loading ? (
+          <LoadingCircle
+            additionalStyles={{ margin: "15px auto" }}
+          ></LoadingCircle>
+        ) : (
+          <CalendarContents />
+        )}
         <Space />
       </CalendarWrapper>
       <Footer />

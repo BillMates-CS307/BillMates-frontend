@@ -4,19 +4,15 @@ import styled from "@emotion/styled";
 import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
 import Calendar from "react-calendar";
-import {
-  selectCalendarData,
-  selectNonrecurringCalendarData,
-  selectRecurringCalendarData,
-} from "@/lib/store/calendarData/calendarData.slice";
+import { selectCalendarData } from "@/lib/store/calendarData/calendarData.slice";
 import { selectGroupId } from "@/lib/store/groupData.slice";
+import { checkEventDayBy } from "@/lib/util/date";
 
 export default function CalendarContents() {
   const dispatch = useDispatch();
   const router = useRouter();
   const groupId = useSelector(selectGroupId);
-  const nonrecurringCalendarData = useSelector(selectNonrecurringCalendarData);
-  const recurringCalendarData = useSelector(selectRecurringCalendarData);
+  const events = useSelector(selectCalendarData).events;
   const [value, setValue] = useState(new Date());
   // const [mark, setMark] = useState(["2023-04-10", "2023-04-10"]);
 
@@ -24,30 +20,6 @@ export default function CalendarContents() {
     setValue(e.target.value);
     // TODO: Fix to detail page
     // router.push("/");
-  };
-
-  const checkNonrecurringEventDay = (date) => {
-    for (const ev of nonrecurringCalendarData) {
-      if (
-        moment(ev.date).format("YYYY-MM-DD") ===
-        moment(date).format("YYYY-MM-DD")
-      ) {
-        return true;
-      }
-    }
-
-    return false;
-  };
-
-  const checkRecurringEventDay = (date) => {
-    for (const recurringEvent of recurringCalendarData) {
-      // console.log(moment(date).weekday());
-      if (moment(recurringEvent.date).weekday() === moment(date).weekday()) {
-        return true;
-      }
-    }
-
-    return false;
   };
 
   const onClickDay = (value, event) => {
@@ -59,6 +31,17 @@ export default function CalendarContents() {
     );
   };
 
+  const checkEventsDay = (date, events) => {
+    // console.log("checkEventsDay");
+    for (const ev of events) {
+      if (checkEventDayBy(date)(ev)) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+
   return (
     <CalendarWrapper>
       <Calendar
@@ -68,7 +51,7 @@ export default function CalendarContents() {
         onClickDay={onClickDay}
         formatDay={(locale, date) => moment(date).format("DD")}
         tileContent={({ date, view }) => {
-          if (checkRecurringEventDay(date) || checkNonrecurringEventDay(date)) {
+          if (checkEventsDay(date, events)) {
             return (
               <>
                 <DotWrapper>

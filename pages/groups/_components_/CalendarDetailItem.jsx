@@ -5,37 +5,45 @@ import { css } from "@emotion/react";
 import { isEmpty, isNil } from "lodash";
 
 export default function CalendarDetailItem({
-  title,
-  comment,
-  owner,
-  users,
-  amount,
-  recurring,
+  creator,
+  name,
+  description,
   date,
   time,
+  expense,
+  total,
   location,
+  group_name,
 }) {
   return (
     <CalendarDetailItemWrapper>
-      <CalendarDetailItemTitleWrapper>
-        <CalendarDetailItemTitle>{title}</CalendarDetailItemTitle>
-      </CalendarDetailItemTitleWrapper>
+      <CalendarDetailItemNameWrapper>
+        <CalendarDetailItemName>{name}</CalendarDetailItemName>
+      </CalendarDetailItemNameWrapper>
       <CalendarDetailItemContentsWrapper>
-        <CalendarDetailItemOwnerWrapper>{owner}</CalendarDetailItemOwnerWrapper>
-        <CalendarDetailItemCommentWrapper>
-          {comment}
-        </CalendarDetailItemCommentWrapper>
-        {!isNil(users) && !isEmpty(users) && (
+        <CalendarDetailItemCreatorWrapper>
+          {`creator: ${creator}`}
+        </CalendarDetailItemCreatorWrapper>
+        {!isNil(group_name) && (
+          <CalendarDetailItemCreatorWrapper>
+            {`group: ${group_name}`}
+          </CalendarDetailItemCreatorWrapper>
+        )}
+        <CalendarDetailItemDescriptionWrapper>
+          <div>Description</div>
+          {description}
+        </CalendarDetailItemDescriptionWrapper>
+        {!isNil(expense) && !isEmpty(Object.keys(expense)) && (
           <CalendarDetailItemUsersWrapper>
-            {users.map((u, i) => (
-              <li key={i}>{u}</li>
+            {Object.keys(expense).map((e, i) => (
+              <li key={i}>{e}</li>
             ))}
           </CalendarDetailItemUsersWrapper>
         )}
       </CalendarDetailItemContentsWrapper>
-      {!isNil(amount) && (
+      {!isNil(total) && (
         <CalendarDetailItemAmountWrapper>
-          ${amount}
+          ${total}
         </CalendarDetailItemAmountWrapper>
       )}
       {!isNil(location) && (
@@ -61,14 +69,14 @@ const CalendarDetailItemWrapper = styled.div`
   overflow: hidden;
 `;
 
-const CalendarDetailItemTitleWrapper = styled.div`
+const CalendarDetailItemNameWrapper = styled.div`
   padding: 10px;
   width: 100%;
   background: var(--green-background);
   color: var(--main-background-font-color);
 `;
 
-const CalendarDetailItemTitle = styled.h3``;
+const CalendarDetailItemName = styled.h3``;
 
 const CalendarDetailItemContentsWrapper = styled.div`
   display: flex;
@@ -79,14 +87,14 @@ const CalendarDetailItemContentsWrapper = styled.div`
   width: 100%;
 `;
 
-const CalendarDetailItemOwnerWrapper = styled.div`
+const CalendarDetailItemCreatorWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
   padding-right: 5px;
   width: 100%;
 `;
 
-const CalendarDetailItemCommentWrapper = styled.div`
+const CalendarDetailItemDescriptionWrapper = styled.div`
   padding-top: 5px;
 `;
 
