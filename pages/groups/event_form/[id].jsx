@@ -5,10 +5,6 @@ import { css } from "@emotion/react";
 import { useDispatch, useSelector } from "react-redux";
 import DatePicker from "react-date-picker";
 import TimePicker from "react-time-picker";
-import {
-  selectUserData,
-  userDataAction,
-} from "@/lib/store/userData/userData.slice";
 import { user_methods } from "@/lambda_service/userService";
 import Header from "@/pages/global_components/groups_header";
 import Footer from "@/pages/global_components/footer";
@@ -17,18 +13,19 @@ import { CommonPopup } from "@/lib/ui/CommonPopup";
 import { selectGroupData } from "@/lib/store/groupData.slice";
 import SubmitButton from "../_components_/SubmitButton";
 import moment from "moment";
+import {
+  eventDataAction,
+  selectEventData,
+} from "@/lib/store/eventData/eventData.slice";
+import { isNil } from "lodash";
 
 export default function EventForm() {
   const dispatch = useDispatch();
   const router = useRouter();
   const [isAuthenticated, setAuthentication] = useState(false);
   const groupData = useSelector(selectGroupData);
+  const { date, time } = useSelector(selectEventData);
   const userId = isAuthenticated ? localStorage.getItem("tempId") : null;
-  const [name, setName] = useState(null);
-  const [description, setDescription] = useState(null);
-  const [location, setLocation] = useState(null);
-  const [date, setDate] = useState(new Date());
-  const [time, setTime] = useState(moment(new Date()).format("HH:mm:ss"));
 
   async function check() {
     let result = await user_methods.validateLoginJWT(router);
@@ -47,21 +44,50 @@ export default function EventForm() {
   }
 
   const onNameBlurHandler = (e) => {
-    setName(e.currentTarget.value);
+    dispatch(
+      eventDataAction.setName({
+        name: e.currentTarget.value,
+      })
+    );
   };
 
   const onDescriptionBlurHandler = (e) => {
-    setDescription(e.currentTarget.value);
+    dispatch(
+      eventDataAction.setDescription({
+        description: e.currentTarget.value,
+      })
+    );
   };
 
   const onLocationBlurHandler = (e) => {
-    setLocation(e.currentTarget.value);
+    dispatch(
+      eventDataAction.setLocation({
+        location: e.currentTarget.value,
+      })
+    );
+  };
+
+  const onDateChange = (v) => {
+    console.log(v);
+    dispatch(
+      eventDataAction.setDate({
+        date: moment(v).format("YYYY-MM-DD"),
+      })
+    );
+  };
+
+  const onTimeChange = (v) => {
+    console.log(v);
+    dispatch(
+      eventDataAction.setTime({
+        time: v,
+      })
+    );
   };
 
   const onClickSubmitHandler = async (e) => {
     e.preventDefault();
-    // TODO FIX
-    dispatch(userDataAction.requestFlowLinkVenmo());
+    dispatch(eventDataAction.requestFlowAddEvent());
   };
 
   useEffect(() => {
@@ -71,15 +97,26 @@ export default function EventForm() {
     }
   }, [isAuthenticated]);
 
-  const onDateChange = (v) => {
-    console.log(v);
-    setDate(v);
-  };
+  useEffect(() => {
+    if (isNil(date)) {
+      dispatch(
+        eventDataAction.setDate({
+          date: moment(new Date()).format("YYYY-MM-DD"),
+        })
+      );
+    }
+  }, [dispatch, date]);
 
-  const onTimeChange = (v) => {
-    console.log(v);
-    setTime(v);
-  };
+  useEffect(() => {
+    if (isNil(time)) {
+      dispatch(
+        eventDataAction.setTime({
+          time: moment(new Date()).format("HH:mm:ss"),
+        })
+      );
+    }
+  }, [dispatch, time]);
+
   return (
     <>
       <CustomHead
