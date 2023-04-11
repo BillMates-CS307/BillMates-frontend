@@ -14,7 +14,7 @@
   --background-hide-color: #000000AA;
   --body-background: #E6E6E6;
   --footer-background: #FFF;
-  --ham-width : 20%
+  --ham-width : 20vw;
 }
 
 * {
@@ -271,7 +271,7 @@ footer div a {
   overflow-x: hidden;
 }
 #hamburger_panel li {
-  width: inherit;
+  width: calc(var(--ham-width) - 20px);
   color : var(--main-background-font-color);
   cursor: pointer;
   margin: 5px 0;
@@ -297,6 +297,6 @@ footer div a {
 
 @media only screen and (max-width: 600px) {
   :root{
-    --ham-width : 40%;
+    --ham-width : 40vw;
   } 
 }

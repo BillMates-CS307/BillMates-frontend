@@ -1,9 +1,10 @@
 //Global HTML Imports
 import styles from '@/styles/Group.module.css'
-import Header from '../../global_components/groups_header.jsx'
+import Header, { HEADER_PATHS } from '../../global_components/groups_header.jsx'
 import Footer from '../../global_components/footer.jsx'
 import CustomHead from '../../global_components/head.jsx'
 import LoadingCircle from '../../global_components/loading_circle.jsx';
+
 
 //React and Redux stuff
 import React, { useEffect, useState } from "react";
@@ -80,25 +81,15 @@ export default function Group() {
             fetchData(); //make the call
         }
     }, [isAuthenticated]);
-    function goToSettings() {
-        if (userId == response_data.manager) {
-            router.push("/groupsettings/" + groupId);
-        } else {
-            router.push("/groupsettings_members/" + groupId);
-        }
+    const isGroupManager = () => {
+        return userId == response_data.manager;
     }
-    function goToAnalytics() {
-        router.push(window.location.href + "/analytics"); //idk of a way to do relative paths with this
-    }
-    function goToCalendar() {
-        router.push(window.location.href + "/calendar");
-    }
-
     if (isAuthenticated) {
         return (
             <>
                 <CustomHead title={"Group"} description={"A BillMates group"}></CustomHead>
-                <Header settings={goToSettings} analytics={goToAnalytics} calendar={goToCalendar} loading={loading}></Header>
+                <Header loading={loading} selected={HEADER_PATHS.ANALYTICS|HEADER_PATHS.CALENDAR|HEADER_PATHS.SETTINGS|HEADER_PATHS.SHOPPINGLIST|HEADER_PATHS.RECURRING}
+                getManagerStatus={isGroupManager} groupPath={window.location.href}></Header>
 
                 <main className={styles.main}>
                     <div className={styles.transaction_history}>
@@ -123,7 +114,7 @@ export default function Group() {
                             }
                             {
                                 response_data.expenses.map((item, index) => {
-                                    item.tag = "Rent";
+                                    //item.tag = "Rent";
                                     if (item.contested) {
                                         if (userId == response_data.manager  && (showTag == "all" || item.tag == showTag)) {
                                             return (<ReportedItem index={index}

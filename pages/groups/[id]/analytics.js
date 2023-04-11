@@ -1,6 +1,6 @@
 //Global HTML Imports
 import styles from '@/styles/Group.module.css'
-import Header from '../../global_components/groups_header.jsx'
+import Header, {HEADER_PATHS} from '../../global_components/groups_header.jsx'
 import Footer from '../../global_components/footer_no_plus.jsx'
 import CustomHead from '../../global_components/head.jsx'
 import LoadingCircle from '../../global_components/loading_circle.jsx';
@@ -110,19 +110,6 @@ export default function Analytics() {
         "My relative debts", "My requests through the year", "My expenses by tag"
     ];
 
-    function goToSettings() {
-        if (userId == response_data.manager) {
-            router.push("/groupsettings/" + groupId);
-        } else {
-            router.push("/groupsettings_members/" + groupId);
-        }
-    }
-    function goToGroup() {
-        router.push("../[pid]", `../${groupId}`);
-    }
-    function goToCalendar() {
-        router.push("/calendar");
-    }
     const fetchData = async () => {
         console.log("fetching data");
         let response = await group_methods.getAnalytics(userId, groupId);
@@ -177,12 +164,16 @@ export default function Analytics() {
         gallery_heading.children[1].textContent = graph_names[galleryIdx];
         gallery_dots.children[galleryIdx % 3].style = "background:var(--green-background);";
     }
+    function isGroupManager() {
+        return false; //TODO: fix this
+    }
 
     if (isAuthenticated) {
         return (
             <>
                 <CustomHead title={"Analytics"} description={"Your group analytics"}></CustomHead>
-                <Header calendar={goToCalendar} group={goToGroup} settings={goToSettings}></Header>
+                <Header loading={loading} selected={HEADER_PATHS.GROUP|HEADER_PATHS.CALENDAR|HEADER_PATHS.SETTINGS|HEADER_PATHS.SHOPPINGLIST|HEADER_PATHS.RECURRING}
+                getManagerStatus={isGroupManager} groupPath={window.location.href.match(".+?(?=\/analytics)")[0] }></Header>
                 <main>
                     {(loading) ?
                         <LoadingCircle additionalStyles={{ margin: "15px auto" }}></LoadingCircle>

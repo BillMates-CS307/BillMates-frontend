@@ -1,7 +1,17 @@
 import Link from "next/link";
 import styles from "@/styles/Group.module.css";
+import { useRouter } from 'next/router.js';
 
-export default function Header({ settings, analytics, calendar, group, loading }) {
+export const HEADER_PATHS = {
+  GROUP: 1,
+  ANALYTICS : 2, 
+  CALENDAR : 4,
+  SHOPPINGLIST : 8,
+  SETTINGS : 16,
+  RECURRING : 32
+}
+
+export default function Header({ groupPath, selected, getManagerStatus, loading }) {
   function showHammy() {
     if (loading) { return; }
     const target = document.querySelector("#hamburger_panel");
@@ -30,52 +40,92 @@ export default function Header({ settings, analytics, calendar, group, loading }
             <line y1="21" x2="30" y2="21" stroke="currentColor" strokeWidth="2" />
           </svg>
         </a>
-        <HamburgerPanel goToSettings={settings} goToAnalytics={analytics} goToCalendar={calendar} goToGroup={group}></HamburgerPanel>
+        <HamburgerPanel groupPath={groupPath} selected={selected} isManager={getManagerStatus}></HamburgerPanel>
       </header>
 
     </>
   );
 }
 
-export function HamburgerPanel({ goToSettings, goToAnalytics, goToCalendar, goToGroup }) {
+function HamburgerPanel({ groupPath, selected, isManager }) {
   //I'm just going to make it custom to this page
+  const router = useRouter();
   function closeContainer(e) {
     const target = e.target.parentNode;
     target.style = "";
     target.parentNode.style = "display:none";
   }
+
+  function goToCalendar() {
+    router.push(groupPath + "/calendar");
+  }
+  function goToAnalytics() {
+    router.push(groupPath + "/analytics");
+  }
+  function goToSettings() {
+    const groupId = groupPath.match("[a-zA-Z0-9\-]*$");
+    if (isManager()) {
+      router.push("/groupsettings/" + groupId);
+    } else {
+      router.push("/groupsettings_members/" + groupId);
+    }
+  }
+  function goToGroup() {
+    router.push(groupPath);
+  }
+  function goToShoppingList() {
+    router.push(groupPath + "/shopping_list");
+  }
+  function goToRecurring() {
+    router.push(groupPath + "/recurring");
+  }
+
   return (
     <>
       <div className={styles.transaction_background} style={{ display: "none" }}>
         <div id="hamburger_panel">
           <div className={styles.x_button} onClick={(e) => { closeContainer(e) }} style={{ width: "1rem", height: "1rem" }}></div>
           <ul>
-            {(goToGroup == undefined) ?
+            {(!(selected & HEADER_PATHS.GROUP)) ?
               <></>
               :
               <li onClick={goToGroup}>
                 My Group
               </li>
             }
-            {(goToAnalytics == undefined) ?
+            {(!(selected & HEADER_PATHS.ANALYTICS)) ?
               <></>
               :
               <li onClick={goToAnalytics}>
                 Analytics
               </li>
             }
-            {(goToSettings == undefined) ?
+            {(!(selected & HEADER_PATHS.SETTINGS)) ?
               <></>
               :
               <li onClick={goToSettings}>
                 Settings
               </li>
             }
-            {(goToCalendar == undefined) ?
+            {(!(selected & HEADER_PATHS.CALENDAR)) ?
               <></>
               :
               <li onClick={goToCalendar}>
                 Calendar
+              </li>
+            }
+            {(!(selected & HEADER_PATHS.SHOPPINGLIST)) ?
+              <></>
+              :
+              <li onClick={goToShoppingList}>
+                Lists
+              </li>
+            }
+            {(!(selected & HEADER_PATHS.RECURRING)) ?
+              <></>
+              :
+              <li onClick={goToRecurring}>
+                Recurring
               </li>
             }
           </ul>

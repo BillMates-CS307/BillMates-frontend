@@ -18,7 +18,8 @@ export function TransactionInputView({ members, userId, groupId, commentLength, 
         groupId: groupId,
         expense: {},
         numSelected: 0,
-        tag : "none"
+        tag : "No Tag",
+        recurring : "none"
     }
 
     const splitEven = () => {
@@ -161,6 +162,7 @@ export function TransactionInputView({ members, userId, groupId, commentLength, 
                 format.request_time = "now";
                 format.due_date = "later";
                 format.tag = form.querySelector("#tag_select").value;
+                format.recurring = form.querySelector("#rec_select").value;
                 for (let user in format.expense) {
                     format.expense[user] = parseFloat(format.expense[user]);
                 }
@@ -219,6 +221,14 @@ export function TransactionInputView({ members, userId, groupId, commentLength, 
                         <option value="Food">Food</option>
                         <option value="Misc">Misc</option>
                     </select>
+                    <p className={styles.filter_expense_container}> Recurring:
+                    <select className={styles.gallery_type_select} id="rec_select">
+                        <option value="none">Off</option>
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                    </select>
+                    </p>
                     <p>{members[userId]}</p>
                 </div>
                 <div className={styles.split_button_container}>
