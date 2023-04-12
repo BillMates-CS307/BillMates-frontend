@@ -1,0 +1,12 @@
+A. Identification and classification
+Test Case: 11001
+System: Analytics
+User is able to see line chart by view
+Severity: 3
+
+B. Instructions
+	1. Login and go to a group with transactions
+	2. Click on the hamburger bar and then "Analytics"
+
+C. Expected Result:
+    1. A line chart is shown with each point representing the number of expeneses on a date

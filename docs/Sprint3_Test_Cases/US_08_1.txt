@@ -1,0 +1,14 @@
+A. Identification and classification
+Test Case: 8001
+System: Analytics
+User is able to see each chart by group view
+Severity: 3
+
+B. Instructions
+	1. Login and go to a group with transactions
+	2. Click on the hamburger bar and then "Analytics"
+	3. Click on the right-arrow three times and observe each graph
+
+C. Expected Result:
+    1. Each graph, as detailed by the respective user stories, is shown with data that pertains to the group as a whole
+    2. Each graph is labeled with "Group ..."
