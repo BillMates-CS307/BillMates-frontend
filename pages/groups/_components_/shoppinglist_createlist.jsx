@@ -4,7 +4,7 @@ import { user_methods } from "@/lambda_service/userService";
 import { ButtonLock } from "../../global_components/button_lock";
 
 
-export function MakeShoppingList({ hideParent, userId }) {
+export function ShoppingListCreateList({ hideParent, userId }) {
     const handleSubmit = async (event) => {
         event.preventDefault();
         if (!ButtonLock.isLocked()) {

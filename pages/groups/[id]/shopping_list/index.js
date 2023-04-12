@@ -72,26 +72,26 @@ export default function ShoppingLists() {
                 <Header groupId = {groupSettingsRoute}></Header>
                 <main className={styles.main}>
                 { (loading)?
-                            <LoadingCircle additionalStyles={{ margin: "15px auto" }}></LoadingCircle>
-                            :
-                            <>
+                    <LoadingCircle additionalStyles={{ margin: "15px auto" }}></LoadingCircle>
+                    :
+                    <>
 
-                            </>
+                    </>
                 }
                 </main>
                 {makeGroupVisible ? (
-                <MakeGroupView
-                    hideParent={setMakeShoppingListVisible}
-                    userId={userId}
-                ></MakeGroupView>
-                ) : (
-                <></>
+                    <MakeGroupView
+                        hideParent={setMakeShoppingListVisible}
+                        userId={userId}
+                    ></MakeGroupView>
+                    ) : (
+                    <></>
                 )}
 
                 <Footer
-                callback={setMakeShoppingListVisible}
-                args={true}
-                lockStatus={loading}
+                    callback={setMakeShoppingListVisible}
+                    args={true}
+                    lockStatus={loading}
                 ></Footer>
             </>   
         )

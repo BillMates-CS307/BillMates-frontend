@@ -1,6 +1,6 @@
 import styles from '@/styles/Group.module.css';
 
-export default function HamburgerPanel(goToSettings, goToAnalytics, goToCalendar) {
+export default function HamburgerPanel(goToSettings, goToAnalytics, goToCalendar, goToShoppingList) {
     //I'm just going to make it custom to this page
     function closeContainer(e) {
         const target = e.target.parentNode;
@@ -20,6 +20,9 @@ export default function HamburgerPanel(goToSettings, goToAnalytics, goToCalendar
                     </ui>
                     <ui onClick={goToCalendar}>
                         Calendar
+                    </ui>
+                    <ui onClick={goToShoppingList}>
+                        Shopping List
                     </ui>
                 </ul>
             </div>
