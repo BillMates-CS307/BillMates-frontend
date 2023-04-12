@@ -698,3 +698,13 @@ border-radius: var(--border-radius);
     /* height: 600px; */
     margin: auto;
   }
+
+  .download_data {
+    margin-left: 5px;
+    border: none;
+    background-color: var(--green-background);
+    color: #FFF;
+    border-radius: var(--border-radius);
+    padding: 2px 5px;
+    font-size: 0.75rem;
+  }

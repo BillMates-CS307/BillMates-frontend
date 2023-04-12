@@ -167,6 +167,15 @@ export default function Analytics() {
     function isGroupManager() {
         return false; //TODO: fix this
     }
+    function exportData() {
+        const fileData = JSON.stringify(responseData);
+        const blob = new Blob([fileData], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.download = groupId + "-analytics.json";
+        link.href = url;
+        link.click();
+      }
 
     if (isAuthenticated) {
         return (
@@ -186,6 +195,7 @@ export default function Analytics() {
                                         <option value="0">Group</option>
                                         <option value="1">Me</option>
                                     </select>
+                                    <button onClick={exportData} className={styles.download_data}>Download</button>
                                     <button onClick={previous} className={styles.arrow + " " + styles.left}>
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                                         <path fill='currentColor' d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/>
@@ -197,15 +207,15 @@ export default function Analytics() {
                                         </svg>
                                     </button>
                                 </div>
-                                <p style={ {textAlign : 'center'} }>Group relative debts</p>
+                                <p style={ {textAlign : 'center', color : 'var(--main-background-font-color)'} }>Group relative debts</p>
                             </div>
                             <div className={styles.gallery_container} id="gallery_container">
                                 <div className={styles.gallery_item_wrapper} style={ {display : "block"} }>
                                     <ResponsiveContainer>
                                         <LineChart data={responseData}>
-                                            <CartesianGrid strokeDasharray="3 3" />
-                                            <XAxis dataKey="name" />
-                                            <YAxis />
+                                            <CartesianGrid strokeDasharray="3 3" stroke='var(--dark-neutral-background)'/>
+                                            <XAxis dataKey="name" stroke='var(--main-background-font-color)'/>
+                                            <YAxis stroke='var(--main-background-font-color)'/>
                                             <Tooltip />
                                             <Line type="monotone" dataKey="uv" stroke="var(--green-muted-background)" strokeWidth={3}/>
                                         </LineChart>
@@ -214,9 +224,9 @@ export default function Analytics() {
                                 <div className={styles.gallery_item_wrapper}>
                                     <ResponsiveContainer>
                                         <BarChart data={responseData}>
-                                            <CartesianGrid strokeDasharray="3 3" />
-                                            <XAxis dataKey="name" />
-                                            <YAxis />
+                                            <CartesianGrid strokeDasharray="3 3" stroke='var(--dark-neutral-background)'/>
+                                            <XAxis dataKey="name" stroke='var(--main-background-font-color)'/>
+                                            <YAxis stroke='var(--main-background-font-color)'/>
                                             <Tooltip />
                                             <Bar type="monotone" dataKey="amt" fill="var(--green-muted-background)" />
                                         </BarChart>
@@ -233,9 +243,9 @@ export default function Analytics() {
                                 <div className={styles.gallery_item_wrapper}>
                                     <ResponsiveContainer>
                                         <LineChart data={responseData}>
-                                            <CartesianGrid strokeDasharray="3 3" />
-                                            <XAxis dataKey="name" />
-                                            <YAxis />
+                                            <CartesianGrid strokeDasharray="3 3" stroke='var(--dark-neutral-background)'/>
+                                            <XAxis dataKey="name" stroke='var(--main-background-font-color)'/>
+                                            <YAxis stroke='var(--main-background-font-color)'/>
                                             <Tooltip />
                                             <Line type="monotone" dataKey="uv" stroke="var(--green-background)" strokeWidth={3}/>
                                         </LineChart>
@@ -244,9 +254,9 @@ export default function Analytics() {
                                 <div className={styles.gallery_item_wrapper}>
                                     <ResponsiveContainer>
                                         <BarChart data={responseData}>
-                                            <CartesianGrid strokeDasharray="3 3" />
-                                            <XAxis dataKey="name" />
-                                            <YAxis />
+                                        <   CartesianGrid strokeDasharray="3 3" stroke='var(--dark-neutral-background)'/>
+                                            <XAxis dataKey="name" stroke='var(--main-background-font-color)'/>
+                                            <YAxis stroke='var(--main-background-font-color)'/>
                                             <Tooltip />
                                             <Bar type="monotone" dataKey="amt" fill="var(--green-background)" />
                                         </BarChart>
