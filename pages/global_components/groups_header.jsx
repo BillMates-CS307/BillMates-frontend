@@ -1,7 +1,7 @@
 import Link from "next/link";
 import styles from "@/styles/Group.module.css";
 
-export default function Header({ settings, analytics, calendar, group, shoppinglist, loading }) {
+export default function Header({ settings, analytics, calendar, group, shopping, loading }) {
   function showHammy() {
     if (loading) { return; }
     const target = document.querySelector("#hamburger_panel");
@@ -30,14 +30,14 @@ export default function Header({ settings, analytics, calendar, group, shoppingl
             <line y1="21" x2="30" y2="21" stroke="currentColor" strokeWidth="2" />
           </svg>
         </a>
-        <HamburgerPanel goToSettings={settings} goToAnalytics={analytics} goToCalendar={calendar} goToShoppingList={shoppinglist} goToGroup={group}></HamburgerPanel>
+        <HamburgerPanel goToSettings={settings} goToAnalytics={analytics} goToCalendar={calendar} goToGroup={group} goToShopping={shopping}></HamburgerPanel>
       </header>
 
     </>
   );
 }
 
-export function HamburgerPanel({ goToSettings, goToAnalytics, goToCalendar, goToShoppingList, goToGroup }) {
+export function HamburgerPanel({ goToSettings, goToAnalytics, goToCalendar, goToShopping ,goToGroup }) {
   //I'm just going to make it custom to this page
   function closeContainer(e) {
     const target = e.target.parentNode;
@@ -78,11 +78,11 @@ export function HamburgerPanel({ goToSettings, goToAnalytics, goToCalendar, goTo
                 Calendar
               </li>
             }
-            {(goToShoppingList == undefined) ?
+            {(goToShopping == undefined) ?
               <></>
               :
-              <li onClick={goToShoppingList}>
-                Shopping List
+              <li onClick={goToShopping}>
+                Shopping Lists
               </li>
             }
           </ul>

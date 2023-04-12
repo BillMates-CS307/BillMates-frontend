@@ -92,7 +92,7 @@ export default function Group() {
     function goToCalendar() {
         router.push(window.location.href + "/calendar");
     }
-    function goToShoppingList() {
+    function goToShopping() {
         router.push(window.location.href + "/shopping_list");
     }
 
@@ -100,7 +100,7 @@ export default function Group() {
         return (
             <>
                 <CustomHead title={"Group"} description={"A BillMates group"}></CustomHead>
-                <Header settings={goToSettings} analytics={goToAnalytics} calendar={goToCalendar} shoppinglist = {goToShoppingList} loading={loading}></Header>
+                <Header settings={goToSettings} analytics={goToAnalytics} calendar={goToCalendar} shopping={goToShopping} loading={loading}></Header>
 
                 <main className={styles.main}>
                     <div className={styles.transaction_history}>
