@@ -19,7 +19,9 @@ export function TransactionInputView({ members, userId, groupId, commentLength, 
         expense: {},
         numSelected: 0,
         tag : "No Tag",
-        recurring : "none"
+        recurring : "none",
+        request_time : "",
+        request_date : ""
     }
 
     const splitEven = () => {
@@ -159,14 +161,29 @@ export function TransactionInputView({ members, userId, groupId, commentLength, 
                 }
                 delete format.expense[userId];
                 format.total = parseFloat(format.total);
-                format.request_time = "now";
+                //getting local time
+                let temp = new Date();
+                let timeOffset = temp.getTimezoneOffset() * 60000;
+                let date = new Date(temp - timeOffset);
+                let [dateString, timeString] = date.toISOString().split("T");
+                timeString = timeString.split(".")[0];
+
+                format.start_time = timeString;
+                format.start_date = dateString;
                 format.due_date = "later";
+
                 format.tag = form.querySelector("#tag_select").value;
-                format.recurring = form.querySelector("#rec_select").value;
+                format.frequency = form.querySelector("#rec_select").value;
                 for (let user in format.expense) {
                     format.expense[user] = parseFloat(format.expense[user]);
                 }
-                const result = await group_methods.submitExpense(format);
+
+                let result;
+                if (format.frequency != "none") {
+                    result = await group_methods.submitRecurringExpense(format);
+                } else {
+                    result = await group_methods.submitExpense(format);
+                }
                 if (result.errorType) {
                     console.log(result.errorMessage);
                     return;
@@ -215,7 +232,7 @@ export function TransactionInputView({ members, userId, groupId, commentLength, 
                         </>
                     }
                     <select className={styles.gallery_type_select} id="tag_select">
-                        <option value="No Tag">No Tag</option>
+                        <option value="Notag">No Tag</option>
                         <option value="Entertainment">Entertainment</option>
                         <option value="Rent">Rent</option>
                         <option value="Food">Food</option>
