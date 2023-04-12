@@ -44,6 +44,7 @@ export default function Analytics() {
     //define loading circle and refresh when loading is done
     const [loading, setLoading] = useState(true);
     const [responseData, setResponseData] = useState(undefined);
+    const [warningPopup, setWarningPopup] = useState(null);
     useEffect(() => {
         if (isAuthenticated) {
             //fetchData(); //make the call
@@ -93,6 +94,7 @@ export default function Analytics() {
                     amt: 2100,
                 },
             ];
+
             setResponseData(data);
             setLoading(false);
         }
@@ -106,8 +108,8 @@ export default function Analytics() {
     var gallery_heading = null;
     var galleryIdx = 0;
     const graph_names = [
-        "Group relative debts", "Group requests throughout the year", "Group expenses by tag",
-        "My relative debts", "My requests through the year", "My expenses by tag"
+        "Group requests throughout the year", "Group relative debts" , "Group expenses by tag",
+        "My requests through the year", "My relative debts", "My expenses by tag"
     ];
 
     const fetchData = async () => {
@@ -168,6 +170,10 @@ export default function Analytics() {
         return false; //TODO: fix this
     }
     function exportData() {
+        if (responseData == null) { //idk what empty is going to be yet
+            setWarningPopup(["There is no data to download", 1.5]);
+            return;
+        }
         const fileData = JSON.stringify(responseData);
         const blob = new Blob([fileData], { type: "text/plain" });
         const url = URL.createObjectURL(blob);
@@ -281,7 +287,24 @@ export default function Analytics() {
                     }
                 </main>
 
-
+                { (warningPopup != null)?
+                <>
+                <div className={styles.transaction_background} style={{background : "transparent"}}>
+                    <div className={styles.warningPopup} style={{animation : "popup "  + warningPopup[1] + "s ease-in forwards"}}>
+                        <p>{warningPopup[0]}</p>
+                    </div>
+                    <div style={{display : "none"}}>
+                    {
+                        setTimeout(() => {
+                            setWarningPopup(null);
+                        }, warningPopup[1] * 1000)
+                    }
+                    </div>
+                </div>
+                </>
+                :
+                <></>
+                }
                 <Footer></Footer>
             </>
 
