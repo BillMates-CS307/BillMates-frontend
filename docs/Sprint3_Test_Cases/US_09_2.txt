@@ -1,0 +1,14 @@
+A. Identification and classification
+Test Case: 9002
+System: Expenses
+User is able to see a tag on an expense
+Severity: 3
+
+B. Instructions
+    1. Repeat test case 9001
+    2. Fill in appropriate values for the expense
+    3. Submit
+    4. Click on the newly created expense
+
+C. Expected Result:
+    1. The tag selected for the expense is included in the full view

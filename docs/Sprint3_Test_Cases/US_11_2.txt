@@ -1,0 +1,17 @@
+A. Identification and classification
+Test Case: 11002
+System: Analytics
+Voided expenses are removed from the analytic
+Severity: 3
+
+B. Instructions
+	1. Login and go to a group with transactions
+	2. Click on the hamburger bar and then "Analytics"
+	3. Note the general shape/pattern
+    4. Click on the hamburger bar and then "My Group"
+    5. Void an expense
+    6. Repeat steps 2 and 3
+
+C. Expected Result:
+    1. A line chart is shown with the number of requests throughout the year
+    2. The date associated with the voided expense is smaller

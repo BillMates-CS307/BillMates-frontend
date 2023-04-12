@@ -213,7 +213,7 @@ export default function Analytics() {
                                         </svg>
                                     </button>
                                 </div>
-                                <p style={ {textAlign : 'center', color : 'var(--main-background-font-color)'} }>Group relative debts</p>
+                                <p style={ {textAlign : 'center', color : 'var(--main-background-font-color)'} }>Group requests throughout the year</p>
                             </div>
                             <div className={styles.gallery_container} id="gallery_container">
                                 <div className={styles.gallery_item_wrapper} style={ {display : "block"} }>
