@@ -1,0 +1,14 @@
+A. Identification and classification
+Test Case: 7002
+System: Expenses
+User is able to delete a recurring expense
+Severity: 3
+
+B. Instructions
+    1. Repeat test case 7001
+    2. Click on the hamburger bar and select "Recurring"
+    3. Click on the recurring expense that was created
+    4. Click on "Remove"
+C. Expected Result:
+    1. The page reloads and that recurring expense is not shown
+    2. After 24 hours, that expense is not submitted again
