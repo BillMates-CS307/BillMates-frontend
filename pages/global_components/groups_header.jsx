@@ -57,7 +57,8 @@ function HamburgerPanel({ groupPath, selected, isManager }) {
   }
 
   function goToCalendar() {
-    router.push(groupPath + "/calendar");
+    const groupId = groupPath.match("[a-zA-Z0-9\-]*$");
+    router.push("/groups/group_calendar/" + groupId);
   }
   function goToAnalytics() {
     router.push(groupPath + "/analytics");

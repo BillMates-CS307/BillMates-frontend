@@ -232,9 +232,9 @@ export default function GroupSettings() {
               currentUserId={userId}
               onKickUser={kickUser}
             ></MemberList>
-            <CalendarLink href={`/groups/group_calendar/${router.query.id}`}>
+            {/* <CalendarLink href={`/groups/group_calendar/${router.query.id}`}>
               Calendar
-            </CalendarLink>
+            </CalendarLink> */}
             <button
               onClick={(e) => {
                 deleteGroup(e);
@@ -287,15 +287,15 @@ const Space = styled.div`
 
 const SettingsForm = styled.form``;
 
-const CalendarLink = styled(Link)`
-  display: flex;
-  margin-top: 20px;
-  text-align: center;
-  padding: 10px;
-  width: 100px;
-  border-radius: var(--border-radius);
-  box-shadow: 1px 2px 3px 0 #949494;
-  background: #00c923;
-  color: var(--main-background-font-color);
-  font-weight: bold;
-`;
+// const CalendarLink = styled(Link)`
+//   display: flex;
+//   margin-top: 20px;
+//   text-align: center;
+//   padding: 10px;
+//   width: 100px;
+//   border-radius: var(--border-radius);
+//   box-shadow: 1px 2px 3px 0 #949494;
+//   background: #00c923;
+//   color: var(--main-background-font-color);
+//   font-weight: bold;
+// `;
