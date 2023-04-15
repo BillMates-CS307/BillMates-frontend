@@ -40,7 +40,8 @@ export default function ShoppingLists() {
         }
     }, [isAuthenticated]);
 
-    const groupId = (isAuthenticated) ? window.location.href.match('[a-zA-Z0-9\-]*$')[0] : null;
+    const matchedGroupId = (isAuthenticated) ? window.location.href.match('(groups)\/[a-zA-z\-0-9]+')[0] : null;
+    const groupId = (matchedGroupId) ? matchedGroupId.substring(7) : null;
     const userId = (isAuthenticated) ? localStorage.getItem("tempId") : null;
     function groupSettingsRoute() {
         if (userId == response_data.manager) {
@@ -54,11 +55,10 @@ export default function ShoppingLists() {
         if (loading) {
             setTimeout(() => {
                 setLoading(false);
-            }, 5000);
+            }, 500);
         }
         if (isCallback) {
-            const r = await shopping_methods.addItem("testing", groupId, "15");
-            console.log(r);
+            console.log("Over Here!");
         }
         return;
     }

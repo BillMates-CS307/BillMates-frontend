@@ -14,13 +14,62 @@ export const group_methods = {
     reportExpense,
     resetGroup,
     submitExpense,
+    submitRecurringExpense,
     submitPayout,
     updateGroupSettings,
     updatePendingStatus,
     updateReportStatus,
     voidExpense,
     updateGroupSettings,
-    kickUserFromGroup
+    kickUserFromGroup,
+    getAnalytics
+}
+
+async function getAnalytics(userId, groupId) {
+    let response_body = {
+        success : false,
+        errorType : 0,
+        errorMessage : "",
+        data : null
+    }
+
+    const request_body = JSON.stringify({
+        "user_id" : userId,
+        "group_id" : groupId
+    });
+
+    const options = {
+        method: 'POST',
+        mode : 'no-cors',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: request_body
+    }
+
+    return await fetch("/api/analytics_get_all_info", options).then( (response) => {
+        if (response.status == 400 || response.status == 500 || response.status == 502) {
+            response_body.errorMessage = "Could not service this request right now.\nPlease try again later";
+            return response_body;
+        }
+        return response.json();
+    }).then((result) => {
+        if (result.errorType) { //Lambda response doesn't have this field
+            return result;
+        } else if (!result.get_success) { //idk what would cause this besides an error
+            response_body.errorType = 1;
+            response_body.errorMessage = "Could not service this request right now.\nPlease try again later";
+            return response_body;
+        }
+        response_body.success = true;
+        response_body.data = result.data; //TODO : CHANGE TO CORRECT FIELD WHEN BACKEND IS DONE WITH IT
+        return response_body;
+    }).catch( (error) => {
+        console.log(error);
+        response_body.errorType = 2;
+        response_body.errorMessage = "Internal parsing error";
+        return response_body;
+    });
 }
 
 async function resetGroup(groudId) {
@@ -705,7 +754,7 @@ async function updateReportStatus(remove, expense_id) {
         return response_body;
     });
 }
-async function submitExpense({title, groupId, expense, total, owner, comment}) {
+async function submitExpense({title, groupId, expense, total, owner, comment, tag}) {
     let response_body = {
         errorType : 0,
         success : false
@@ -722,11 +771,75 @@ async function submitExpense({title, groupId, expense, total, owner, comment}) {
         expense : expense,
         total : total,
         owner : owner,
-        comment : comment
+        comment : comment,
+        tag
     }
    )
 
    const path = '/api/create_expense'
+
+   // Form the request for sending data to the server.
+   const options = {
+     method: 'POST',
+     mode : 'no-cors',
+     headers: {
+       'Content-Type': 'application/json',
+     },
+     body: request_body
+   }
+
+   return await fetch(path, options).then( (response) => {
+        if (response.status == 400 || response.status == 500) {
+            response_body.errorType = response.status;
+            return response_body;
+        }
+        return response.json();
+    }).then((result) => {
+        console.log(result);
+        if (result.errorType) {
+            response_body["errorMessage"] = "Received a " + result.errorType + " error";
+            return response_body;
+        }else if (!result.submit_success) {
+            return response_body;
+        }
+        result = {
+            errorType : 0,
+            success : true,
+            ...result
+        }
+        return result;
+    }).catch( (error) => {
+        console.log(error);
+        response_body.errorType = LAMBDA_RESP.ERROR;
+        return response_body;
+    });
+}
+async function submitRecurringExpense({title, groupId, expense, total, owner, comment, start_time, start_date, frequency, tag}) {
+    let response_body = {
+        errorType : 0,
+        success : false
+    }
+    // if (email == null) {
+    //     response_body.errorType = LAMBDA_RESP.MALFORMED;
+    //     return response_body;
+    // }
+
+   let request_body = JSON.stringify(
+    {
+        title : title,
+        group_id : groupId,
+        expense : expense,
+        total : total,
+        owner : owner,
+        comment : comment,
+        start_date : start_date,
+        start_time : start_time,
+        frequency : frequency,
+        tag : tag
+    }
+   )
+
+   const path = '/api/create_recurring_expense'
 
    // Form the request for sending data to the server.
    const options = {

@@ -1,9 +1,10 @@
 //Global HTML Imports
 import styles from '@/styles/Group.module.css'
-import Header from '../../global_components/groups_header.jsx'
+import Header, { HEADER_PATHS } from '../../global_components/groups_header.jsx'
 import Footer from '../../global_components/footer.jsx'
 import CustomHead from '../../global_components/head.jsx'
 import LoadingCircle from '../../global_components/loading_circle.jsx';
+
 
 //React and Redux stuff
 import React, { useEffect, useState } from "react";
@@ -33,6 +34,7 @@ export default function Group() {
     }, [isAuthenticated])
 
     //Defining state management
+    const [showTag, setShowTag] = useState("all");
     const [transactionInputVisible, setTransactionInputVisible] = useState(false);
     const [payAllVisible, setPayAllVisible] = useState(false);
     const [currentTransactionView, setCurrentTransactionView] = useState(-1);
@@ -79,20 +81,15 @@ export default function Group() {
             fetchData(); //make the call
         }
     }, [isAuthenticated]);
-    
-    function holdGroupID() {
-        if (userId == response_data.manager) {
-            router.push("/groupsettings/" + groupId);
-        } else {
-            router.push("/groupsettings_members/" + groupId);
-        }
+    const isGroupManager = () => {
+        return userId == response_data.manager;
     }
-
     if (isAuthenticated) {
         return (
             <>
                 <CustomHead title={"Group"} description={"A BillMates group"}></CustomHead>
-                <Header groupId = {holdGroupID}></Header>
+                <Header loading={loading} selected={HEADER_PATHS.ANALYTICS|HEADER_PATHS.CALENDAR|HEADER_PATHS.SETTINGS|HEADER_PATHS.SHOPPINGLIST|HEADER_PATHS.RECURRING}
+                getManagerStatus={isGroupManager} groupPath={window.location.href}></Header>
 
                 <main className={styles.main}>
                     <div className={styles.transaction_history}>
@@ -102,7 +99,7 @@ export default function Group() {
                             <>
                             {
                                 response_data.pending.map((item, index) => {
-                                    if (userId == item.paid_to) {
+                                    if (userId == item.paid_to && (showTag == "all" || item.tag == showTag) ) {
                                         return (<PendingItem index={index}
                                             title={item.title}
                                             date={item.date}
@@ -117,8 +114,9 @@ export default function Group() {
                             }
                             {
                                 response_data.expenses.map((item, index) => {
+                                    //item.tag = "Rent";
                                     if (item.contested) {
-                                        if (userId == response_data.manager) {
+                                        if (userId == response_data.manager  && (showTag == "all" || item.tag == showTag)) {
                                             return (<ReportedItem index={index}
                                                 title={item.title}
                                                 date={item.date}
@@ -130,6 +128,7 @@ export default function Group() {
                                             return <></>
                                         }
                                     }
+                                    if ( (showTag == "all" || item.tag == showTag)) {
                                     return (<ExpenseItem index={index} id={index}
                                         title={item.title}
                                         date={item.date}
@@ -140,12 +139,16 @@ export default function Group() {
                                         users={item.users}
                                         showExpense={setCurrentTransactionView}
                                     ></ExpenseItem>);
+                                    } else {
+                                        return <></>;
+                                    }
                                 })
                             }
                                 </>
                         }
                     </div>
-                    <GroupHeading name={response_data.name} balance={response_data.balance} groupId={response_data.groupId} members={response_data.members}></GroupHeading>
+                    <GroupHeading name={response_data.name} balance={response_data.balance} 
+                    groupId={response_data.groupId} members={response_data.members} setShowTag={setShowTag}></GroupHeading>
                     {(response_data.balance < 0)?
                         <div className={styles.repay_all_container} onClick={() => { setPayAllVisible(true) }}>
                             <p>Repay All</p>
