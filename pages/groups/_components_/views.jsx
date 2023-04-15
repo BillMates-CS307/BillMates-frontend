@@ -181,6 +181,9 @@ export function TransactionInputView({ members, userId, groupId, commentLength, 
                 let result;
                 if (format.frequency != "none") {
                     result = await group_methods.submitRecurringExpense(format);
+                    if (result.success) {
+                        result = await group_methods.submitExpense(format);
+                    }
                 } else {
                     result = await group_methods.submitExpense(format);
                 }
@@ -1235,6 +1238,53 @@ export function PayAllView({ members, userId, groupId, commentLength, callback, 
             </div>
         </div>
 
+    );
+}
+
+export function RecurringView({ groupId, id, hideParent}) {
+    const handleDelete = async (event) => {
+        //make API call
+        if (!ButtonLock.isLocked()) {
+            ButtonLock.LockButton();
+            let container = event.target;
+            let originalText = container.firstChild.textContent;
+            //set button visually to be locked
+            container.firstChild.textContent = "Removing";
+            container.style = "background-color : var(--green-muted-background)";
+            const result = await group_methods.removeRecurringExpense(groupId, id);
+            //const result = {success : false};
+            if (result.errorType) {
+                console.log(result.errorMessage);
+            } else if (!result.success) {
+                alert("Something went wrong");
+            } else { //went through and status has changed
+                window.location.reload();
+                return;
+            }
+            ButtonLock.UnlockButton();
+            container.firstChild.textContent = originalText;
+            container.style = "";
+            hideParent(-1);
+        }
+        return;
+    }
+    const closeContainer = () => {
+        if (!ButtonLock.isLocked()) {
+            hideParent(-1);
+        }
+    }
+
+    return (
+        <div className={styles.transaction_background} id="transaction_view">
+            <div className={styles.transaction_large}>
+                <div className={styles.x_button} onClick={closeContainer}></div>
+                <div className={styles.transaction_heading} id="view_item_info">
+                    <p>Would you like to remove this recurring expense?</p>
+                </div>
+                <div className={styles.submit_expense_container} onClick={(e) => { handleDelete(e) }}><p>Remove</p></div>
+                <div className={styles.submit_expense_container + " " + styles.negative} onClick={closeContainer}><p>Cancel</p></div>
+            </div>
+        </div>
     );
 }
 

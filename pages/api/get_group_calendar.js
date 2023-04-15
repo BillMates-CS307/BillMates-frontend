@@ -6,7 +6,7 @@ export default async function handler(req, res) {
   // console.log(req_body);
   // Guard clause checks for first and last name,
   // and returns early if they are not found
-  if (!req_body.email || !req_body.group_id) {
+  if (!req_body.group_id) {
     // Sends a HTTP bad request error code
     return res.status(400).json({ data: "Check the request body" });
   }

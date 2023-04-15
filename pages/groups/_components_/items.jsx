@@ -79,6 +79,45 @@ export function ExpenseItem({ id, index, title, date, owner, amount, isOwner, us
         </div>
     )
 }
+export function RecurringItem({ id, index, date, expense, owner, isOwner, name, frequency, showView, userId }) {
+    const sumMemberExpenses = (expense) => {
+        let total = 0.00;
+        for (let m in expense) {
+            total += expense[m];
+        }
+        return total.toFixed(2);
+    }
+    //idk why it was changed to an array over a dictionary but ok
+    const getRelativeAmt = (expenses) => {
+        console.log(expenses);
+        for (let m in expenses) {
+            if (m == userId) {
+                return expenses[m].toFixed(2);
+            }
+        }
+        return 0.00;
+    }
+    let relative = (isOwner) ? sumMemberExpenses(expense) : getRelativeAmt(expense);
+    return (
+        <div index={index} key={id} className={`${styles.transaction_container} 
+        ${(relative == 0) ? styles.neutral : ((isOwner) ? styles.positive : styles.negative)}`}
+            onClick={() => showView(index)}>
+            <div className={styles.transaction_info}>
+                <div className={styles.transaction_name_amount}>
+                    <p>{name}</p>
+                    <p>{frequency}</p>
+                </div>
+                <div className={styles.transaction_owner_date}>
+                    <p>{owner || "(Not In Group)"}</p>
+                    <p>{date}</p>
+                </div>
+            </div>
+            <div className={styles.relative_amount}>
+                <p>${relative}</p>
+            </div>
+        </div>
+    )
+}
 
 export default function ItemPage() {
     return <></>;
