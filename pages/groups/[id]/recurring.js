@@ -78,8 +78,8 @@ export default function Recurring() {
                 <CustomHead title={"Recurring Expenses"} description={"Your group recurring expenses"}></CustomHead>
                 <Header loading={loading} selected={HEADER_PATHS.ANALYTICS|HEADER_PATHS.CALENDAR|HEADER_PATHS.SETTINGS|HEADER_PATHS.SHOPPINGLIST|HEADER_PATHS.GROUP}
                 getManagerStatus={isGroupManager} groupPath={window.location.href.match(".+?(?=\/recurring)")[0]}></Header>
-                <main>
-                <div className={styles.transaction_history}>
+                <main className={styles.main}>
+                <div className={styles.transaction_history} style={{marginTop : "15px"}}>
                         { (loading)?
                             <LoadingCircle additionalStyles={{ margin: "15px auto" }}></LoadingCircle>
                             :

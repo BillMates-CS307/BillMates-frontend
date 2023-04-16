@@ -84,7 +84,7 @@ export function ExpenseItem({ id, index, title, date, owner, amount, isOwner, us
     )
 }
 
-export function GroupItemView({groupId, expenses, members, name, userId, manager, setCurrentTransactionView, setCurrentReportView}) {
+export function GroupItemView({groupId, expenses, members, name, userId, manager, setCurrentTransactionView, setCurrentReportView, showTag}) {
     console.log(expenses);
     return <>
     <div className={styles.groupNameHeading}><p>{name}</p></div>
@@ -104,17 +104,21 @@ export function GroupItemView({groupId, expenses, members, name, userId, manager
                     return <></>
                 }
             }
-            return (<ExpenseItem index={index} id={index}
-                title={item.title}
-                date={item.date}
-                owner={members[item.owner]}
-                amount={item.amount.toFixed(2)}
-                isOwner={(userId == item.owner)}
-                userId={userId}
-                users={item.users}
-                showExpense={setCurrentTransactionView}
-                groupId = {groupId}
-            ></ExpenseItem>);
+            if ( (showTag == "all" || item.tag == showTag)) {
+                return (<ExpenseItem index={index} id={index}
+                    title={item.title}
+                    date={item.date}
+                    owner={members[item.owner]}
+                    amount={item.amount.toFixed(2)}
+                    isOwner={(userId == item.owner)}
+                    userId={userId}
+                    users={item.users}
+                    showExpense={setCurrentTransactionView}
+                    groupId = {groupId}
+                ></ExpenseItem>);
+            } else {
+                return <></>;
+            }
         })
     }
     </>
