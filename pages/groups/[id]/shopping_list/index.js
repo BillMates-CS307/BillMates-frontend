@@ -5,6 +5,9 @@ import Footer from '../../../global_components/footer.jsx'
 import CustomHead from '../../../global_components/head.jsx'
 import LoadingCircle from '../../../global_components/loading_circle.jsx';
 
+//Components
+import ListView from '../../_components_/shoppinglist_listview.jsx';
+
 import { group_methods } from '@/lambda_service/groupService.js';
 import { user_methods } from '@/lambda_service/userService.js';
 import { shopping_methods } from '@/lambda_service/shoppingService';
@@ -33,25 +36,58 @@ export default function ShoppingLists() {
             check();
         }
     }, [isAuthenticated]);
+    
     //define loading circle and refresh when loading is done
     const [loading, setLoading] = useState(true);
+
+    //Defining state management
     const [makeShoppingListVisible, setMakeShoppingListVisible] = useState(false); //new --------
+    const [response_data, setResponseData] = useState({name : null,
+        groupId : null,
+        members : {},
+        balance : 0.00,});
+
+    //API call and populate group information to trigger redraw
+    const fetchData = async () => {
+        console.log("fetching data");
+        let response = {
+            lists : {}
+        }
+        response = await shopping_methods.fetchAllListData(userId);
+        console.log(response);
+        if (response.errorType) {
+            console.log("An error occured, check logs");
+            return;
+        } else if (response.success) {
+            //reverse arrays to show most recent first
+            let formatted_response = {
+                lists : {}
+            }
+            for (let lists of response.lists) {
+                lists.reverse();
+                formatted_response.lists[group_id] = lists;
+            }
+            console.log(formatted_response);
+            setResponseData(formatted_response);
+            setLoading(false);
+            // dispatch(
+            //     groupDataAction.setGroupData(response_data)
+            // );
+        } else {
+            router.push("/home/");
+        }
+    }
+    
     useEffect(() => {
         if (isAuthenticated) {
-            placeHolder(); //make the call
+            fetchData(); //make the call
         }
     }, [isAuthenticated]);
 
     const matchedGroupId = (isAuthenticated) ? window.location.href.match('(groups)\/[a-zA-z\-0-9]+')[0] : null;
     const groupId = (matchedGroupId) ? matchedGroupId.substring(7) : null;
     const userId = (isAuthenticated) ? localStorage.getItem("tempId") : null;
-    function groupSettingsRoute() {
-        if (userId == response_data.manager) {
-            router.push("/groupsettings/" + groupId);
-        } else {
-            router.push("/groupsettings_members/" + groupId);
-        }
-    }
+
     async function placeHolder(isCallback) {
         console.log("TODO");
         if (loading) {
@@ -69,17 +105,22 @@ export default function ShoppingLists() {
         return (
             <>
                 <CustomHead title={"Shopping Lists"} description={"Your shopping lists"}></CustomHead>
-                <Header groupId = {groupSettingsRoute}></Header>
+                <Header></Header>
                 <main className={styles.main}>
                 { (loading)?
                     <LoadingCircle additionalStyles={{ margin: "15px auto" }}></LoadingCircle>
                     :
                     <>
+                    {
+                        
+                        <ListView></ListView>
+                        
 
+                    }
                     </>
                 }
                 </main>
-                {makeGroupVisible ? (
+                {makeShoppingListVisible ? (
                     <MakeGroupView
                         hideParent={setMakeShoppingListVisible}
                         userId={userId}

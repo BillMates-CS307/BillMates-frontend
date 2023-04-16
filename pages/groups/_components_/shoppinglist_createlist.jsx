@@ -3,7 +3,7 @@ import groupStyles from "@/styles/Group.module.css"
 import { user_methods } from "@/lambda_service/userService";
 import { ButtonLock } from "../../global_components/button_lock";
 
-
+//MIGHT NOT BE NEEDED
 export function ShoppingListCreateList({ hideParent, userId }) {
     const handleSubmit = async (event) => {
         event.preventDefault();
