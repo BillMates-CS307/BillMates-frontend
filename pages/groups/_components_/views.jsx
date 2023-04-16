@@ -365,7 +365,7 @@ export function TransactionView({ userId, members, expense, hideParent, showFulF
                     <p>{expense.title}</p>
                     <p>${expense.amount.toFixed(2)}</p>
                     <p style={{color : "var(--neutral-background)"}}>{expense.comment}</p>
-                    <p>{expense.tag || "placeholder"}</p>
+                    <p>{(expense.tag == "Notag"? "No Tag" : expense.tag)}</p>
                     <div className={styles.name_email_combo}>
                         <p>{members[expense.owner] || "(Not In Group)"}</p>
                         <p>{expense.owner}</p>
