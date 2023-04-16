@@ -26,7 +26,7 @@ export default function EventForm() {
   const groupData = useSelector(selectGroupData);
   const { date, time } = useSelector(selectEventData);
   const userId = isAuthenticated ? localStorage.getItem("tempId") : null;
-
+  console.log(moment(new Date()).format("YYYY-MM-DD"));
   async function check() {
     let result = await user_methods.validateLoginJWT(router);
     if (result.success) {
