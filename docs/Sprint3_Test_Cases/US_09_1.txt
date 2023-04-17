@@ -1,0 +1,15 @@
+A. Identification and classification
+Test Case: 9001
+System: Expenses
+User is able to select a tag when creating an expense
+Severity: 3
+
+B. Instructions
+	1. Login and go to a group with at least one other person in it
+    2. Click on the "+" button
+    3. Click on the box with the initial value of "No Tag"
+    4. Select any of the options
+
+C. Expected Result:
+    1. A dropdown of values is shown including "No Tag, Entertainment, Rent, Food, and Misc"
+    2. Selecting a different value changes the text in the box

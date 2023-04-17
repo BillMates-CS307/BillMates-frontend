@@ -1,8 +1,8 @@
 //HTML Imports...
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
-import Header from "../global_components/groups_header.jsx";
-import Footer from "../global_components/footer_no_plus.jsx";
+import Header, {HEADER_PATHS} from '../global_components/groups_header.jsx';
+import Footer from '../global_components/footer_no_plus.jsx'; 
 import CustomHead from "../global_components/head";
 import LoadingCircle from "../global_components/loading_circle.jsx";
 
@@ -200,6 +200,9 @@ export default function GroupSettings() {
       return;
     }
   };
+  function isGroupManager() {
+    return true;
+  }
 
   if (isAuthenticated) {
     return (
@@ -208,7 +211,9 @@ export default function GroupSettings() {
           title={"Group Settings"}
           description={"Customize your individual group preferences"}
         ></CustomHead>
-        <Header />
+        <Header loading={loading} selected={HEADER_PATHS.ANALYTICS|HEADER_PATHS.CALENDAR|HEADER_PATHS.SETTINGS|HEADER_PATHS.SHOPPINGLIST|HEADER_PATHS.GROUP}
+                getManagerStatus={isGroupManager} groupPath={window.location.href.match(".+?(?=etting)")[0] + "/" + window.location.href.match("[a-zA-Z0-9\-]*$")[0]}>
+        </Header>
         <SettingsWrapper>
           <SettingsForm>
             <h2>Group Settings</h2>
@@ -227,9 +232,9 @@ export default function GroupSettings() {
               currentUserId={userId}
               onKickUser={kickUser}
             ></MemberList>
-            <CalendarLink href={`/groups/group_calendar/${router.query.id}`}>
+            {/* <CalendarLink href={`/groups/group_calendar/${router.query.id}`}>
               Calendar
-            </CalendarLink>
+            </CalendarLink> */}
             <button
               onClick={(e) => {
                 deleteGroup(e);
@@ -282,15 +287,15 @@ const Space = styled.div`
 
 const SettingsForm = styled.form``;
 
-const CalendarLink = styled(Link)`
-  display: flex;
-  margin-top: 20px;
-  text-align: center;
-  padding: 10px;
-  width: 100px;
-  border-radius: var(--border-radius);
-  box-shadow: 1px 2px 3px 0 #949494;
-  background: #00c923;
-  color: var(--main-background-font-color);
-  font-weight: bold;
-`;
+// const CalendarLink = styled(Link)`
+//   display: flex;
+//   margin-top: 20px;
+//   text-align: center;
+//   padding: 10px;
+//   width: 100px;
+//   border-radius: var(--border-radius);
+//   box-shadow: 1px 2px 3px 0 #949494;
+//   background: #00c923;
+//   color: var(--main-background-font-color);
+//   font-weight: bold;
+// `;

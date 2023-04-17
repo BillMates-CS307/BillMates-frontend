@@ -1,0 +1,14 @@
+A. Identification and classification
+Test Case: 9002
+System: Expenses
+User is able to filter based on tag
+Severity: 3
+
+B. Instructions
+    1. Login and go to a group with at least one other person in it
+    2. Select the box next to the label "filter"
+    3. Select any option
+
+C. Expected Result:
+    1. Only expenses with the selected tag option are shown
+    2. When the selected option is "All", all expenses are shown regardless of tag 

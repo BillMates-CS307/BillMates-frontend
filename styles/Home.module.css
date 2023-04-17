@@ -149,6 +149,7 @@
   margin: auto;
   background: var(--main-background);
   box-shadow: 1px 2px 15px 0 var(--dark-neutral-background);
+  color: var(--main-background-font-color);
 }
 
 .position_box a {
@@ -171,7 +172,6 @@
   position: relative;
   display: block;
   pointer-events: none;
-  color: var(--main-background-font-color);
 }
 
 .inode path {

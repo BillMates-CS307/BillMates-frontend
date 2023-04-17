@@ -7,19 +7,20 @@ export default async function handler(req, res) {
   }
 
   // Get data submitted in request's body.
-  const { title, group_id, expense, total, owner, comment, tag } = JSON.parse(req.body);
+  const { email } = JSON.parse(req.body);
+
   // Guard clause checks for first and last name,
   // and returns early if they are not found
-  if (title == null || group_id == null || expense == null || total == null || owner == null || comment == null || tag == null) {
+  if (email == null) {
     // Sends a HTTP bad request error code
-    return res.status(400).json({ message: 'email or password not found' })
+    return res.status(400).json({ message: 'email not found' })
   }
 
   // Found the name.
   // Sends a HTTP success code
 
   //make request to Lambda
-  const url = 'https://osggc3wtegomn5yliv5heqkpji0ohbfk.lambda-url.us-east-2.on.aws/';
+  const url = 'https://qol6mrbwipmg6r6ksaili6rbx40kpmhk.lambda-url.us-east-2.on.aws/';
   const options = {
     method: 'POST',
     mode: 'cors',
@@ -32,14 +33,15 @@ export default async function handler(req, res) {
 
   let response_body = {
     errorType: 0,
-    success: false
+    get_success : false,
+    venmo_token : null
   }
 
   return await fetch(url, options).then((response) => {
-    console.log("======================CREATE_EXPENSE_RESPONSE======================");
+    console.log("\x1b[32m======================GET_VENMO_TOKEN_RESPONSE======================\x1b[0m");
     console.log(response);
-    if (response.status == 500) {
-      response_body.errorType = 500;
+    if (response.status != 200) {
+      response_body.errorType = response.status;
       return response_body;
     }
     return response.json();

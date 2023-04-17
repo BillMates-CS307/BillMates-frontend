@@ -14,6 +14,7 @@
   --background-hide-color: #000000AA;
   --body-background: #E6E6E6;
   --footer-background: #FFF;
+  --ham-width : 20vw;
 }
 
 * {
@@ -59,6 +60,7 @@ header {
 header svg {
   width: 30px;
   height: 30px;
+  cursor: pointer;
 }
 
 header div {
@@ -251,6 +253,54 @@ footer div a {
       opacity: 0;
   }
 }
+#hamburger_panel {
+  position: absolute;
+  display: none;
+  right: 0;
+  top: 0;
+  width: var(--ham-width);
+  background: var(--body-background);
+  z-index: 999;
+  padding: 10px;
+  height: 100%;
+  font-size: 1.5rem;
+  overflow-x: hidden;
+}
+#hamburger_panel ul {
+  list-style-type: none;
+  overflow-x: hidden;
+}
+#hamburger_panel li {
+  width: calc(var(--ham-width) - 20px);
+  color : var(--main-background-font-color);
+  cursor: pointer;
+  margin: 5px 0;
+  overflow-x: hidden;
+}
+#hamburger_panel li:hover {
+  color : #FFF;
+  background-color: var(--green-background);
+}
+.slide {
+  animation: slideIn 1s linear forwards;
+  display: block;
+}
+
+@keyframes slideIn {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: var(--ham-width);
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  :root{
+    --ham-width : 40vw;
+  } 
+}
+
 
 .react-calendar { 
   width: 400px;

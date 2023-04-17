@@ -1,0 +1,14 @@
+A. Identification and classification
+Test Case: 13002
+System: Analytics
+User is unable to download the analytics data if there is nothing to download
+Severity: 3
+
+B. Instructions
+	1. Login, create a new group, and go to that group
+	2. Click on the hamburger bar and then "Analytics"
+	3. Click on the "download" button
+
+C. Expected Result:
+    1. A warning saying "There is no data to download" is shown
+    2. No file is downloaded

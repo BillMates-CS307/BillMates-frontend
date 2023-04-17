@@ -1,0 +1,14 @@
+A. Identification and classification
+Test Case: 13001
+System: Analytics
+User is able to download the analytics data
+Severity: 3
+
+B. Instructions
+	1. Login and go to a group with transactions
+	2. Click on the hamburger bar and then "Analytics"
+	3. Click on the "download" button
+
+C. Expected Result:
+	1. A file named "<group_id>-analytics.json" is download
+	2. The above file contains json formatted data
