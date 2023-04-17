@@ -15,7 +15,7 @@ import { useRouter } from 'next/router.js';
 
 //Recharts items
 import {CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip, Legend,
-    LineChart, Line, BarChart, Bar, PieChart, Pie, AreaChart, Area } from 'recharts';
+    LineChart, Line, BarChart, Bar, PieChart, Pie, Cell} from 'recharts';
 import { shopping_methods } from '@/lambda_service/shoppingService.js';
 import { useFileSystemPublicRoutes } from '@/next.config.js';
 
@@ -43,66 +43,76 @@ export default function Analytics() {
     }, [isAuthenticated]);
     //define loading circle and refresh when loading is done
     const [loading, setLoading] = useState(true);
-    const [responseData, setResponseData] = useState(undefined);
+    const [userLineGraph, setUserLineGraph] = useState([]);
+    const [userBarGraph, setUserBarGraph] = useState([]);
+    const [userPieChart, setUserPieChart] = useState([]);
+    const [userPieLabel, setUserPieLabel] = useState(false);
+
+    const [groupLineGraph, setGroupLineGraph] = useState([]);
+    const [groupBarGraph, setGroupBarGraph] = useState([]);
+    const [groupPieChart, setGroupPieChart] = useState([]);
+    const [groupPieLabel, setGroupPieLabel] = useState(false);
+
     const [warningPopup, setWarningPopup] = useState(null);
     useEffect(() => {
         if (isAuthenticated) {
-            //fetchData(); //make the call
+            fetchData(); //make the call
 
             //placeholder until the backend function is finished
-            const data = [
-                {
-                    name: 'Page A',
-                    uv: 4000,
-                    pv: 2400,
-                    amt: 2400,
-                },
-                {
-                    name: 'Page B',
-                    uv: 3000,
-                    pv: 1398,
-                    amt: 2210,
-                },
-                {
-                    name: 'Page C',
-                    uv: 2000,
-                    pv: 9800,
-                    amt: 2290,
-                },
-                {
-                    name: 'Page D',
-                    uv: 2780,
-                    pv: 3908,
-                    amt: 2000,
-                },
-                {
-                    name: 'Page E',
-                    uv: 1890,
-                    pv: 4800,
-                    amt: 2181,
-                },
-                {
-                    name: 'Page F',
-                    uv: 2390,
-                    pv: 3800,
-                    amt: 2500,
-                },
-                {
-                    name: 'Page G',
-                    uv: 3490,
-                    pv: 4300,
-                    amt: 2100,
-                },
-            ];
+            // const data = [
+            //     {
+            //         name: 'Page A',
+            //         uv: 4000,
+            //         pv: 2400,
+            //         amt: 2400,
+            //     },
+            //     {
+            //         name: 'Page B',
+            //         uv: 3000,
+            //         pv: 1398,
+            //         amt: 2210,
+            //     },
+            //     {
+            //         name: 'Page C',
+            //         uv: 2000,
+            //         pv: 9800,
+            //         amt: 2290,
+            //     },
+            //     {
+            //         name: 'Page D',
+            //         uv: 2780,
+            //         pv: 3908,
+            //         amt: 2000,
+            //     },
+            //     {
+            //         name: 'Page E',
+            //         uv: 1890,
+            //         pv: 4800,
+            //         amt: 2181,
+            //     },
+            //     {
+            //         name: 'Page F',
+            //         uv: 2390,
+            //         pv: 3800,
+            //         amt: 2500,
+            //     },
+            //     {
+            //         name: 'Page G',
+            //         uv: 3490,
+            //         pv: 4300,
+            //         amt: 2100,
+            //     },
+            // ];
 
-            setResponseData(data);
-            setLoading(false);
+            // setResponseData(data);
+            // setLoading(false);
         }
     }, [isAuthenticated]);
 
     const matchedGroupId = (isAuthenticated) ? window.location.href.match('(groups)\/[a-zA-z\-0-9]+')[0] : null;
     const groupId = (matchedGroupId) ? matchedGroupId.substring(7) : null;
     const userId = (isAuthenticated) ? localStorage.getItem("tempId") : null;
+    const COLORS = ["#8884d8", "#82ca9d", "#FFBB28", "#FF8042", "#AF19FF", "#000"];
     var gallery_graphs = null;
     var gallery_dots = null;
     var gallery_heading = null;
@@ -119,7 +129,65 @@ export default function Analytics() {
             console.log("An error occured, check logs");
             return;
         } else if (response.success) {
-            setResponseData(response);
+            //parse the data for the individual user
+            console.log(response);
+            let userLG = [], 
+            userBG = [], 
+            userPC = [];
+            for (let month in response.data[userId].month) {
+                userLG.push({
+                    month : month,
+                    num : response.data[userId].month[month]
+                });
+            }
+            let userHasData = false;
+            for (let tag in response.data[userId].tags) {
+                userPC.push({
+                    tag : tag,
+                    amt : response.data[userId].tags[tag]
+                });
+                if (response.data[userId].tags[tag]) {
+                    userHasData = true;
+                }
+            }
+
+            let groupLG = JSON.parse(JSON.stringify(userLG)), 
+            groupBG = userBG, 
+            groupPC = JSON.parse(JSON.stringify(userPC)),
+            i = 0;
+            //have to move after bc group still could have data
+            if (!userHasData) {
+                userPC = [{tag: "No Data", amt : 1}];
+            }
+
+            let groupHasData = false;
+            for (let user in response.data) {
+                if (user != userId) {
+                    for (let month in response.data[user].month) {
+                        groupLG[i++].num += response.data[user].month[month];
+                    }
+                    i = 0;
+                    for (let tag in response.data[userId].tags) {
+                        groupPC[i++].amt += response.data[user].tags[tag];
+                        if (response.data[user].tags[tag]) {
+                            groupHasData = true;
+                        }
+                    }
+                }
+            }
+            if (!groupHasData) {
+                groupPC = [{tag: "No Data", amt : 1}];
+            }
+
+            setUserLineGraph(userLG);
+            setUserBarGraph(userBG);
+            setUserPieChart(userPC);
+            setUserPieLabel(userHasData);
+        
+            setGroupLineGraph(groupLG);
+            setGroupBarGraph(groupBG);
+            setGroupPieChart(groupPC);
+            setGroupPieLabel(groupHasData);
             setLoading(false);
         } else {
             router.push("/home/");
@@ -170,9 +238,17 @@ export default function Analytics() {
         return false; //TODO: fix this
     }
     function exportData() {
-        if (responseData == null) { //idk what empty is going to be yet
+        if (!groupPieLabel) { //only occurs if there are no expense requests ever created
             setWarningPopup(["There is no data to download", 1.5]);
             return;
+        }
+        let responseData = {
+            "my_requests_yearly" : userLineGraph,
+            "my_relative_balances" : userBarGraph,
+            "my_requests_tag" : userPieChart,
+            "group_requests_yearly" : groupLineGraph,
+            "group_relative_balances" : groupBarGraph,
+            "group_relative_tag" : groupPieChart
         }
         const fileData = JSON.stringify(responseData);
         const blob = new Blob([fileData], { type: "text/plain" });
@@ -218,48 +294,65 @@ export default function Analytics() {
                             <div className={styles.gallery_container} id="gallery_container">
                                 <div className={styles.gallery_item_wrapper} style={ {display : "block"} }>
                                     <ResponsiveContainer>
-                                        <LineChart data={responseData}>
+                                        <LineChart data={groupLineGraph}>
                                             <CartesianGrid strokeDasharray="3 3" stroke='var(--dark-neutral-background)'/>
-                                            <XAxis dataKey="name" stroke='var(--main-background-font-color)'/>
-                                            <YAxis stroke='var(--main-background-font-color)'/>
+                                            <XAxis dataKey="month" stroke='var(--main-background-font-color)'/>
+                                            <YAxis stroke='var(--main-background-font-color)' allowDecimals={false}/>
                                             <Tooltip />
-                                            <Line type="monotone" dataKey="uv" stroke="var(--green-muted-background)" strokeWidth={3}/>
+                                            <Line type="monotone" dataKey="num" stroke="var(--green-background)" strokeWidth={3}/>
                                         </LineChart>
                                     </ResponsiveContainer>
                                 </div>
                                 <div className={styles.gallery_item_wrapper}>
                                     <ResponsiveContainer>
-                                        <BarChart data={responseData}>
+                                        <BarChart data={groupBarGraph}>
                                             <CartesianGrid strokeDasharray="3 3" stroke='var(--dark-neutral-background)'/>
                                             <XAxis dataKey="name" stroke='var(--main-background-font-color)'/>
                                             <YAxis stroke='var(--main-background-font-color)'/>
                                             <Tooltip />
-                                            <Bar type="monotone" dataKey="amt" fill="var(--green-muted-background)" />
+                                            <Bar type="monotone" dataKey="amt" fill="var(--green-background)" />
                                         </BarChart>
                                     </ResponsiveContainer>
                                 </div>
                                 <div className={styles.gallery_item_wrapper}>
                                     <ResponsiveContainer>
-                                        <PieChart>
-                                            <Pie  animationDuration={1000} animationBegin={0} data={responseData} dataKey="pv" nameKey="name" cx="50%" cy="50%" 
-                                            fill="var(--green-muted-background)" label></Pie>
+                                    <PieChart>
+                                            <Legend></Legend>
+                                            <Pie
+                                            data={groupPieChart}
+                                            color="#000000"
+                                            dataKey="amt"
+                                            nameKey="tag"
+                                            cx="50%"
+                                            cy="50%"
+                                            outerRadius={120}
+                                            fill="#8884d8"
+                                            label={groupPieLabel}
+                                        >
+                                            {groupPieChart.map((entry, index) => (
+                                                <Cell
+                                                key={`cell-${index}`}
+                                                fill={(groupPieLabel)? COLORS[index % COLORS.length] : "var(--dark-neutral-background)"}
+                                                />
+                                            ))}
+                                        </Pie>
                                         </PieChart>
                                     </ResponsiveContainer>
                                 </div>
                                 <div className={styles.gallery_item_wrapper}>
                                     <ResponsiveContainer>
-                                        <LineChart data={responseData}>
-                                            <CartesianGrid strokeDasharray="3 3" stroke='var(--dark-neutral-background)'/>
-                                            <XAxis dataKey="name" stroke='var(--main-background-font-color)'/>
-                                            <YAxis stroke='var(--main-background-font-color)'/>
+                                        <LineChart data={userLineGraph}>
+                                            <CartesianGrid strokeDasharray="3" stroke='var(--dark-neutral-background)'/>
+                                            <XAxis stroke='var(--main-background-font-color)' dataKey="month"/>
+                                            <YAxis stroke='var(--main-background-font-color)' allowDecimals={false}/>
                                             <Tooltip />
-                                            <Line type="monotone" dataKey="uv" stroke="var(--green-background)" strokeWidth={3}/>
+                                            <Line type="monotone" dataKey="num" stroke="var(--green-background)" strokeWidth={3}/>
                                         </LineChart>
                                     </ResponsiveContainer>
                                 </div>
                                 <div className={styles.gallery_item_wrapper}>
                                     <ResponsiveContainer>
-                                        <BarChart data={responseData}>
+                                        <BarChart data={userBarGraph}>
                                         <   CartesianGrid strokeDasharray="3 3" stroke='var(--dark-neutral-background)'/>
                                             <XAxis dataKey="name" stroke='var(--main-background-font-color)'/>
                                             <YAxis stroke='var(--main-background-font-color)'/>
@@ -271,8 +364,25 @@ export default function Analytics() {
                                 <div className={styles.gallery_item_wrapper}>
                                     <ResponsiveContainer>
                                         <PieChart>
-                                            <Pie  animationDuration={1000} animationBegin={0} data={responseData} dataKey="pv" nameKey="name" cx="50%" cy="50%" 
-                                            fill="var(--green-background)" label></Pie>
+                                            <Legend></Legend>
+                                            <Pie
+                                            data={userPieChart}
+                                            color="#000000"
+                                            dataKey="amt"
+                                            nameKey="tag"
+                                            cx="50%"
+                                            cy="50%"
+                                            outerRadius={120}
+                                            fill="#8884d8"
+                                            label={userPieLabel}
+                                        >
+                                            {userPieChart.map((entry, index) => (
+                                                <Cell
+                                                key={`cell-${index}`}
+                                                fill={(userPieLabel)? COLORS[index % COLORS.length] : "var(--dark-neutral-background)"}
+                                                />
+                                            ))}
+                                        </Pie>
                                         </PieChart>
                                     </ResponsiveContainer>
                                 </div>

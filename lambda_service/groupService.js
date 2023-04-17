@@ -35,8 +35,7 @@ async function getAnalytics(userId, groupId) {
     }
 
     const request_body = JSON.stringify({
-        "user_id" : userId,
-        "group_id" : groupId
+        "email" : userId
     });
 
     const options = {
@@ -63,7 +62,7 @@ async function getAnalytics(userId, groupId) {
             return response_body;
         }
         response_body.success = true;
-        response_body.data = result.data; //TODO : CHANGE TO CORRECT FIELD WHEN BACKEND IS DONE WITH IT
+        response_body.data = result.analytics[groupId];
         return response_body;
     }).catch( (error) => {
         console.log(error);
