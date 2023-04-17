@@ -296,10 +296,14 @@ export default function Analytics() {
                                     <ResponsiveContainer>
                                         <LineChart data={groupLineGraph}>
                                             <CartesianGrid strokeDasharray="3 3" stroke='var(--dark-neutral-background)'/>
-                                            <XAxis dataKey="month" stroke='var(--main-background-font-color)'/>
-                                            <YAxis stroke='var(--main-background-font-color)' allowDecimals={false}/>
+                                            <XAxis dataKey="month" stroke='var(--main-background-font-color)'
+                                            minTickGap={-200}
+                                            hide={true}
+                                            />
+                                            <YAxis stroke='var(--main-background-font-color)' allowDecimals={false} width={20}/>
                                             <Tooltip />
                                             <Line type="monotone" dataKey="num" stroke="var(--green-background)" strokeWidth={3}/>
+                                            
                                         </LineChart>
                                     </ResponsiveContainer>
                                 </div>
@@ -328,6 +332,8 @@ export default function Analytics() {
                                             outerRadius={120}
                                             fill="#8884d8"
                                             label={groupPieLabel}
+                                            animationBegin={0}
+                                            animationDuration={750}
                                         >
                                             {groupPieChart.map((entry, index) => (
                                                 <Cell
@@ -343,7 +349,9 @@ export default function Analytics() {
                                     <ResponsiveContainer>
                                         <LineChart data={userLineGraph}>
                                             <CartesianGrid strokeDasharray="3" stroke='var(--dark-neutral-background)'/>
-                                            <XAxis stroke='var(--main-background-font-color)' dataKey="month"/>
+                                            <XAxis stroke='var(--main-background-font-color)' dataKey="month"
+                                            minTickGap={-200}
+                                            hide={true}/>
                                             <YAxis stroke='var(--main-background-font-color)' allowDecimals={false}/>
                                             <Tooltip />
                                             <Line type="monotone" dataKey="num" stroke="var(--green-background)" strokeWidth={3}/>
@@ -375,6 +383,8 @@ export default function Analytics() {
                                             outerRadius={120}
                                             fill="#8884d8"
                                             label={userPieLabel}
+                                            animationBegin={0}
+                                            animationDuration={750}
                                         >
                                             {userPieChart.map((entry, index) => (
                                                 <Cell
