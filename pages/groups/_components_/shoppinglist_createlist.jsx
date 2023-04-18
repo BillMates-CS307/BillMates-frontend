@@ -29,7 +29,7 @@ export default function ShoppingListCreateList({ hideParent, userId }) {
             event.target.children[1].style = "background : var(--green-muted-background)";
             console.log(value);
             let response = await shopping_methods.createList(userId, value);
-            console.log(response);
+            console.log("test createList response" + JSON.stringify(response));
             if (response.success) {
                 window.location.reload();
                 return;

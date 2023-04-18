@@ -43,10 +43,10 @@ export default function ShoppingLists() {
 
     //Defining state management
     const [makeShoppingListVisible, setMakeShoppingListVisible] = useState(false);
-    const [response_data, setResponseData] = useState({name : null,
+    const [response_data, setResponseData] = useState({
         groupId : null,
-        members : {},
-        balance : 0.00,});
+        lists : {}
+    });
 
     //API call and populate group information to trigger redraw
     const fetchData = async () => {
@@ -102,28 +102,44 @@ export default function ShoppingLists() {
         return;
     }
 
+    //FOR DEBUGGING.... add into line 132 (loading circle)
+    /*
+    <section>
+    <ListView listName="data 1" listId={1} goToList="/test"></ListView>
+    <ListView listName="data 2" listId={2} goToList="/test"></ListView>
+    <ListView listName="data 3" listId={3} goToList="/test"></ListView>
+    <ListView listName="data 4" listId={4} goToList="/test"></ListView>
+    <ListView listName="data 5" listId={5} goToList="/test"></ListView>
+    </section>
+    */
+
     if (isAuthenticated) {
         return (
             <>
                 <CustomHead title={"Shopping Lists"} description={"Your shopping lists"}></CustomHead>
                 <Header></Header>
                 <main className={styles.main}>
+                <div className={styles.banner}>
+                    <p>Lists</p>
+                </div>
                 { (loading)?
                     <LoadingCircle additionalStyles={{ margin: "15px auto" }}></LoadingCircle>
                     :
                     <>
                     {
-                        <section>
-                            <div className={styles.banner}>
-                                <p>Lists</p>
-                            </div>
-                            <ListView listName="data 1" listId={1} goToList="/test"></ListView>
-                            <ListView listName="data 2" listId={2} goToList="/test"></ListView>
-                            <ListView listName="data 3" listId={3} goToList="/test"></ListView>
-                            <ListView listName="data 4" listId={4} goToList="/test"></ListView>
-                            <ListView listName="data 5" listId={5} goToList="/test"></ListView>
-                        </section>
+                        response_data.lists &&
+                            Object.keys(response_data.lists).map((id) => {
+                                const list = response_data.lists[id];
+                                return (
+                                    <ListView
+                                    listName={list.name}
+                                    listId={id}
+                                    goToList={`/shoppinglist/${id}`}
+                                    />
+                                );
+                            })
                     }
+
                     </>
                 }
                 </main>
