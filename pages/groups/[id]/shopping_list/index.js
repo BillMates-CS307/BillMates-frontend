@@ -7,10 +7,11 @@ import LoadingCircle from '../../../global_components/loading_circle.jsx';
 
 //Components
 import ListView from '../../_components_/shoppinglist_listview.jsx';
+import CreateList from '../../_components_/shoppinglist_createlist.jsx';
 
 import { group_methods } from '@/lambda_service/groupService.js';
 import { user_methods } from '@/lambda_service/userService.js';
-import { shopping_methods } from '@/lambda_service/shoppingService';
+import { shopping_methods } from '@/lambda_service/shoppingService.js';
 
 //React and Redux stuff
 import React, { useEffect, useState } from "react";
@@ -23,8 +24,8 @@ export default function ShoppingLists() {
     const router = useRouter();
     const [isAuthenticated, setAuthentication] = useState(false);
     async function check() {
-        //let result = await user_methods.validateLoginJWT(router);
-        let result = { success : true, payload : {"email" : "test@test.com"}};
+        let result = await user_methods.validateLoginJWT(router);
+        //let result = { success : true, payload : {"email" : "test@test.com"}};
         if (result.success) {
             localStorage.setItem("tempId", result.payload.email);
             setAuthentication(true);
@@ -41,7 +42,7 @@ export default function ShoppingLists() {
     const [loading, setLoading] = useState(true);
 
     //Defining state management
-    const [makeShoppingListVisible, setMakeShoppingListVisible] = useState(false); //new --------
+    const [makeShoppingListVisible, setMakeShoppingListVisible] = useState(false);
     const [response_data, setResponseData] = useState({name : null,
         groupId : null,
         members : {},
@@ -54,7 +55,7 @@ export default function ShoppingLists() {
             lists : {}
         }
         response = await shopping_methods.fetchAllListData(userId);
-        console.log(response);
+        setLoading(false);
         if (response.errorType) {
             console.log("An error occured, check logs");
             return;
@@ -112,19 +113,25 @@ export default function ShoppingLists() {
                     :
                     <>
                     {
-                        
-                        <ListView></ListView>
-                        
-
+                        <section>
+                            <div className={styles.banner}>
+                                <p>Lists</p>
+                            </div>
+                            <ListView listName="data 1" listId={1} goToList="/test"></ListView>
+                            <ListView listName="data 2" listId={2} goToList="/test"></ListView>
+                            <ListView listName="data 3" listId={3} goToList="/test"></ListView>
+                            <ListView listName="data 4" listId={4} goToList="/test"></ListView>
+                            <ListView listName="data 5" listId={5} goToList="/test"></ListView>
+                        </section>
                     }
                     </>
                 }
                 </main>
                 {makeShoppingListVisible ? (
-                    <MakeGroupView
+                    <CreateList
                         hideParent={setMakeShoppingListVisible}
                         userId={userId}
-                    ></MakeGroupView>
+                    ></CreateList>
                     ) : (
                     <></>
                 )}

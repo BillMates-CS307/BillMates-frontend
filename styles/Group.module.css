@@ -708,3 +708,49 @@ border-radius: var(--border-radius);
     padding: 2px 5px;
     font-size: 0.75rem;
   }
+
+/* ------------Lists------------ */
+.listTemplate {
+    display: flex;
+    gap: 4rem;
+    border: 1px solid var(--opposite-background);
+    margin: 3px auto;
+    width: 95%;
+    cursor: pointer;
+    border-radius: var(--border-radius);
+}
+
+.listNameP {
+    background-color: var(--neutral-background);
+    /* color: white; */
+    font-weight: bold;
+    flex: 4;
+    padding: 10px;
+    border-top-left-radius: var(--border-radius);
+    border-bottom-left-radius: var(--border-radius);
+}
+
+.listNameAnchor {
+    margin-right: 3%;
+    margin-top: 1%;
+}
+
+.listItem {
+    box-sizing: border-box;
+    position: absolute;
+    width: 250px;
+    height: 46px;
+    left: 35px;
+    top: 140px;
+    background: #E6E6E6;
+    border: 1px solid #000000;
+    border-radius: var(--border-radius);
+}
+
+.shoppingTitle {
+    text-align: center;
+    padding: 1%;
+    background: var(--green-background);
+    margin-top: 1%;
+    color: white;
+}

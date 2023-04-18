@@ -1,15 +1,15 @@
 import styles from "@/styles/Home.module.css"
 import groupStyles from "@/styles/Group.module.css"
-import { user_methods } from "@/lambda_service/userService";
+import { shopping_methods } from "@/lambda_service/shoppingService.js";
 import { ButtonLock } from "../../global_components/button_lock";
 
 //MIGHT NOT BE NEEDED
-export function ShoppingListCreateList({ hideParent, userId }) {
+export default function ShoppingListCreateList({ hideParent, userId }) {
     const handleSubmit = async (event) => {
         event.preventDefault();
         if (!ButtonLock.isLocked()) {
             ButtonLock.LockButton();
-            const inputElm = document.querySelector("#shoppinglist"); //might need to fix
+            const inputElm = document.querySelector("#newshoppinglist"); //might need to fix
             const value = inputElm.value;
 
             if (value.trim() == "") {
@@ -28,7 +28,7 @@ export function ShoppingListCreateList({ hideParent, userId }) {
             event.target.children[1].textContent = "Create Shopping List";
             event.target.children[1].style = "background : var(--green-muted-background)";
             console.log(value);
-            let response = await user_methods.createGroup(userId, value);
+            let response = await shopping_methods.createList(userId, value);
             console.log(response);
             if (response.success) {
                 window.location.reload();

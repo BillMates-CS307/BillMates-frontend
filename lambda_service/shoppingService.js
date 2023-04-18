@@ -257,7 +257,7 @@ async function fetchAllListData(groupId) {
     });
 
     const options = {
-        method: 'POST',
+        method: 'POST', //GET????
         mode : 'no-cors',
         headers: {
           'Content-Type': 'application/json',
