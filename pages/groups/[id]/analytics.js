@@ -115,7 +115,8 @@ export default function Analytics() {
                 i = 0;
             //have to move after bc group still could have data
             if (!userHasData) {
-                userPC = [{ tag: "No Data", amt: 1 }];
+                userPC = [{ tag: "No Data", amt: 0.001 }];
+                userBG = [{name : "No Data", amt : 0}];
             }
 
             let groupHasData = false;
@@ -138,7 +139,7 @@ export default function Analytics() {
                 }
             }
             if (!groupHasData) {
-                groupPC = [{ tag: "No Data", amt: 1 }];
+                groupPC = [{ tag: "No Data", amt: 0.001 }];
             }
 
             for (let person in response.data.user_totals) {
@@ -314,7 +315,8 @@ export default function Analytics() {
                                                     cy="50%"
                                                     outerRadius={120}
                                                     fill="#8884d8"
-                                                    label={groupPieLabel}
+                                                    label={ (groupPieChart)? (v) => {return v.amt.toFixed(2)} : false  }
+                                                    
                                                     animationBegin={0}
                                                     animationDuration={750}
                                                 >
@@ -378,7 +380,7 @@ export default function Analytics() {
                                                     cy="50%"
                                                     outerRadius={120}
                                                     fill="#8884d8"
-                                                    label={userPieLabel}
+                                                    label={ (groupPieChart)? (v) => {return v.amt.toFixed(2)} : false  }
                                                     animationBegin={0}
                                                     animationDuration={750}
                                                 >
