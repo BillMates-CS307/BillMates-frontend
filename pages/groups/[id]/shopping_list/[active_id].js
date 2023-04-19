@@ -6,8 +6,9 @@ import CustomHead from '../../../global_components/head.jsx'
 import LoadingCircle from '../../../global_components/loading_circle.jsx';
 
 //Components
-import ItemView from '../../_components_/shoppinglist_itemview.jsx';
+import ItemMenuView from '../../_components_/shoppinglist_itemview.jsx';
 import CreateItems from '../../_components_/shoppinglist_createitem.jsx';
+import DeleteCheck from '../../_components_/shoppinglist_deletecheck.jsx';
 
 import { group_methods } from '@/lambda_service/groupService.js';
 import { user_methods } from '@/lambda_service/userService.js';
@@ -76,8 +77,8 @@ export default function ShoppingListActive() {
             let formatted_response = {
                 items : {}
             }
-            for (let items of response.data) {
-                formatted_response.items[listId] = items;
+            for (let item_id in response.data) {
+                formatted_response.items[item_id] = response.data[item_id];
             }
             console.log(formatted_response);
             setResponseData(formatted_response);
@@ -90,6 +91,17 @@ export default function ShoppingListActive() {
         }
     }
 
+    const handleItemDelete = (itemId) => {
+        const updatedItems = { ...response_data.items };
+      
+        updatedItems.items = updatedItems.items.filter((item, index) => `${listId}_${index}` !== itemId);
+      
+        setResponseData({
+          ...response_data,
+          items: updatedItems,
+        });
+    };
+
     function placeHolder() {
         console.log("TODO");
         if (loading) {
@@ -99,36 +111,41 @@ export default function ShoppingListActive() {
         }
         return;
     }
-
+    
     if (isAuthenticated) {
         return (
             <>
-                <CustomHead title={"Shopping Lists"} description={"Your shopping lists"}></CustomHead>
-                <Header></Header>
-                <main className={styles.main}>
+            <CustomHead title={"Shopping Lists"} description={"Your shopping lists"}></CustomHead>
+            <Header></Header>
+            <main className={styles.main}>
                 <div className={styles.banner}>
                     <p>ITEMS</p>
                 </div>
                 { (loading)?
-                            <LoadingCircle additionalStyles={{ margin: "15px auto" }}></LoadingCircle>
-                            :
-                            <>
-                            {
-                                response_data.items &&
-                                    Object.keys(response_data.items).map((id) => {
-                                        const list = response_data.items[id];
-                                        return (
-                                            <ItemView
-                                            listName={list.name}
-                                            listId={id}
-                                            goToList={`/shoppinglist/${id}`}
-                                            />
-                                        );
-                                    })
-                            }
-                            </>
+                    <LoadingCircle additionalStyles={{ margin: "15px auto" }}></LoadingCircle>
+                    :
+                    <>
+                    <section>
+                        {
+                        response_data.items &&
+                            response_data.items.items.map((item, index) => {
+                            return (
+                                <ItemMenuView
+                                itemName={item}
+                                itemId={`${listId}_${index}`}
+                                listId={listId}
+                                onDelete={handleItemDelete}
+                                //goToList={() => router.push(`/groups/${groupId}/shopping_list/`)}
+                                />
+                            );
+                            })
+                        }
+                        <div className={styles.createExpense}></div>
+                    </section>
+                    </>
                 }
-                </main>
+                
+            </main>
                 {makeItemListVisible ? (
                     <CreateItems
                         hideParent={setMakeItemListVisible}

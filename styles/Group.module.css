@@ -754,3 +754,25 @@ border-radius: var(--border-radius);
     margin-top: 1%;
     color: white;
 }
+
+.createExpense {
+    /* button */
+    width: 226px;
+    height: 37px;
+    margin: auto;
+    background: #D96767;
+    mix-blend-mode: normal;
+}
+
+.infobanner {
+    width: 100%;
+    /* margin-top: 15px; */
+    background-color: var(--neutral-background);
+    text-align: center;
+    padding: 5px 0;
+}
+
+.infobanner p {
+    font-size: 1rem;
+    color: #FFF;
+}

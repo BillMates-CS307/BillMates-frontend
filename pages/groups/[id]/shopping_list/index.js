@@ -64,9 +64,9 @@ export default function ShoppingLists() {
             let formatted_response = {
                 lists : {}
             }
-            for (let lists of response.data) {
-                formatted_response.lists[groupId] = lists; //bug with only showing one list, cant append
-                //assigning each list to the same groupId
+            //formatted_response.lists[groupId] = lists;
+            for (let list of response.data) {
+                formatted_response.lists[list._id] = list;
             }
             console.log(formatted_response);
             setResponseData(formatted_response);
@@ -97,14 +97,11 @@ export default function ShoppingLists() {
         return;
     }
 
-    //FOR DEBUGGING.... add into line 132 (loading circle)
+    //FOR DEBUGGING
     /*
     <section>
     <ListView listName="data 1" listId={1} goToList="/test"></ListView>
     <ListView listName="data 2" listId={2} goToList="/test"></ListView>
-    <ListView listName="data 3" listId={3} goToList="/test"></ListView>
-    <ListView listName="data 4" listId={4} goToList="/test"></ListView>
-    <ListView listName="data 5" listId={5} goToList="/test"></ListView>
     </section>
     */
 
@@ -130,7 +127,7 @@ export default function ShoppingLists() {
                                     <ListView
                                     listName={list.name}
                                     listId={id}
-                                    goToList={() => router.push(`/groups/${groupId}/shopping_list/${list.name}`)}
+                                    goToList={() => router.push(`/groups/${groupId}/shopping_list/${list._id}`)}
                                     />
                                 );
                             })
