@@ -1,0 +1,15 @@
+A. Identification and classification
+Test Case: 5001
+System: Calendar
+User is able to schedule an event
+Severity: 3
+
+B. Instructions
+	1. Login and go to a group
+    2. Click on the hamburger bar and select "Calendar"
+    3. Click on the "+" button
+    4. Fill out the form and submit
+    5. Click on the day that the event was scheduled for
+
+C. Expected Result:
+    1. The event specified will be shown, including the (name, description, location, and time)

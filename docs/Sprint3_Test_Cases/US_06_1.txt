@@ -1,0 +1,16 @@
+A. Identification and classification
+Test Case: 6001
+System: Calendar
+User is able to see a calendar with all events across all groups visually marked
+Severity: 3
+
+B. Instructions
+	1. Login
+    2. Go to a group and navigate to that calendar
+    3. On a day that doesn't have an event, repeat test case 5001
+    4. Repeat steps 2 and 3 for a different group and a different day
+    5. Go to the home page
+    6. Click on the user settings button and then the "Calendar" button
+
+C. Expected Result:
+    1. The calenar is marked on days that coorspond to each group

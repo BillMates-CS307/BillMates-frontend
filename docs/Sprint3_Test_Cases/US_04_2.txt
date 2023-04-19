@@ -1,0 +1,13 @@
+A. Identification and classification
+Test Case: 4002
+System: Calendar
+User is able to see events on a particular day
+Severity: 3
+
+B. Instructions
+	1. Login and go to a group with events
+    2. Click on the hamburger bar and select "Calendar"
+    3. Click on a day that has a marker
+
+C. Expected Result:
+    1. The day clicked shows the events of that day (name, description, location, and time)

@@ -1,0 +1,12 @@
+A. Identification and classification
+Test Case: 6002
+System: Calendar
+Events on a day are labelled by the group they are a part of
+Severity: 2
+
+B. Instructions
+    1. Repeat test case 6001, but schedule both events on the same day instead
+    2. Click on the day selected from step 1
+C. Expected Result:
+    1. Each event is shown according to test case 4002
+    2. Each event is labelled by the group it was created in
