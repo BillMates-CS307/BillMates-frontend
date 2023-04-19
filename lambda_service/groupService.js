@@ -22,7 +22,8 @@ export const group_methods = {
     voidExpense,
     updateGroupSettings,
     kickUserFromGroup,
-    getAnalytics
+    getAnalytics,
+    removeRecurringExpense
 }
 
 async function getAnalytics(userId, groupId) {
@@ -34,8 +35,7 @@ async function getAnalytics(userId, groupId) {
     }
 
     const request_body = JSON.stringify({
-        "user_id" : userId,
-        "group_id" : groupId
+        "email" : userId
     });
 
     const options = {
@@ -62,7 +62,53 @@ async function getAnalytics(userId, groupId) {
             return response_body;
         }
         response_body.success = true;
-        response_body.data = result.data; //TODO : CHANGE TO CORRECT FIELD WHEN BACKEND IS DONE WITH IT
+        response_body.data = result.analytics[groupId];
+        return response_body;
+    }).catch( (error) => {
+        console.log(error);
+        response_body.errorType = 2;
+        response_body.errorMessage = "Internal parsing error";
+        return response_body;
+    });
+}
+
+async function removeRecurringExpense(groupId, id) {
+    let response_body = {
+        success : false,
+        errorType : 0,
+        errorMessage : "",
+        data : null
+    }
+
+    const request_body = JSON.stringify({
+        "recurring_expense_id" : id,
+        "group_id" : groupId
+    });
+
+    const options = {
+        method: 'POST',
+        mode : 'no-cors',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: request_body
+    }
+
+    return await fetch("/api/remove_recurring_expense", options).then( (response) => {
+        if (response.status == 400 || response.status == 500 || response.status == 502) {
+            response_body.errorMessage = "Could not service this request right now.\nPlease try again later";
+            return response_body;
+        }
+        return response.json();
+    }).then((result) => {
+        if (result.errorType) { //Lambda response doesn't have this field
+            return result;
+        } else if (!result.remove_success) { //idk what would cause this besides an error
+            response_body.errorType = 1;
+            response_body.errorMessage = "Could not service this request right now.\nPlease try again later";
+            return response_body;
+        }
+        response_body.success = true;
         return response_body;
     }).catch( (error) => {
         console.log(error);

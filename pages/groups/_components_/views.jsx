@@ -173,6 +173,9 @@ export function TransactionInputView({ members, userId, groupId, commentLength, 
                 format.due_date = "later";
 
                 format.tag = form.querySelector("#tag_select").value;
+                if (format.tag == "Notag") {
+                    format.tag = "No Tag"
+                }
                 format.frequency = form.querySelector("#rec_select").value;
                 for (let user in format.expense) {
                     format.expense[user] = parseFloat(format.expense[user]);
@@ -181,6 +184,9 @@ export function TransactionInputView({ members, userId, groupId, commentLength, 
                 let result;
                 if (format.frequency != "none") {
                     result = await group_methods.submitRecurringExpense(format);
+                    if (result.success) {
+                        result = await group_methods.submitExpense(format);
+                    }
                 } else {
                     result = await group_methods.submitExpense(format);
                 }
@@ -362,7 +368,7 @@ export function TransactionView({ userId, members, expense, hideParent, showFulF
                     <p>{expense.title}</p>
                     <p>${expense.amount.toFixed(2)}</p>
                     <p style={{color : "var(--neutral-background)"}}>{expense.comment}</p>
-                    <p>{expense.tag || "placeholder"}</p>
+                    <p>{(expense.tag == "Notag"? "No Tag" : expense.tag)}</p>
                     <div className={styles.name_email_combo}>
                         <p>{members[expense.owner] || "(Not In Group)"}</p>
                         <p>{expense.owner}</p>
@@ -1235,6 +1241,53 @@ export function PayAllView({ members, userId, groupId, commentLength, callback, 
             </div>
         </div>
 
+    );
+}
+
+export function RecurringView({ groupId, id, hideParent}) {
+    const handleDelete = async (event) => {
+        //make API call
+        if (!ButtonLock.isLocked()) {
+            ButtonLock.LockButton();
+            let container = event.target;
+            let originalText = container.firstChild.textContent;
+            //set button visually to be locked
+            container.firstChild.textContent = "Removing";
+            container.style = "background-color : var(--green-muted-background)";
+            const result = await group_methods.removeRecurringExpense(groupId, id);
+            //const result = {success : false};
+            if (result.errorType) {
+                console.log(result.errorMessage);
+            } else if (!result.success) {
+                alert("Something went wrong");
+            } else { //went through and status has changed
+                window.location.reload();
+                return;
+            }
+            ButtonLock.UnlockButton();
+            container.firstChild.textContent = originalText;
+            container.style = "";
+            hideParent(-1);
+        }
+        return;
+    }
+    const closeContainer = () => {
+        if (!ButtonLock.isLocked()) {
+            hideParent(-1);
+        }
+    }
+
+    return (
+        <div className={styles.transaction_background} id="transaction_view">
+            <div className={styles.transaction_large}>
+                <div className={styles.x_button} onClick={closeContainer}></div>
+                <div className={styles.transaction_heading} id="view_item_info">
+                    <p>Would you like to remove this recurring expense?</p>
+                </div>
+                <div className={styles.submit_expense_container} onClick={(e) => { handleDelete(e) }}><p>Remove</p></div>
+                <div className={styles.submit_expense_container + " " + styles.negative} onClick={closeContainer}><p>Cancel</p></div>
+            </div>
+        </div>
     );
 }
 

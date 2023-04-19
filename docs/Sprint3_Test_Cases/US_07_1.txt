@@ -1,0 +1,15 @@
+A. Identification and classification
+Test Case: 7001
+System: Expenses
+User is able to create a recurring expense
+Severity: 3
+
+B. Instructions
+	1. Login and go to a group with members
+    2. Create an expense request
+    3. Click on the dropdown and select "Daily"
+    4. Submit the expense request
+
+C. Expected Result:
+    1. A new expense is created as normal
+    2. After 24 hours, the same expense is automatically created again

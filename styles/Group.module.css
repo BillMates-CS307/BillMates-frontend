@@ -627,7 +627,7 @@ border-radius: var(--border-radius);
     height: 100%;
   }
   .gallery_container {
-    width: 50vw;
+    width: 100%;
     height: 500px;
   }
 
@@ -638,14 +638,14 @@ border-radius: var(--border-radius);
     border-radius: 50%;
     padding: 0.25rem;
     border: none;
-    background-color: var(--dark-neutral-background);
+    background-color: var(--green-background);
     align-self: flex-end;
     margin: 0 5px;
   }
   .arrow svg {
     width: 1rem;
     height: 1rem;
-    color: var(--main-background-font-color);
+    color: #FFF;
   }
   .left {
     transform: rotate(180deg);
@@ -694,7 +694,7 @@ border-radius: var(--border-radius);
   }
 
   .gallery_graphs_container {
-    width: 50vw;
+    width: 90vw;
     /* height: 600px; */
     margin: auto;
   }
