@@ -16,9 +16,6 @@ import { useRouter } from 'next/router.js';
 //Recharts items
 import {CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip, Legend,
     LineChart, Line, BarChart, Bar, PieChart, Pie, Cell} from 'recharts';
-import { shopping_methods } from '@/lambda_service/shoppingService.js';
-import { useFileSystemPublicRoutes } from '@/next.config.js';
-import { to } from 'react-spring';
 
 //SHOW ANALYTICS HERE
 
