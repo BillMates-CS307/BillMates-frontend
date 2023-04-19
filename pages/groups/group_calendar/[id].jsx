@@ -95,13 +95,11 @@ export default function GroupCalendar() {
         ) : (
           <>
             <CalendarContents />
-            {isGroupCalendar && (
-              <LinkWrapper>
-                <AddLink href={`/groups/event_form/${groupData.groupId}`}>
-                  +
-                </AddLink>
-              </LinkWrapper>
-            )}
+            <LinkWrapper>
+              <AddLink href={`/groups/event_form/${groupData.groupId}`}>
+                +
+              </AddLink>
+            </LinkWrapper>
           </>
         )}
         <Space />

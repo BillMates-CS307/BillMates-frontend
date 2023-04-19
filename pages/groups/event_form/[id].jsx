@@ -22,11 +22,17 @@ import { isNil } from "lodash";
 export default function EventForm() {
   const dispatch = useDispatch();
   const router = useRouter();
+  // const { date: initialDate, time: initialTime } = useSelector(selectEventData);
   const [isAuthenticated, setAuthentication] = useState(false);
+  const [date, setDate] = useState(new Date());
+  const [time, setTime] = useState(moment(new Date()).format("HH:mm:ss"));
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [location, setLocation] = useState("");
   const groupData = useSelector(selectGroupData);
-  const { date, time } = useSelector(selectEventData);
   const userId = isAuthenticated ? localStorage.getItem("tempId") : null;
-  console.log(moment(new Date()).format("YYYY-MM-DD"));
+  // console.log(moment(new Date()).format("YYYY-MM-DD"));
+  // console.log(moment(new Date()).format("HH:mm:ss"));
   async function check() {
     let result = await user_methods.validateLoginJWT(router);
     if (result.success) {
@@ -44,49 +50,65 @@ export default function EventForm() {
   }
 
   const onNameBlurHandler = (e) => {
-    dispatch(
-      eventDataAction.setName({
-        name: e.currentTarget.value,
-      })
-    );
+    // dispatch(
+    //   eventDataAction.setName({
+    //     name: e.currentTarget.value,
+    //   })
+    // );
+    setName(e.currentTarget.value);
   };
 
   const onDescriptionBlurHandler = (e) => {
-    dispatch(
-      eventDataAction.setDescription({
-        description: e.currentTarget.value,
-      })
-    );
+    // dispatch(
+    //   eventDataAction.setDescription({
+    //     description: e.currentTarget.value,
+    //   })
+    // );
+    setDescription(e.currentTarget.value);
   };
 
   const onLocationBlurHandler = (e) => {
-    dispatch(
-      eventDataAction.setLocation({
-        location: e.currentTarget.value,
-      })
-    );
+    // dispatch(
+    //   eventDataAction.setLocation({
+    //     location: e.currentTarget.value,
+    //   })
+    // );
+    setLocation(e.currentTarget.value);
   };
 
   const onDateChange = (v) => {
+    console.log("onDateChange");
     console.log(v);
-    dispatch(
-      eventDataAction.setDate({
-        date: moment(v).format("YYYY-MM-DD"),
-      })
-    );
+    console.log(moment(v).format("YYYY-MM-DD"));
+    // dispatch(
+    //   eventDataAction.setDate({
+    //     date: moment(v).format("YYYY-MM-DD"),
+    //   })
+    // );
+    setDate(v);
   };
 
   const onTimeChange = (v) => {
     console.log(v);
-    dispatch(
-      eventDataAction.setTime({
-        time: v,
-      })
-    );
+    // dispatch(
+    //   eventDataAction.setTime({
+    //     time: v,
+    //   })
+    // );
+    setTime(v);
   };
 
   const onClickSubmitHandler = async (e) => {
     e.preventDefault();
+    dispatch(
+      eventDataAction.setEvent({
+        name,
+        description,
+        location,
+        date: moment(date).format("YYYY-MM-DD"),
+        time,
+      })
+    );
     dispatch(eventDataAction.requestFlowAddEvent());
   };
 
@@ -131,7 +153,12 @@ export default function EventForm() {
         </EventTitleWrapper>
         <PickerWrapper>
           <EventInputLabel>Date</EventInputLabel>
-          <DatePicker locale="en" onChange={onDateChange} value={date} />
+          <DatePicker
+            locale="en"
+            onChange={onDateChange}
+            value={date}
+            // disableCalendar={true}
+          />
         </PickerWrapper>
         <PickerWrapper>
           <EventInputLabel>Time</EventInputLabel>
@@ -141,6 +168,7 @@ export default function EventForm() {
             maxDetail="second"
             onChange={onTimeChange}
             value={time}
+            // disableClock={true}
           />
         </PickerWrapper>
         <EventInputSectionWrapper marginTop={10}>
