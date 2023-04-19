@@ -18,6 +18,7 @@ import {CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip, Legend,
     LineChart, Line, BarChart, Bar, PieChart, Pie, Cell} from 'recharts';
 import { shopping_methods } from '@/lambda_service/shoppingService.js';
 import { useFileSystemPublicRoutes } from '@/next.config.js';
+import { to } from 'react-spring';
 
 //SHOW ANALYTICS HERE
 
@@ -146,13 +147,20 @@ export default function Analytics() {
                     tag : tag,
                     amt : response.data[userId].tags[tag]
                 });
-                if (response.data[userId].tags[tag]) {
+                if (response.data[userId].tags[tag] != 0) {
                     userHasData = true;
                 }
             }
+            for (let person in response.data.expense_relations) {
+                userBG.push({
+                    name : response.data.email_map[person],
+                    amt : Math.abs(response.data.expense_relations[person]).toFixed(2),
+                    isNeg : response.data.expense_relations[person] < 0
+                });
+            }
 
             let groupLG = JSON.parse(JSON.stringify(userLG)), 
-            groupBG = userBG, 
+            groupBG = [], 
             groupPC = JSON.parse(JSON.stringify(userPC)),
             i = 0;
             //have to move after bc group still could have data
@@ -162,6 +170,9 @@ export default function Analytics() {
 
             let groupHasData = false;
             for (let user in response.data) {
+                if (user == "expense_relations" || user == "user_totals" || user == "email_map") { //this is the bar graph data
+                    continue;
+                }
                 if (user != userId) {
                     for (let month in response.data[user].month) {
                         groupLG[i++].num += response.data[user].month[month];
@@ -173,11 +184,30 @@ export default function Analytics() {
                             groupHasData = true;
                         }
                     }
+                    i = 0;
                 }
             }
             if (!groupHasData) {
                 groupPC = [{tag: "No Data", amt : 1}];
             }
+
+            for (let person in response.data.user_totals) {
+                groupBG.push({
+                    name : response.data.email_map[person],
+                    amt : Math.abs(response.data.user_totals[person]).toFixed(2),
+                    isNeg : response.data.user_totals[person] < 0
+                });
+            }
+
+            // function getMyShare(people) {
+            //     let total = 0;
+            //     for (let p in people) {
+            //         total += people[p];
+            //     }
+            //     return total.toFixed(2);
+            // }
+
+            console.log(groupBG);
 
             setUserLineGraph(userLG);
             setUserBarGraph(userBG);
@@ -300,7 +330,7 @@ export default function Analytics() {
                                             minTickGap={-200}
                                             hide={true}
                                             />
-                                            <YAxis stroke='var(--main-background-font-color)' allowDecimals={false} width={20}/>
+                                            <YAxis stroke='var(--main-background-font-color)' allowDecimals={false} width={40}/>
                                             <Tooltip />
                                             <Line type="monotone" dataKey="num" stroke="var(--green-background)" strokeWidth={3}/>
                                             
@@ -311,10 +341,23 @@ export default function Analytics() {
                                     <ResponsiveContainer>
                                         <BarChart data={groupBarGraph}>
                                             <CartesianGrid strokeDasharray="3 3" stroke='var(--dark-neutral-background)'/>
-                                            <XAxis dataKey="name" stroke='var(--main-background-font-color)'/>
-                                            <YAxis stroke='var(--main-background-font-color)'/>
+                                            <XAxis dataKey="name" stroke='var(--main-background-font-color)' hide={true}/>
+                                            <YAxis stroke='var(--main-background-font-color)'
+                                            dataKey={ (v) => {return parseFloat(v.amt)} }
+                                            domain={[0, 'auto']}
+                                            tickCount={6}
+                                            />
                                             <Tooltip />
-                                            <Bar type="monotone" dataKey="amt" fill="var(--green-background)" />
+                                            <Bar type="monotone" dataKey="amt" fill="var(--green-background)">
+                                            {groupBarGraph.map((entry, index) => (
+                                                <Cell
+                                                key={`cell-${index}`}
+                                                fill={(groupPieLabel)? ( (groupBarGraph[index].isNeg)? "var(--red-background)" : "var(--green-background)" )
+                                                        : "var(--dark-neutral-background)"}
+                                                
+                                                />
+                                            ))}
+                                                </Bar>
                                         </BarChart>
                                     </ResponsiveContainer>
                                 </div>
@@ -363,9 +406,22 @@ export default function Analytics() {
                                         <BarChart data={userBarGraph}>
                                         <   CartesianGrid strokeDasharray="3 3" stroke='var(--dark-neutral-background)'/>
                                             <XAxis dataKey="name" stroke='var(--main-background-font-color)'/>
-                                            <YAxis stroke='var(--main-background-font-color)'/>
+                                            <YAxis stroke='var(--main-background-font-color)'
+                                            dataKey={ (v) => {return parseFloat(v.amt)} }
+                                            domain={[0, 'auto']}
+                                            tickCount={6}/>
+                                            
                                             <Tooltip />
-                                            <Bar type="monotone" dataKey="amt" fill="var(--green-background)" />
+                                            <Bar type="monotone" dataKey="amt" fill="var(--green-background)">
+                                            {userBarGraph.map((entry, index) => (
+                                                <Cell
+                                                key={`cell-${index}`}
+                                                fill={(groupPieLabel)? (userBarGraph[index].isNeg)? "var(--red-background)" : "var(--green-background)" 
+                                                        : "var(--dark-neutral-background)"}
+                                                
+                                                />
+                                            ))}
+                                                </Bar>
                                         </BarChart>
                                     </ResponsiveContainer>
                                 </div>

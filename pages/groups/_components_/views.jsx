@@ -173,6 +173,9 @@ export function TransactionInputView({ members, userId, groupId, commentLength, 
                 format.due_date = "later";
 
                 format.tag = form.querySelector("#tag_select").value;
+                if (format.tag == "Notag") {
+                    format.tag = "No Tag"
+                }
                 format.frequency = form.querySelector("#rec_select").value;
                 for (let user in format.expense) {
                     format.expense[user] = parseFloat(format.expense[user]);
