@@ -4,7 +4,7 @@ import { shopping_methods } from "@/lambda_service/shoppingService.js";
 import { ButtonLock } from "../../global_components/button_lock";
 
 //MIGHT NOT BE NEEDED
-export default function ShoppingListCreateList({ hideParent, userId }) {
+export default function ShoppingListCreateList({ hideParent, groupId }) {
     const handleSubmit = async (event) => {
         event.preventDefault();
         if (!ButtonLock.isLocked()) {
@@ -28,7 +28,7 @@ export default function ShoppingListCreateList({ hideParent, userId }) {
             event.target.children[1].textContent = "Create Shopping List";
             event.target.children[1].style = "background : var(--green-muted-background)";
             console.log(value);
-            let response = await shopping_methods.createList(userId, value);
+            let response = await shopping_methods.createList(value, groupId);
             console.log("test createList response" + JSON.stringify(response));
             if (response.success) {
                 window.location.reload();

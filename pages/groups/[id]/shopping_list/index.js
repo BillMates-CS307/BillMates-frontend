@@ -20,7 +20,6 @@ import { useRouter } from 'next/router.js';
 //SHOW ALL LISTS HERE
 
 export default function ShoppingLists() {
-    //UNCOMMENT WHEN NEEDED
     const router = useRouter();
     const [isAuthenticated, setAuthentication] = useState(false);
     async function check() {
@@ -37,9 +36,6 @@ export default function ShoppingLists() {
             check();
         }
     }, [isAuthenticated]);
-    
-    //define loading circle and refresh when loading is done
-    const [loading, setLoading] = useState(true);
 
     //Defining state management
     const [makeShoppingListVisible, setMakeShoppingListVisible] = useState(false);
@@ -48,13 +44,18 @@ export default function ShoppingLists() {
         lists : {}
     });
 
+    const matchedGroupId = (isAuthenticated) ? window.location.href.match('(groups)\/[a-zA-z\-0-9]+')[0] : null;
+    const groupId = (matchedGroupId) ? matchedGroupId.substring(7) : null;
+    //const userId = (isAuthenticated) ? localStorage.getItem("tempId") : null;
+
     //API call and populate group information to trigger redraw
     const fetchData = async () => {
         console.log("fetching data");
         let response = {
             lists : {}
         }
-        response = await shopping_methods.fetchAllListData(userId);
+        response = await shopping_methods.fetchAllListData(groupId);
+        console.log(response);
         setLoading(false);
         if (response.errorType) {
             console.log("An error occured, check logs");
@@ -64,9 +65,9 @@ export default function ShoppingLists() {
             let formatted_response = {
                 lists : {}
             }
-            for (let lists of response.lists) {
-                lists.reverse();
-                formatted_response.lists[group_id] = lists;
+            for (let lists of response.data) {
+                //lists.reverse();
+                formatted_response.lists[groupId] = lists;
             }
             console.log(formatted_response);
             setResponseData(formatted_response);
@@ -79,15 +80,13 @@ export default function ShoppingLists() {
         }
     }
     
+    //define loading circle and refresh when loading is done
+    const [loading, setLoading] = useState(true);
     useEffect(() => {
         if (isAuthenticated) {
             fetchData(); //make the call
         }
     }, [isAuthenticated]);
-
-    const matchedGroupId = (isAuthenticated) ? window.location.href.match('(groups)\/[a-zA-z\-0-9]+')[0] : null;
-    const groupId = (matchedGroupId) ? matchedGroupId.substring(7) : null;
-    const userId = (isAuthenticated) ? localStorage.getItem("tempId") : null;
 
     async function placeHolder(isCallback) {
         console.log("TODO");
@@ -120,12 +119,13 @@ export default function ShoppingLists() {
                 <Header></Header>
                 <main className={styles.main}>
                 <div className={styles.banner}>
-                    <p>Lists</p>
+                    <p>LISTS</p>
                 </div>
                 { (loading)?
                     <LoadingCircle additionalStyles={{ margin: "15px auto" }}></LoadingCircle>
                     :
                     <>
+                    <section>
                     {
                         response_data.lists &&
                             Object.keys(response_data.lists).map((id) => {
@@ -134,19 +134,19 @@ export default function ShoppingLists() {
                                     <ListView
                                     listName={list.name}
                                     listId={id}
-                                    goToList={`/shoppinglist/${id}`}
+                                    goToList={() => router.push(`/groups/${groupId}/shoppinglist/${id}`)}
                                     />
                                 );
                             })
                     }
-
+                    </section>
                     </>
                 }
                 </main>
                 {makeShoppingListVisible ? (
                     <CreateList
                         hideParent={setMakeShoppingListVisible}
-                        userId={userId}
+                        groupId={groupId}
                     ></CreateList>
                     ) : (
                     <></>
