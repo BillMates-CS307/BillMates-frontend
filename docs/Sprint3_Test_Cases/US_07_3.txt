@@ -2,7 +2,7 @@ A. Identification and classification
 Test Case: 7002
 System: Expenses
 User is able to delete a recurring expense
-Severity: 3
+Severity: 2
 
 B. Instructions
     1. Repeat test case 7001
