@@ -3,12 +3,12 @@ import groupStyles from "@/styles/Group.module.css"
 import { shopping_methods } from "@/lambda_service/shoppingService.js";
 import { ButtonLock } from "../../global_components/button_lock";
 
-export default function ShoppingListCreateList({ hideParent, groupId }) {
+export default function ShoppingListCreateItem({ hideParent, listId }) {
     const handleSubmit = async (event) => {
         event.preventDefault();
         if (!ButtonLock.isLocked()) {
             ButtonLock.LockButton();
-            const inputElm = document.querySelector("#newshoppinglist"); //might need to fix
+            const inputElm = document.querySelector("#newitemlist"); //might need to fix
             const value = inputElm.value;
 
             if (value.trim() == "") {
@@ -24,19 +24,19 @@ export default function ShoppingListCreateList({ hideParent, groupId }) {
                 return;
             }
 
-            event.target.children[1].textContent = "Create Shopping List";
+            event.target.children[1].textContent = "Create Item List";
             event.target.children[1].style = "background : var(--green-muted-background)";
             console.log(value);
-            let response = await shopping_methods.createList(value, groupId);
-            //console.log("test createList response" + JSON.stringify(response));
+            let response = await shopping_methods.addItem(value, listId);
+            //console.log("test createItem response" + JSON.stringify(response));
             if (response.success) {
                 window.location.reload();
                 return;
             } else {
-                alert("You already have a shopping list with this name");
+                alert("You already have an item with this name");
             }
             ButtonLock.UnlockButton();
-            event.target.children[1].textContent = "Create List";
+            event.target.children[1].textContent = "Add Item";
             event.target.children[1].style = "";
             alert("Something went wrong");
         } else {
@@ -54,14 +54,14 @@ export default function ShoppingListCreateList({ hideParent, groupId }) {
                 <div className={groupStyles.x_button} onClick={() => hideParent(false)}></div>
                 <form onSubmit={handleSubmit} method="post">
                     <div>
-                        <label htmlFor="newshoppinglist">Shopping List Name:</label>
+                        <label htmlFor="newitemlist">Item name:</label>
                         <empty>
-                            <input type="text" id="newshoppinglist" name="newshoppinglist" />
+                            <input type="text" id="newitemlist" name="newitemlist" />
                         </empty>
                         <span></span>
                     </div>
 
-                    <button type="submit">Create Shopping List</button>
+                    <button type="submit">Add Item</button>
                 </form>
             </div>
         </div>

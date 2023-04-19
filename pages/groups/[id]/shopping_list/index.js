@@ -61,20 +61,16 @@ export default function ShoppingLists() {
             console.log("An error occured, check logs");
             return;
         } else if (response.success) {
-            //reverse arrays to show most recent first
             let formatted_response = {
                 lists : {}
             }
             for (let lists of response.data) {
-                //lists.reverse();
-                formatted_response.lists[groupId] = lists;
+                formatted_response.lists[groupId] = lists; //bug with only showing one list, cant append
+                //assigning each list to the same groupId
             }
             console.log(formatted_response);
             setResponseData(formatted_response);
             setLoading(false);
-            // dispatch(
-            //     groupDataAction.setGroupData(response_data)
-            // );
         } else {
             router.push("/home/");
         }
@@ -134,7 +130,7 @@ export default function ShoppingLists() {
                                     <ListView
                                     listName={list.name}
                                     listId={id}
-                                    goToList={() => router.push(`/groups/${groupId}/shoppinglist/${id}`)}
+                                    goToList={() => router.push(`/groups/${groupId}/shopping_list/${list.name}`)}
                                     />
                                 );
                             })

@@ -6,12 +6,12 @@ import CustomHead from '../../../global_components/head.jsx'
 import LoadingCircle from '../../../global_components/loading_circle.jsx';
 
 //Components
-import ListView from '../../_components_/shoppinglist_listview.jsx';
-import CreateItems from '../../_components_/shoppinglist_createlist.jsx';
+import ItemView from '../../_components_/shoppinglist_itemview.jsx';
+import CreateItems from '../../_components_/shoppinglist_createitem.jsx';
 
 import { group_methods } from '@/lambda_service/groupService.js';
 import { user_methods } from '@/lambda_service/userService.js';
-import { shopping_methods } from '@/lambda_service/shoppingService';
+import { shopping_methods } from '@/lambda_service/shoppingService.js';
 //React and Redux stuff
 import React, { useEffect, useState } from "react";
 import { useRouter } from 'next/router.js';
@@ -46,24 +46,27 @@ export default function ShoppingListActive() {
     }, [isAuthenticated]);
 
     //Defining state management
-    const [makeListItemsVisible, setMakeListItemsVisible] = useState(false);
+    const [makeItemListVisible, setMakeItemListVisible] = useState(false);
     const [response_data, setResponseData] = useState({
         groupId : null,
+        listId : null, //added 4-19-23
         lists : {}, //might not be needed
         items : {}
     });
 
     const listId = (isAuthenticated) ? window.location.href.match('[a-zA-Z0-9\-]*$')[0] : null;
-    let matchedGroupId = (isAuthenticated) ? window.location.href.match('(groups)\/[a-zA-z\-0-9]+')[0] : null;
-    const userId = (isAuthenticated) ? localStorage.getItem("tempId") : null;
-
+    const matchedGroupId = (isAuthenticated) ? window.location.href.match('(groups)\/[a-zA-z\-0-9]+')[0] : null;
+    const groupId = (matchedGroupId) ? matchedGroupId.substring(7) : null;
+    console.log("listId: " + listId);
+    console.log("groupId: " + groupId);
     //API call and populate group information to trigger redraw
     const fetchData = async () => {
         console.log("fetching data");
         let response = {
             items : {}
         }
-        response = await shopping_methods.fetchListData(userId);
+        response = await shopping_methods.fetchListData(groupId, listId);
+        console.log(response);
         setLoading(false);
         if (response.errorType) {
             console.log("An error occured, check logs");
@@ -74,8 +77,7 @@ export default function ShoppingListActive() {
                 items : {}
             }
             for (let items of response.data) {
-                items.reverse();
-                formatted_response.items[group_id] = items;
+                formatted_response.items[listId] = items;
             }
             console.log(formatted_response);
             setResponseData(formatted_response);
@@ -102,8 +104,11 @@ export default function ShoppingListActive() {
         return (
             <>
                 <CustomHead title={"Shopping Lists"} description={"Your shopping lists"}></CustomHead>
-                <Header groupId = {groupSettingsRoute}></Header>
+                <Header></Header>
                 <main className={styles.main}>
+                <div className={styles.banner}>
+                    <p>ITEMS</p>
+                </div>
                 { (loading)?
                             <LoadingCircle additionalStyles={{ margin: "15px auto" }}></LoadingCircle>
                             :
@@ -113,7 +118,7 @@ export default function ShoppingListActive() {
                                     Object.keys(response_data.items).map((id) => {
                                         const list = response_data.items[id];
                                         return (
-                                            <ListView
+                                            <ItemView
                                             listName={list.name}
                                             listId={id}
                                             goToList={`/shoppinglist/${id}`}
@@ -124,22 +129,21 @@ export default function ShoppingListActive() {
                             </>
                 }
                 </main>
-                {makeShoppingListVisible ? (
+                {makeItemListVisible ? (
                     <CreateItems
-                        hideParent={setMakeShoppingListVisible}
-                        userId={userId}
+                        hideParent={setMakeItemListVisible}
+                        listId={listId}
                     ></CreateItems>
                     ) : (
                     <></>
                 )}
 
                 <Footer 
-                    callback={placeHolder} 
+                    callback={setMakeItemListVisible} 
                     args={true} 
                     lockStatus={loading}
                 ></Footer>
             </>
-
             
         )
     } else {
