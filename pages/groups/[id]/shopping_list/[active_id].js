@@ -8,7 +8,6 @@ import LoadingCircle from '../../../global_components/loading_circle.jsx';
 //Components
 import ItemMenuView from '../../_components_/shoppinglist_itemview.jsx';
 import CreateItems from '../../_components_/shoppinglist_createitem.jsx';
-import DeleteCheck from '../../_components_/shoppinglist_deletecheck.jsx';
 
 import { group_methods } from '@/lambda_service/groupService.js';
 import { user_methods } from '@/lambda_service/userService.js';
