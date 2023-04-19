@@ -15,10 +15,16 @@ export default function CalendarDetailItem({
   location,
   group_name,
 }) {
+  const onRemoveClick = (e) => {
+    console.log("remove click");
+  };
   return (
     <CalendarDetailItemWrapper>
       <CalendarDetailItemNameWrapper>
         <CalendarDetailItemName>{name}</CalendarDetailItemName>
+        <CalendarDetailRemoveButton onClick={onRemoveClick}>
+          X
+        </CalendarDetailRemoveButton>
       </CalendarDetailItemNameWrapper>
       <CalendarDetailItemContentsWrapper>
         <CalendarDetailItemCreatorWrapper>
@@ -70,6 +76,8 @@ const CalendarDetailItemWrapper = styled.div`
 `;
 
 const CalendarDetailItemNameWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
   padding: 10px;
   width: 100%;
   background: var(--green-background);
@@ -77,6 +85,12 @@ const CalendarDetailItemNameWrapper = styled.div`
 `;
 
 const CalendarDetailItemName = styled.h3``;
+
+const CalendarDetailRemoveButton = styled.div`
+  font-weight: bold;
+  font-size: 1.2em;
+  padding-right: 5px;
+`;
 
 const CalendarDetailItemContentsWrapper = styled.div`
   display: flex;
