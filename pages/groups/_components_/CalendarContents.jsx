@@ -18,8 +18,6 @@ export default function CalendarContents() {
 
   const onChange = (value, e) => {
     setValue(e.target.value);
-    // TODO: Fix to detail page
-    // router.push("/");
   };
 
   const onClickDay = (value, event) => {

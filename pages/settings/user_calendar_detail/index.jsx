@@ -9,8 +9,8 @@ import Footer from "@/pages/global_components/footer";
 import CustomHead from "@/pages/global_components/head";
 import { CommonPopup } from "@/lib/ui/CommonPopup";
 import { selectCalendarData } from "@/lib/store/calendarData/calendarData.slice";
-import CalendarDetailItem from "../_components_/CalendarDetailItem";
 import { checkEventDayBy } from "@/lib/util/date";
+import CalendarDetailItem from "../__components__/CalendarDetailItem";
 
 export default function GroupCalendarDetail() {
   const dispatch = useDispatch();

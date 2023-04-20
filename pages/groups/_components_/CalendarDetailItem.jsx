@@ -3,6 +3,8 @@ import Link from "next/link";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import { isEmpty, isNil } from "lodash";
+import { useDispatch } from "react-redux";
+import { eventDataAction } from "@/lib/store/eventData/eventData.slice";
 
 export default function CalendarDetailItem({
   creator,
@@ -14,17 +16,23 @@ export default function CalendarDetailItem({
   total,
   location,
   group_name,
+  frequency,
+  id,
 }) {
+  const dispatch = useDispatch();
   const onRemoveClick = (e) => {
-    console.log("remove click");
+    dispatch(eventDataAction.setRemoveId({ removeId: id }));
+    dispatch(eventDataAction.requestFlowRemoveEvent());
   };
   return (
     <CalendarDetailItemWrapper>
       <CalendarDetailItemNameWrapper>
         <CalendarDetailItemName>{name}</CalendarDetailItemName>
-        <CalendarDetailRemoveButton onClick={onRemoveClick}>
-          X
-        </CalendarDetailRemoveButton>
+        {frequency === "none" && (
+          <CalendarDetailRemoveButton onClick={onRemoveClick}>
+            X
+          </CalendarDetailRemoveButton>
+        )}
       </CalendarDetailItemNameWrapper>
       <CalendarDetailItemContentsWrapper>
         <CalendarDetailItemCreatorWrapper>

@@ -16,14 +16,14 @@ export default function CalendarContents() {
 
   const onChange = (value, e) => {
     setValue(e.target.value);
-    // TODO: Fix to detail page
-    // router.push("/");
   };
 
   const onClickDay = (value, event) => {
     // href={`/groups/group_calendar/${router.query.id}`}
     router.push(
-      `/groups/user_calendar_detail?date=${moment(value).format("YYYY-MM-DD")}`
+      `/settings/user_calendar_detail?date=${moment(value).format(
+        "YYYY-MM-DD"
+      )}`
     );
   };
 
