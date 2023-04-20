@@ -8,17 +8,13 @@ import {
   userDataAction,
 } from "@/lib/store/userData/userData.slice";
 import { user_methods } from "@/lambda_service/userService";
-import Header from "@/pages/global_components/groups_header";
+import Header from "@/pages/global_components/header";
 import Footer from "@/pages/global_components/footer";
 import CustomHead from "@/pages/global_components/head";
 import { CommonPopup } from "@/lib/ui/CommonPopup";
-import { selectGroupData } from "@/lib/store/groupData.slice";
-import getGroupCalendar from "@/lib/api/getGroupCalendar";
-import {
-  calendarDataAction,
-  selectIsGroupCalendar,
-} from "@/lib/store/calendarData/calendarData.slice";
-import CalendarContents from "../_components_/CalendarContents";
+import { calendarDataAction } from "@/lib/store/calendarData/calendarData.slice";
+import getUserCalendar from "@/lib/api/getUserCalendar";
+import CalendarContents from "../__components__/CalendarContents";
 import LoadingCircle from "../../global_components/loading_circle";
 
 let calendarData = {
@@ -30,8 +26,6 @@ export default function GroupCalendar() {
   const router = useRouter();
   const [isAuthenticated, setAuthentication] = useState(false);
   const [loading, setLoading] = useState(true);
-  const groupData = useSelector(selectGroupData);
-  const isGroupCalendar = useSelector(selectIsGroupCalendar);
   const userId = isAuthenticated ? localStorage.getItem("tempId") : null;
 
   async function check() {
@@ -42,11 +36,10 @@ export default function GroupCalendar() {
     }
   }
 
-  async function fetchData(group_id) {
+  async function fetchData() {
     console.log("fetching data");
-    let lambda_resp = await getGroupCalendar({
+    let lambda_resp = await getUserCalendar({
       email: userId,
-      group_id,
     });
     console.log("resp");
     console.log(lambda_resp);
@@ -58,14 +51,6 @@ export default function GroupCalendar() {
     setLoading(false);
   }
 
-  function holdGroupID() {
-    if (userId == groupData.manager) {
-      router.push("/groupsettings/" + groupData.groupId);
-    } else {
-      router.push("/groupsettings_members/" + groupData.groupId);
-    }
-  }
-
   useEffect(() => {
     if (!isAuthenticated) {
       console.log("authenticating");
@@ -75,18 +60,18 @@ export default function GroupCalendar() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      fetchData(groupData.groupId); //make the call
+      fetchData(); //make the call
     }
   }, [isAuthenticated]);
 
   return (
     <>
       <CustomHead
-        title={"Group Calendar"}
-        description={"A BillMates group calendar"}
-      />
+        title={"User Calendar"}
+        description={"A BillMates calendar"}
+      ></CustomHead>
       <CommonPopup />
-      <Header groupId={holdGroupID} />
+      <Header />
       <CalendarWrapper>
         {loading ? (
           <LoadingCircle
@@ -95,11 +80,6 @@ export default function GroupCalendar() {
         ) : (
           <>
             <CalendarContents />
-            <LinkWrapper>
-              <AddLink href={`/groups/event_form/${groupData.groupId}`}>
-                +
-              </AddLink>
-            </LinkWrapper>
           </>
         )}
         <Space />

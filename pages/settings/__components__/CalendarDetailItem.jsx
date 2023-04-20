@@ -2,8 +2,8 @@ import React from "react";
 import Link from "next/link";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
-import { isEmpty, isNil } from "lodash";
 import { useDispatch } from "react-redux";
+import { isEmpty, isNil } from "lodash";
 import { eventDataAction } from "@/lib/store/eventData/eventData.slice";
 
 export default function CalendarDetailItem({
@@ -19,6 +19,8 @@ export default function CalendarDetailItem({
   frequency,
   id,
 }) {
+  console.log("calendarDetailITem");
+  console.log(id);
   const dispatch = useDispatch();
   const onRemoveClick = (e) => {
     dispatch(eventDataAction.setRemoveId({ removeId: id }));

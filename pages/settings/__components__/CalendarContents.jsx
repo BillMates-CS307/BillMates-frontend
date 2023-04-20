@@ -5,13 +5,11 @@ import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
 import Calendar from "react-calendar";
 import { selectCalendarData } from "@/lib/store/calendarData/calendarData.slice";
-import { selectGroupId } from "@/lib/store/groupData.slice";
 import { checkEventDayBy } from "@/lib/util/date";
 
 export default function CalendarContents() {
   const dispatch = useDispatch();
   const router = useRouter();
-  const groupId = useSelector(selectGroupId);
   const events = useSelector(selectCalendarData).events;
   const [value, setValue] = useState(new Date());
   // const [mark, setMark] = useState(["2023-04-10", "2023-04-10"]);
@@ -23,7 +21,7 @@ export default function CalendarContents() {
   const onClickDay = (value, event) => {
     // href={`/groups/group_calendar/${router.query.id}`}
     router.push(
-      `/groups/group_calendar_detail/${groupId}?date=${moment(value).format(
+      `/settings/user_calendar_detail?date=${moment(value).format(
         "YYYY-MM-DD"
       )}`
     );
