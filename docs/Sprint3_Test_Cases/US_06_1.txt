@@ -13,4 +13,4 @@ B. Instructions
     6. Click on the user settings button and then the "Calendar" button
 
 C. Expected Result:
-    1. The calenar is marked on days that coorspond to each group
+    1. The calenar is marked on days that correspond to each group

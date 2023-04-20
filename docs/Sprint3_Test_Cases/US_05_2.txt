@@ -10,7 +10,7 @@ B. Instructions
     3. Click on the "+" button
     4. Fill out the form and submit
     5. Click on the day that the event was scheduled for
-    6. Select "Unschedule" ----------------------- idk if this is how
+    6. Select X Button next to event name
     7. Select the day that the event occured on
 
 C. Expected Result:

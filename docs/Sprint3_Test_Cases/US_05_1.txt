@@ -12,4 +12,6 @@ B. Instructions
     5. Click on the day that the event was scheduled for
 
 C. Expected Result:
-    1. The event specified will be shown, including the (name, description, location, and time)
+    1. If form submit success, route back to calendar page
+    2. Calendar page is updated with marker on day that user adds event.
+    3. The event specified will be shown, including the (name, description, location, and time)
