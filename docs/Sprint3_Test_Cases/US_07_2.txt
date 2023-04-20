@@ -1,0 +1,12 @@
+A. Identification and classification
+Test Case: 7002
+System: Expenses
+User is able to see recurring expenses on the calendar
+Severity: 3
+
+B. Instructions
+    1. Repeat test case 7001
+    2. Click on the hamburger bar and select "Calendar"
+
+C. Expected Result:
+    1. Every day past the current date will have at least 1 event that is the recurring expense created

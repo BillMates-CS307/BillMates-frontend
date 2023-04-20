@@ -1,0 +1,15 @@
+A. Identification and classification
+Test Case: 6003
+System: Calendar
+Deleting a group deletes events from the calendar
+Severity: 2
+
+B. Instructions
+    1. Login and create a group
+    2. Go to that group and navigate to the calendar
+    3. Create an event
+    4. Navigate to the group settings page
+    5. Select "Delete Group"
+    6. Go to the home screen and navigate to the all groups calendar
+C. Expected Result:
+    1. The event created does not show up on the day specified

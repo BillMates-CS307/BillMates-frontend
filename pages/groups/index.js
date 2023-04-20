@@ -33,6 +33,7 @@ export default function SelfGroup() {
     }, [isAuthenticated])
 
     //Defining state management
+    const [showTag, setShowTag] = useState("all");
     const [transactionInputVisible, setTransactionInputVisible] = useState(false);
     const [payAllVisible, setPayAllVisible] = useState(false);
     const [currentTransactionView, setCurrentTransactionView] = useState(-1);
@@ -106,28 +107,16 @@ export default function SelfGroup() {
                                     return <GroupItemView groupId={id} expenses={response_data.groups[id].expenses} members={response_data.groups[id].members} 
                                     name={response_data.groups[id].name} userId = {userId} manager = {response_data.groups[id].manager}
                                     setCurrentTransactionView = {setCurrentTransactionView}
-                                    setCurrentReportView = {setCurrentReportView}></GroupItemView>
+                                    setCurrentReportView = {setCurrentReportView}
+                                    showTag = {showTag}></GroupItemView>
                                 })
                             }
                                 </>
                         }
                     </div>
-                    <GroupHeading name={"My Groups"} balance={response_data.balance} groupId={""} members={{"a" : 0}}></GroupHeading>
-                    {/* {(response_data.balance < 0)?
-                        <div className={styles.repay_all_container} onClick={() => { setPayAllVisible(true) }}>
-                            <p>Repay All</p>
-                        </div>
-                        :
-                        <div className={styles.repay_all_container} onClick={() => { setWarningPopup("You have no debts to pay")}}>
-                            <p>Repay All</p>
-                        </div>
-                    } */}
+                    <GroupHeading name={"My Groups"} balance={response_data.balance} groupId={""} members={{"a" : 0}}
+                    setShowTag={setShowTag}></GroupHeading>
                 </main>
-                {/* {(currentPendingView != -1) ?
-                    <PendingView members={response_data.groups[currentPendingView[1]].members} expense={response_data.pending[currentPendingView]} hideParent={setCurrentPendingView}></PendingView>
-                    :
-                    <></>
-                } */}
                 {(currentTransactionView != -1) ?
                     <TransactionView userId={userId} members={response_data.groups[currentTransactionView[1]].members} expense={response_data.groups[currentTransactionView[1]].expenses[currentTransactionView[0]]}
                      hideParent={setCurrentTransactionView} showFulFill={setCurrentFulfillView}></TransactionView>
@@ -140,22 +129,11 @@ export default function SelfGroup() {
                     :
                     <></>
                 }
-                {/* {(transactionInputVisible) ?
-                    <TransactionInputView members={response_data.groups[currentPendingView[1]].members} userId={userId} groupId={groupId} 
-                    commentLength={response_data.maxComment} callback={setTransactionInputVisible} args={false}></TransactionInputView>
-                    :
-                    <></>
-                } */}
                 {(currentFulfillView != null) ?
                     <FulFillView userId={userId} expense={currentFulfillView} hideParent={setCurrentFulfillView} warningPopup={setWarningPopup}></FulFillView>
                     :
                     <></>
                 }
-                {/* {(payAllVisible) ?
-                    <PayAllView balance={response_data.balance} userBalances={response_data.balances} members={response_data.members} userId={userId} groupId={groupId} commentLength={response_data.maxComment} callback={setPayAllVisible} args={false}></PayAllView>
-                    :
-                    <></>
-                } */}
                 { (warningPopup != null)?
                 <>
                 <div className={styles.transaction_background} style={{background : "transparent"}}>

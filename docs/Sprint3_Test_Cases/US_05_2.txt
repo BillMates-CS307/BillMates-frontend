@@ -1,0 +1,17 @@
+A. Identification and classification
+Test Case: 5002
+System: Calendar
+User is able to un-schedule an event
+Severity: 2
+
+B. Instructions
+	1. Login and go to a group
+    2. Click on the hamburger bar and select "Calendar"
+    3. Click on the "+" button
+    4. Fill out the form and submit
+    5. Click on the day that the event was scheduled for
+    6. Select "Unschedule" ----------------------- idk if this is how
+    7. Select the day that the event occured on
+
+C. Expected Result:
+    1. The event is no longer in that view
