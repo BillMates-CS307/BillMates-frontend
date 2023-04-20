@@ -245,8 +245,8 @@ export default function Analytics() {
                                 <div className={styles.gallery_heading} id="gallery_heading">
                                     <div className={styles.gallery_arrows_type_container}>
                                         <select className={styles.gallery_type_select} onChange={updateView}>
-                                            <option value="0">Group</option>
-                                            <option value="1">Me</option>
+                                            <option value="0">Group Analytics</option>
+                                            <option value="1">My Analytics</option>
                                         </select>
                                         <button onClick={exportData} className={styles.download_data}>Download</button>
                                         <button onClick={previous} className={styles.arrow + " " + styles.left}>
