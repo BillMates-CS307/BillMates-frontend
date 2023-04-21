@@ -21,9 +21,6 @@ import {
 
 //SHOW ANALYTICS HERE
 
-
-var current_view = 0;
-
 export default function Analytics() {
     //UNCOMMENT WHEN NEEDED
     const router = useRouter();
@@ -54,6 +51,10 @@ export default function Analytics() {
     const [groupPieLabel, setGroupPieLabel] = useState(false);
 
     const [warningPopup, setWarningPopup] = useState(null);
+    const [current_view, setCurrentView] = useState(0);
+    const [galleryIdx, setGalleryIdx] = useState(0);
+
+
     useEffect(() => {
         if (isAuthenticated) {
             fetchData(); //make the call
@@ -67,7 +68,7 @@ export default function Analytics() {
     var gallery_graphs = null;
     var gallery_dots = null;
     var gallery_heading = null;
-    var galleryIdx = 0;
+
     const graph_names = [
         "Group requests throughout the year", "Group relative debts", "Group expenses by tag",
         "My requests through the year", "My relative debts", "My expenses by tag"
@@ -173,10 +174,12 @@ export default function Analytics() {
         }
         gallery_graphs.children[galleryIdx].style = "";
         gallery_dots.children[galleryIdx % 3].style = "";
-        galleryIdx = ((galleryIdx + 1) % 3) + 3 * current_view;
-        gallery_graphs.children[galleryIdx].style = "display:block";
-        gallery_heading.children[1].textContent = graph_names[galleryIdx];
-        gallery_dots.children[galleryIdx % 3].style = "background:var(--green-background);";
+        let gi = ((galleryIdx + 1) % 3) + 3 * current_view;
+        gallery_graphs.children[gi].style = "display:block";
+        gallery_heading.children[1].textContent = graph_names[gi];
+        gallery_dots.children[gi % 3].style = "background:var(--green-background);";
+
+        setGalleryIdx(gi);
     }
     function previous() {
         if (gallery_graphs == null) {
@@ -186,10 +189,12 @@ export default function Analytics() {
         }
         gallery_graphs.children[galleryIdx].style = "";
         gallery_dots.children[galleryIdx % 3].style = "";
-        galleryIdx = ((galleryIdx + 2) % 3) + 3 * current_view;
-        gallery_graphs.children[galleryIdx].style = "display:block";
-        gallery_heading.children[1].textContent = graph_names[galleryIdx];
-        gallery_dots.children[galleryIdx % 3].style = "background:var(--green-background);";
+        let gi = ((galleryIdx + 2) % 3) + 3 * current_view;
+        gallery_graphs.children[gi].style = "display:block";
+        gallery_heading.children[1].textContent = graph_names[gi];
+        gallery_dots.children[gi % 3].style = "background:var(--green-background);";
+
+        setGalleryIdx(gi);
     }
     function updateView() {
         if (gallery_graphs == null) {
@@ -197,36 +202,99 @@ export default function Analytics() {
             gallery_heading = document.querySelector("#gallery_heading");
             gallery_dots = document.querySelector("#gallery_dots");
         }
-
-        current_view = current_view ^ 1;
+        let cw = current_view ^ 1;
         gallery_graphs.children[galleryIdx].style = "";
         gallery_dots.children[galleryIdx % 3].style = "";
-        galleryIdx = (current_view) ? galleryIdx + 3 : galleryIdx - 3;
-        gallery_graphs.children[galleryIdx].style = "display:block";
-        gallery_heading.children[1].textContent = graph_names[galleryIdx];
-        gallery_dots.children[galleryIdx % 3].style = "background:var(--green-background);";
+        let gi = (cw) ? galleryIdx + 3 : galleryIdx - 3;
+        gallery_graphs.children[gi].style = "display:block";
+        gallery_heading.children[1].textContent = graph_names[gi];
+        gallery_dots.children[gi % 3].style = "background:var(--green-background);";
+
+        setCurrentView(cw);
+        setGalleryIdx(gi);
     }
     function isGroupManager() {
         return false; //TODO: fix this
     }
     function exportData() {
-        if (!groupPieLabel) { //only occurs if there are no expense requests ever created
+        console.log(galleryIdx);
+        let sum = 0;
+        let name = "";
+        let responseData = {};
+        switch (galleryIdx) {
+            case  0:
+                name = "group_requests";
+                responseData = {
+                    "group_requests_yearly": groupLineGraph
+                }
+                for (let item of groupLineGraph) {
+                    sum += item.num;
+                }
+                break;
+            case  1:
+                name = "group_balances";
+                responseData = {
+                    "group_relative_balances": groupBarGraph
+                }
+                for (let item of groupBarGraph) {
+                    sum += parseFloat(item.amt);
+                }
+                break;
+            case  2:
+                name = "group_tags";
+                responseData = {
+                    "group_relative_tag": groupPieChart
+                }
+                for (let item of groupPieChart) {
+                    sum += parseFloat(item.amt.toFixed(2));
+                }
+                break;
+            case  3:
+                name = "my_requests";
+                responseData = {
+                    "my_requests_yearly": userLineGraph
+                }
+                for (let item of userLineGraph) {
+                    sum += item.num;
+                }
+                break;
+            case  4:
+                name = "my_balances";
+                responseData = {
+                    "my_relative_balances": userBarGraph
+                }
+                for (let item of userBarGraph) {
+                    sum += parseFloat(item).amt;
+                }
+                break;
+            case  5:
+                name = "my_tags";
+                responseData = {
+                    "my_requests_tag": userPieChart
+                }
+                for (let item of userPieChart) {
+                    sum += parseFloat(item.amt.toFixed(2));
+                }
+                break;
+        }
+        console.log(sum);
+        if (sum == 0) { //only occurs if there are no expense requests ever created
             setWarningPopup(["There is no data to download", 1.5]);
             return;
         }
-        let responseData = {
-            "my_requests_yearly": userLineGraph,
-            "my_relative_balances": userBarGraph,
-            "my_requests_tag": userPieChart,
-            "group_requests_yearly": groupLineGraph,
-            "group_relative_balances": groupBarGraph,
-            "group_relative_tag": groupPieChart
-        }
+        // let responseData = {
+        //     "my_requests_yearly": userLineGraph,
+        //     "my_relative_balances": userBarGraph,
+        //     "my_requests_tag": userPieChart,
+        //     "group_requests_yearly": groupLineGraph,
+        //     "group_relative_balances": groupBarGraph,
+        //     "group_relative_tag": groupPieChart
+        // }
         const fileData = JSON.stringify(responseData);
         const blob = new Blob([fileData], { type: "text/plain" });
         const url = URL.createObjectURL(blob);
         const link = document.createElement("a");
-        link.download = groupId + "-analytics.json";
+        link.download = groupId + "-" + name + "-analytics.json";
         link.href = url;
         link.click();
     }
