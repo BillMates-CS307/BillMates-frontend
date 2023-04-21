@@ -2,6 +2,38 @@ A. Identification and classification
 Test Case: 1001
 System: Shopping List
 User is able to create a new shopping list
+Severity: 1
+
+B. Instructions
+    1. Log into an account and select a group (create as needed)
+    2. Click on the hamburger bar and select "Shopping Lists"
+    3. Click on the plus symbol in the bottom right
+    4. Enter in a name and submit
+
+C. Expected Result:
+	1. After clicking the plus symbol, the user is prompted to enter in a name
+    2. The page is reloaded and shows an item box with the name provided
+==============================================
+A. Identification and classification
+Test Case: 1002
+System: Shopping List
+User is unable to create a new shopping list with an invalid name
+Severity: 1
+
+B. Instructions
+    1. Log into an account and select a group (create as needed)
+    2. Click on the hamburger bar and select "Shopping Lists"
+    3. Click on the plus symbol in the bottom right
+    4. Don't enter anything, or just spaces, and hit submit
+
+C. Expected Result:
+	1. After clicking the plus symbol, the user is prompted to enter in a name
+    2. The input box is highlighted red and a message saying "Must provide a name" is shown
+==============================================
+A. Identification and classification
+Test Case: 1001
+System: Shopping List
+User is able to create a new shopping list
 Severity: 3
 
 B. Instructions
@@ -46,6 +78,85 @@ C. Expected Result:
     1. A blank screen is shown as no groups exist
 ==============================================
 A. Identification and classification
+Test Case: 1004
+System: Shopping List
+Backend is able to create a shopping list for a group
+Severity: 3
+
+B. Instructions
+   1. Run `sprint3.py` in the backend client testing module
+
+C. Expected Result:
+    1. The modules displays a 'Passed : True' for User Story #1
+
+==============================================
+A. Identification and classification
+Test Case: 2001
+System: Shopping List
+User is able to remove an item from an active list
+Severity: 2
+
+B. Instructions
+    1. Log into an account and select a group (create as needed)
+    2. Click on the hamburger bar and select "Shopping Lists"
+    3. Click on a list that is active (has not been finalized yet)
+    4. Select the "-" button on any item
+
+C. Expected Result:
+    1. User is prompted to confirm the action
+    2. The item is removed from the list
+==============================================
+A. Identification and classification
+Test Case: 2002
+System: Shopping List
+User is able to unable to remove an item from an unactive list
+Severity: 1
+
+B. Instructions
+    1. Users 1 and 2, Log into an account and select the same group (create/invite as needed)
+    2. Click on the hamburger bar and select "Shopping Lists"
+    3. Click on a list that is active (has not been finalized yet)
+    4. User 1, finalize the list and complete all neccesary steps
+    4. User 2, select the "-" button on any item and confirm
+
+C. Expected Result:
+    1. User 2 receives a warning "This list has been finalized"
+    2. The page refreshes and shows the finalized list view
+==============================================
+A. Identification and classification
+Test Case: 2003
+System: Shopping List
+User is able to unable to add an item to an unactive list
+Severity: 1
+
+B. Instructions
+    1. Users 1 and 2, Log into an account and select the same group (create/invite as needed)
+    2. Click on the hamburger bar and select "Shopping Lists"
+    3. Click on a list that is active (has not been finalized yet)
+    4. User 1, finalize the list and complete all neccesary steps
+    4. User 2, select the "+" button and give the item a name
+
+C. Expected Result:
+    1. User 2 receives a warning "This list has been finalized"
+    2. The page refreshes and shows the finalized list view
+==============================================
+A. Identification and classification
+Test Case: 2004
+System: Shopping List
+User is able to add an item to an active list
+Severity: 2
+
+B. Instructions
+    1. Log into an account and select a group (create as needed)
+    2. Click on the hamburger bar and select "Shopping Lists"
+    3. Click on a list that is active (has not been finalized yet)
+    4. Select the "+" button
+
+C. Expected Result:
+    1. User is prompted to name the item
+    2. The item is add to the list
+==============================================
+A. Identification and classification
 Test Case: 2001
 System: Shopping List
 User is able to add an item to the list
@@ -84,11 +195,25 @@ Severity: 2
 
 B. Instructions
     1. Repeat test case 2002
-    2. Click "confirm"
+    2. Click "ok"
 
 
 C. Expected Result:
     1. The item selceted to be deleted no longer appears, even after refresh
+==============================================
+A. Identification and classification
+Test Case: 2004
+System: Shopping List Updates
+Backend is able to update a shopping list for a group
+Severity: 3
+
+B. Instructions
+   1. Run `sprint3.py` in the backend client testing module
+
+C. Expected Result:
+    1. The modules displays a 'Passed : True' for User Story #2
+
+
 ==============================================
 A. Identification and classification
 Test Case: 3001
@@ -102,7 +227,7 @@ B. Instructions
     3. Select a list (create as needed) and ensure there is at least one item
     4. Click on "Finalize"
 C. Expected Result:
-    1. User is prompted with "Are you sure you want to finalize?" --------------------------------
+    1. User is prompted with "Are you sure you want to finalize this list?"
     2. User has the option to confirm or cancel
 ==============================================
 A. Identification and classification
@@ -119,7 +244,8 @@ B. Instructions
     4. User 1, click on "Finalize"
     5. User 2, add or remove an item
 C. Expected Result:
-    1. User 2 is warned that the list has been finalized (or maybe page gets reloaded and shown finalized view) =----------=-=-=-==-==-=-=
+    1. User 2 is warned that the list has been finalized
+    2. Page is reloaded and shown inactive view
     
 ==============================================
 A. Identification and classification
@@ -169,6 +295,20 @@ C. Expected Result:
     1. The day clicked shows the events of that day (name, description, location, and time)
 ==============================================
 A. Identification and classification
+Test Case: 4003
+System: Get Calendar Info (Group)
+Backend is able to get the calendar information for a group
+Severity: 3
+
+B. Instructions
+   1. Run `sprint3.py` in the backend client testing module
+
+C. Expected Result:
+    1. The modules displays a 'Passed : True' for User Story #4
+
+
+==============================================
+A. Identification and classification
 Test Case: 5001
 System: Calendar
 User is able to schedule an event
@@ -203,6 +343,20 @@ B. Instructions
 
 C. Expected Result:
     1. The event is no longer in that view
+==============================================
+A. Identification and classification
+Test Case: 5003
+System: Add/Remove Events
+Backend is able to create a add/remove events for a group
+Severity: 3
+
+B. Instructions
+   1. Run `sprint3.py` in the backend client testing module
+
+C. Expected Result:
+    1. The modules displays a 'Passed : True' for User Story #5
+
+
 ==============================================
 A. Identification and classification
 Test Case: 6001
@@ -251,6 +405,20 @@ C. Expected Result:
     1. The event created does not show up on the day specified
 ==============================================
 A. Identification and classification
+Test Case: 6004
+System: Get Calendar Info (User)
+Backend is able to get calendar information(s) for a user
+Severity: 3
+
+B. Instructions
+   1. Run `sprint3.py` in the backend client testing module
+
+C. Expected Result:
+    1. The modules displays a 'Passed : True' for User Story #6
+
+
+==============================================
+A. Identification and classification
 Test Case: 7001
 System: Expenses
 User is able to create a recurring expense
@@ -295,6 +463,20 @@ C. Expected Result:
     2. After 24 hours, that expense is not submitted again
 ==============================================
 A. Identification and classification
+Test Case: 7004
+System: Add/Remove Recurring Expenses
+Backend is able to create and remove a recurring expense for a group
+Severity: 3
+
+B. Instructions
+   1. Run `sprint3.py` in the backend client testing module
+
+C. Expected Result:
+    1. The modules displays a 'Passed : True' for User Story #7
+
+
+==============================================
+A. Identification and classification
 Test Case: 8001
 System: Analytics
 User is able to see each chart by group view
@@ -324,6 +506,20 @@ B. Instructions
 C. Expected Result:
     1. Each graph, as detailed by the respective user stories, is shown with data that pertains to user
     2. Each graph is labeled with "My ..."
+==============================================
+A. Identification and classification
+Test Case: 8003
+System: Analytics View
+Backend is able to return the analytics for a group/user
+Severity: 3
+
+B. Instructions
+   1. Run `sprint3.py` in the backend client testing module
+
+C. Expected Result:
+    1. The modules displays a 'Passed : True' for User Story #8
+
+
 ==============================================
 A. Identification and classification
 Test Case: 9001
@@ -370,6 +566,20 @@ B. Instructions
 C. Expected Result:
     1. Only expenses with the selected tag option are shown
     2. When the selected option is "All", all expenses are shown regardless of tag 
+==============================================
+A. Identification and classification
+Test Case: 9004
+System: Tags on Transactions
+Backend is able to create an expense request with a tag
+Severity: 3
+
+B. Instructions
+   1. Run `sprint3.py` in the backend client testing module
+
+C. Expected Result:
+    1. The modules displays a 'Passed : True' for User Story #9
+
+
 ==============================================
 A. Identification and classification
 Test Case: 10001
