@@ -1,5 +1,5 @@
 A. Identification and classification
-Test Case: 9002
+Test Case: 9003
 System: Expenses
 User is able to filter based on tag
 Severity: 3

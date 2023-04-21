@@ -1,0 +1,498 @@
+A. Identification and classification
+Test Case: 1001
+System: Shopping List
+User is able to create a new shopping list
+Severity: 3
+
+B. Instructions
+	1. Login and go to a group (create as needed)
+    2. Click on the hamburger bar and select "Lists"
+    3. Click the plus button and name the list
+
+C. Expected Result:
+    1. The page is reloaded and the list specified is shown on screen
+==============================================
+A. Identification and classification
+Test Case: 1002
+System: Shopping List
+All users see the same items
+Severity: 1
+
+B. Instructions
+	1. User 1, login and go to a group with multiple members
+    2. Click on the hamburger bar and select "Lists"
+    3. Click on an existing list or create a new one
+    4. Add an item
+    5. User 2, go to the list altered by user 1
+
+C. Expected Result:
+    1. User 2 sees the item created by user 1
+==============================================
+A. Identification and classification
+Test Case: 1003
+System: Shopping List
+Reseting a group clears all existing lists
+Severity: 3
+
+B. Instructions
+	1. Login and go to a group where you are the manager (create as needed)
+    2. Click on the hamburger bar and select "Lists"
+    3. Click the plus button and name the list
+    4. Click on the hamburger bar and select "Settings"
+    5. Click on reset group
+    6. Navigate back to the lists
+
+C. Expected Result:
+    1. A blank screen is shown as no groups exist
+==============================================
+A. Identification and classification
+Test Case: 2001
+System: Shopping List
+User is able to add an item to the list
+Severity: 2
+
+B. Instructions
+    1. Login and go to a group (create as needed)
+    2. Click on the hamburger bar and select "Lists"
+    3. Click on a list (create as needed)
+    4. Click on the plus button and name the item
+
+C. Expected Result:
+    1. The newly named item appears as an item in the list
+    2. Each item has a "-" symbol next to it 
+==============================================
+A. Identification and classification
+Test Case: 2002
+System: Shopping List
+User has to confirm removing an item
+Severity: 3
+
+B. Instructions
+    1. Repeat test case 2001
+    2. Click on the "-" symbol
+
+
+C. Expected Result:
+    1. User is prompted with "Are you sure you want to delete this item"
+    2. User has options to confirm or cancel
+==============================================
+A. Identification and classification
+Test Case: 2003
+System: Shopping List
+User is able to remove an item
+Severity: 2
+
+B. Instructions
+    1. Repeat test case 2002
+    2. Click "confirm"
+
+
+C. Expected Result:
+    1. The item selceted to be deleted no longer appears, even after refresh
+==============================================
+A. Identification and classification
+Test Case: 3001
+System: Shopping List
+User is prompted to confirm finalize
+Severity: 3
+
+B. Instructions
+    1. Login and go to a group (create as neeed)
+    2. Navigate to the shopping lists
+    3. Select a list (create as needed) and ensure there is at least one item
+    4. Click on "Finalize"
+C. Expected Result:
+    1. User is prompted with "Are you sure you want to finalize?" --------------------------------
+    2. User has the option to confirm or cancel
+==============================================
+A. Identification and classification
+Test Case: 3002
+System: Shopping List
+A finalized list cannot be altered
+Severity: 1
+
+B. Instructions
+    1. User 1, login and go to a group (create as neeed)
+    2. User 1, navigate to the shopping lists
+    3. User 2, naviate to that same list
+    3. User 1, select a list (create as needed) and ensure there is at least one item
+    4. User 1, click on "Finalize"
+    5. User 2, add or remove an item
+C. Expected Result:
+    1. User 2 is warned that the list has been finalized (or maybe page gets reloaded and shown finalized view) =----------=-=-=-==-==-=-=
+    
+==============================================
+A. Identification and classification
+Test Case: 3003
+System: Shopping List
+User is able to create an expense from a finalized list
+Severity: 3
+
+B. Instructions
+    1. Login and go to a group (create as neeed)
+    2. Navigate to the shopping lists
+    3. Select a list (create as needed) and ensure there is at least one item
+    4. Click on "Finalize"
+    5. Click on "Confirm"
+    6. Fill out the form as neccesary (selecting a person for each item and inputting a price)
+    7. Click "Submit"
+    8. Navigate to the group page
+C. Expected Result:
+    1. A new expense with the shopping list name is created
+    2. Each debt is the total amount assigned to them in the shopping list
+==============================================
+A. Identification and classification
+Test Case: 4001
+System: Calendar
+User is able to see events on the calendar
+Severity: 3
+
+B. Instructions
+	1. Login and go to a group with events
+    2. Click on the hamburger bar and select "Calendar"
+
+C. Expected Result:
+    1. The calendar shown has visual markers on each day with an event
+==============================================
+A. Identification and classification
+Test Case: 4002
+System: Calendar
+User is able to see events on a particular day
+Severity: 3
+
+B. Instructions
+	1. Login and go to a group with events
+    2. Click on the hamburger bar and select "Calendar"
+    3. Click on a day that has a marker
+
+C. Expected Result:
+    1. The day clicked shows the events of that day (name, description, location, and time)
+==============================================
+A. Identification and classification
+Test Case: 5001
+System: Calendar
+User is able to schedule an event
+Severity: 3
+
+B. Instructions
+	1. Login and go to a group
+    2. Click on the hamburger bar and select "Calendar"
+    3. Click on the "+" button
+    4. Fill out the form and submit
+    5. Click on the day that the event was scheduled for
+
+C. Expected Result:
+    1. If form submit success, route back to calendar page
+    2. Calendar page is updated with marker on day that user adds event.
+    3. The event specified will be shown, including the (name, description, location, and time)
+==============================================
+A. Identification and classification
+Test Case: 5002
+System: Calendar
+User is able to un-schedule an event
+Severity: 2
+
+B. Instructions
+	1. Login and go to a group
+    2. Click on the hamburger bar and select "Calendar"
+    3. Click on the "+" button
+    4. Fill out the form and submit
+    5. Click on the day that the event was scheduled for
+    6. Select X Button next to event name
+    7. Select the day that the event occured on
+
+C. Expected Result:
+    1. The event is no longer in that view
+==============================================
+A. Identification and classification
+Test Case: 6001
+System: Calendar
+User is able to see a calendar with all events across all groups visually marked
+Severity: 3
+
+B. Instructions
+	1. Login
+    2. Go to a group and navigate to that calendar
+    3. On a day that doesn't have an event, repeat test case 5001
+    4. Repeat steps 2 and 3 for a different group and a different day
+    5. Go to the home page
+    6. Click on the user settings button and then the "Calendar" button
+
+C. Expected Result:
+    1. The calenar is marked on days that correspond to each group
+==============================================
+A. Identification and classification
+Test Case: 6002
+System: Calendar
+Events on a day are labelled by the group they are a part of
+Severity: 2
+
+B. Instructions
+    1. Repeat test case 6001, but schedule both events on the same day instead
+    2. Click on the day selected from step 1
+C. Expected Result:
+    1. Each event is shown according to test case 4002
+    2. Each event is labelled by the group it was created in
+==============================================
+A. Identification and classification
+Test Case: 6003
+System: Calendar
+Deleting a group deletes events from the calendar
+Severity: 2
+
+B. Instructions
+    1. Login and create a group
+    2. Go to that group and navigate to the calendar
+    3. Create an event
+    4. Navigate to the group settings page
+    5. Select "Delete Group"
+    6. Go to the home screen and navigate to the all groups calendar
+C. Expected Result:
+    1. The event created does not show up on the day specified
+==============================================
+A. Identification and classification
+Test Case: 7001
+System: Expenses
+User is able to create a recurring expense
+Severity: 3
+
+B. Instructions
+	1. Login and go to a group with members
+    2. Create an expense request
+    3. Click on the dropdown and select "Daily"
+    4. Submit the expense request
+
+C. Expected Result:
+    1. A new expense is created as normal
+    2. After 24 hours, the same expense is automatically created again
+==============================================
+A. Identification and classification
+Test Case: 7002
+System: Expenses
+User is able to see recurring expenses on the calendar
+Severity: 3
+
+B. Instructions
+    1. Repeat test case 7001
+    2. Click on the hamburger bar and select "Calendar"
+
+C. Expected Result:
+    1. Every day past the current date will have at least 1 event that is the recurring expense created
+==============================================
+A. Identification and classification
+Test Case: 7003
+System: Expenses
+User is able to delete a recurring expense
+Severity: 2
+
+B. Instructions
+    1. Repeat test case 7001
+    2. Click on the hamburger bar and select "Recurring"
+    3. Click on the recurring expense that was created
+    4. Click on "Remove"
+C. Expected Result:
+    1. The page reloads and that recurring expense is not shown
+    2. After 24 hours, that expense is not submitted again
+==============================================
+A. Identification and classification
+Test Case: 8001
+System: Analytics
+User is able to see each chart by group view
+Severity: 3
+
+B. Instructions
+	1. Login and go to a group with transactions
+	2. Click on the hamburger bar and then "Analytics"
+	3. Click on the right-arrow three times and observe each graph
+
+C. Expected Result:
+    1. Each graph, as detailed by the respective user stories, is shown with data that pertains to the group as a whole
+    2. Each graph is labeled with "Group ..."
+==============================================
+A. Identification and classification
+Test Case: 8002
+System: Analytics
+User is able to see each chart by self view
+Severity: 3
+
+B. Instructions
+	1. Login and go to a group with transactions
+	2. Click on the hamburger bar and then "Analytics"
+    3. Click on the box that says "Group" and select the "Me" option
+	4. Click on the right-arrow three times and observe each graph
+
+C. Expected Result:
+    1. Each graph, as detailed by the respective user stories, is shown with data that pertains to user
+    2. Each graph is labeled with "My ..."
+==============================================
+A. Identification and classification
+Test Case: 9001
+System: Expenses
+User is able to select a tag when creating an expense
+Severity: 3
+
+B. Instructions
+	1. Login and go to a group with at least one other person in it
+    2. Click on the "+" button
+    3. Click on the box with the initial value of "No Tag"
+    4. Select any of the options
+
+C. Expected Result:
+    1. A dropdown of values is shown including "No Tag, Entertainment, Rent, Food, and Misc"
+    2. Selecting a different value changes the text in the box
+==============================================
+A. Identification and classification
+Test Case: 9002
+System: Expenses
+User is able to see a tag on an expense
+Severity: 3
+
+B. Instructions
+    1. Repeat test case 9001
+    2. Fill in appropriate values for the expense
+    3. Submit
+    4. Click on the newly created expense
+
+C. Expected Result:
+    1. The tag selected for the expense is included in the full view
+==============================================
+A. Identification and classification
+Test Case: 9003
+System: Expenses
+User is able to filter based on tag
+Severity: 3
+
+B. Instructions
+    1. Login and go to a group with at least one other person in it
+    2. Select the box next to the label "filter"
+    3. Select any option
+
+C. Expected Result:
+    1. Only expenses with the selected tag option are shown
+    2. When the selected option is "All", all expenses are shown regardless of tag 
+==============================================
+A. Identification and classification
+Test Case: 10001
+System: Analytics
+User is able to see a bar chart by view
+Severity: 3
+
+B. Instructions
+	1. Login and go to a group with transactions
+	2. Click on the hamburger bar and then "Analytics"
+	3. Click on the right-arrow once
+
+C. Expected Result:
+    1. A bar chart is shown with each bar representing debt owed by each member
+==============================================
+A. Identification and classification
+Test Case: 10002
+System: Analytics
+Voided expenses are removed from the analytic
+Severity: 3
+
+B. Instructions
+	1. Login and go to a group with transactions
+	2. Click on the hamburger bar and then "Analytics"
+	3. Click on the right-arrow once and note the general shape/pattern
+    4. Click on the hamburger bar and then "My Group"
+    5. Void an expense
+    6. Repeat steps 2 and 3
+
+C. Expected Result:
+    1. A bar chart is shown with each bar representing debt owed by each member
+    2. The bar(s) associated with the voided expense have changed
+==============================================
+A. Identification and classification
+Test Case: 11001
+System: Analytics
+User is able to see line chart by view
+Severity: 3
+
+B. Instructions
+	1. Login and go to a group with transactions
+	2. Click on the hamburger bar and then "Analytics"
+
+C. Expected Result:
+    1. A line chart is shown with each point representing the number of expeneses on a date
+==============================================
+A. Identification and classification
+Test Case: 11002
+System: Analytics
+Voided expenses are removed from the analytic
+Severity: 3
+
+B. Instructions
+	1. Login and go to a group with transactions
+	2. Click on the hamburger bar and then "Analytics"
+	3. Note the general shape/pattern
+    4. Click on the hamburger bar and then "My Group"
+    5. Void an expense
+    6. Repeat steps 2 and 3
+
+C. Expected Result:
+    1. A line chart is shown with the number of requests throughout the year
+    2. The date associated with the voided expense is smaller
+==============================================
+A. Identification and classification
+Test Case: 12001
+System: Analytics
+User is able to see pie chart by group view
+Severity: 3
+
+B. Instructions
+	1. Login and go to a group with transactions
+	2. Click on the hamburger bar and then "Analytics"
+	3. Click on the right-arrow twice
+
+C. Expected Result:
+    1. A pie chart is shown with each tag showing a percentage of expeneses made under each tag
+==============================================
+A. Identification and classification
+Test Case: 12002
+System: Analytics
+Voided expenses are removed from the analytic
+Severity: 3
+
+B. Instructions
+	1. Login and go to a group with transactions
+	2. Click on the hamburger bar and then "Analytics"
+	3. Click on the right-arrow twice and note the general shape/pattern
+    4. Click on the hamburger bar and then "My Group"
+    5. Void an expense
+    6. Repeat steps 2 and 3
+
+C. Expected Result:
+    1. A pie chart is shown with each tag showing a percentage of expeneses made under each tag
+    2. The slice associated with the tag of the voided expense is smaller
+==============================================
+A. Identification and classification
+Test Case: 13001
+System: Analytics
+User is able to download the analytics data
+Severity: 3
+
+B. Instructions
+	1. Login and go to a group with transactions
+	2. Click on the hamburger bar and then "Analytics"
+	3. Click on the "download" button
+
+C. Expected Result:
+	1. A file named "<group_id>-analytics.json" is download
+	2. The above file contains json formatted data
+==============================================
+A. Identification and classification
+Test Case: 13002
+System: Analytics
+User is unable to download the analytics data if there is nothing to download
+Severity: 3
+
+B. Instructions
+	1. Login, create a new group, and go to that group
+	2. Click on the hamburger bar and then "Analytics"
+	3. Click on the "download" button
+
+C. Expected Result:
+    1. A warning saying "There is no data to download" is shown
+    2. No file is downloaded
+==============================================

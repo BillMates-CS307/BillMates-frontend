@@ -1,5 +1,5 @@
 A. Identification and classification
-Test Case: 7002
+Test Case: 7003
 System: Expenses
 User is able to delete a recurring expense
 Severity: 2
