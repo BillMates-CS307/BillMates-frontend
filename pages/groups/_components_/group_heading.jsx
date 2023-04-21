@@ -36,7 +36,7 @@ export default function GroupHeading({name, members, balance, groupId, setShowTa
                 <p className={styles.filter_expense_container}> Filter
                 <select className={styles.gallery_type_select} id="tag_select" onChange={ (e) => {setShowTag(e.target.value)}}>
                     <option value="all">All</option>
-                    <option value="Notag">No Tag</option>
+                    <option value="No Tag">No Tag</option>
                     <option value="Entertainment">Entertainment</option>
                     <option value="Rent">Rent</option>
                     <option value="Food">Food</option>

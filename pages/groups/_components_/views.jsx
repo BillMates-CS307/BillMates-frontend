@@ -238,7 +238,7 @@ export function TransactionInputView({ members, userId, groupId, commentLength, 
                         </>
                     }
                     <select className={styles.gallery_type_select} id="tag_select">
-                        <option value="Notag">No Tag</option>
+                        <option value="No Tag">No Tag</option>
                         <option value="Entertainment">Entertainment</option>
                         <option value="Rent">Rent</option>
                         <option value="Food">Food</option>

@@ -119,7 +119,7 @@ export default function Analytics() {
                 userBG = [{name : "No Data", amt : 0}];
             }
 
-            let groupHasData = false;
+            let groupHasData = userHasData;
             for (let user in response.data) {
                 if (user == "expense_relations" || user == "user_totals" || user == "email_map") { //this is the bar graph data
                     continue;
@@ -129,9 +129,10 @@ export default function Analytics() {
                         groupLG[i++].num += response.data[user].month[month];
                     }
                     i = 0;
-                    for (let tag in response.data[userId].tags) {
+                    for (let tag in response.data[user].tags) {
+                        console.log("tag data : " + response.data[user].tags[tag]);
                         groupPC[i++].amt += response.data[user].tags[tag];
-                        if (response.data[user].tags[tag]) {
+                        if (parseFloat(response.data[user].tags[tag]) != 0) {
                             groupHasData = true;
                         }
                     }
