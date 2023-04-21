@@ -1,5 +1,5 @@
 A. Identification and classification
-Test Case: 2003
+Test Case: 2005
 System: Shopping List
 User is able to unable to add an item to an unactive list
 Severity: 1

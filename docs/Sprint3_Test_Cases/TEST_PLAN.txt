@@ -2,38 +2,6 @@ A. Identification and classification
 Test Case: 1001
 System: Shopping List
 User is able to create a new shopping list
-Severity: 1
-
-B. Instructions
-    1. Log into an account and select a group (create as needed)
-    2. Click on the hamburger bar and select "Shopping Lists"
-    3. Click on the plus symbol in the bottom right
-    4. Enter in a name and submit
-
-C. Expected Result:
-	1. After clicking the plus symbol, the user is prompted to enter in a name
-    2. The page is reloaded and shows an item box with the name provided
-==============================================
-A. Identification and classification
-Test Case: 1002
-System: Shopping List
-User is unable to create a new shopping list with an invalid name
-Severity: 1
-
-B. Instructions
-    1. Log into an account and select a group (create as needed)
-    2. Click on the hamburger bar and select "Shopping Lists"
-    3. Click on the plus symbol in the bottom right
-    4. Don't enter anything, or just spaces, and hit submit
-
-C. Expected Result:
-	1. After clicking the plus symbol, the user is prompted to enter in a name
-    2. The input box is highlighted red and a message saying "Must provide a name" is shown
-==============================================
-A. Identification and classification
-Test Case: 1001
-System: Shopping List
-User is able to create a new shopping list
 Severity: 3
 
 B. Instructions
@@ -93,72 +61,6 @@ C. Expected Result:
 A. Identification and classification
 Test Case: 2001
 System: Shopping List
-User is able to remove an item from an active list
-Severity: 2
-
-B. Instructions
-    1. Log into an account and select a group (create as needed)
-    2. Click on the hamburger bar and select "Shopping Lists"
-    3. Click on a list that is active (has not been finalized yet)
-    4. Select the "-" button on any item
-
-C. Expected Result:
-    1. User is prompted to confirm the action
-    2. The item is removed from the list
-==============================================
-A. Identification and classification
-Test Case: 2002
-System: Shopping List
-User is able to unable to remove an item from an unactive list
-Severity: 1
-
-B. Instructions
-    1. Users 1 and 2, Log into an account and select the same group (create/invite as needed)
-    2. Click on the hamburger bar and select "Shopping Lists"
-    3. Click on a list that is active (has not been finalized yet)
-    4. User 1, finalize the list and complete all neccesary steps
-    4. User 2, select the "-" button on any item and confirm
-
-C. Expected Result:
-    1. User 2 receives a warning "This list has been finalized"
-    2. The page refreshes and shows the finalized list view
-==============================================
-A. Identification and classification
-Test Case: 2003
-System: Shopping List
-User is able to unable to add an item to an unactive list
-Severity: 1
-
-B. Instructions
-    1. Users 1 and 2, Log into an account and select the same group (create/invite as needed)
-    2. Click on the hamburger bar and select "Shopping Lists"
-    3. Click on a list that is active (has not been finalized yet)
-    4. User 1, finalize the list and complete all neccesary steps
-    4. User 2, select the "+" button and give the item a name
-
-C. Expected Result:
-    1. User 2 receives a warning "This list has been finalized"
-    2. The page refreshes and shows the finalized list view
-==============================================
-A. Identification and classification
-Test Case: 2004
-System: Shopping List
-User is able to add an item to an active list
-Severity: 2
-
-B. Instructions
-    1. Log into an account and select a group (create as needed)
-    2. Click on the hamburger bar and select "Shopping Lists"
-    3. Click on a list that is active (has not been finalized yet)
-    4. Select the "+" button
-
-C. Expected Result:
-    1. User is prompted to name the item
-    2. The item is add to the list
-==============================================
-A. Identification and classification
-Test Case: 2001
-System: Shopping List
 User is able to add an item to the list
 Severity: 2
 
@@ -214,6 +116,23 @@ C. Expected Result:
     1. The modules displays a 'Passed : True' for User Story #2
 
 
+==============================================
+A. Identification and classification
+Test Case: 2005
+System: Shopping List
+User is able to unable to add an item to an unactive list
+Severity: 1
+
+B. Instructions
+    1. Users 1 and 2, Log into an account and select the same group (create/invite as needed)
+    2. Click on the hamburger bar and select "Shopping Lists"
+    3. Click on a list that is active (has not been finalized yet)
+    4. User 1, finalize the list and complete all neccesary steps
+    4. User 2, select the "+" button and give the item a name
+
+C. Expected Result:
+    1. User 2 receives a warning "This list has been finalized"
+    2. The page refreshes and shows the finalized list view
 ==============================================
 A. Identification and classification
 Test Case: 3001
