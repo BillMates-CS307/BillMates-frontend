@@ -33,12 +33,12 @@ export default function ShoppingListCreateItem({ hideParent, listId }) {
                 window.location.reload();
                 return;
             } else {
-                alert("You already have an item with this name");
+                alert("This list has been finalized");
             }
             ButtonLock.UnlockButton();
             event.target.children[1].textContent = "Add Item";
             event.target.children[1].style = "";
-            alert("Something went wrong");
+            window.location.reload(true);
         } else {
             console.log("Button is locked");
         }

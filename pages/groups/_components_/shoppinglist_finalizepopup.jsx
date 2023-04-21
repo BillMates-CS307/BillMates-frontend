@@ -2,22 +2,63 @@ import React from 'react';
 import styles from '@/styles/Group.module.css';
 import { ButtonLock } from "../../global_components/button_lock";
 import { shopping_methods } from '@/lambda_service/shoppingService.js';
+import { group_methods } from '@/lambda_service/groupService';
 
-export default function FinalizePopup({ items, listId, isActive, members, setShowFinalizePopup }) {
+
+export default function FinalizePopup({ items, listId, isActive, members, setShowFinalizePopup, userId, groupId, listName, updateResponseData }) {
     console.log("Finalizing shopping list...");
     
-    const fulfillAction = () => {
+    const fulfillAction = async () => {
         if (!ButtonLock.isLocked()) {
+            const container = document.querySelector("#item_list");
+            let format = {
+                title: listName,
+                total: 0,
+                comment: "",
+                owner: userId,
+                groupId: groupId,
+                expense: {},
+                tag : "No Tag",
+                recurring : "none",
+                request_time : "",
+                request_date : ""
+            }
+            for (let child of container.children) {
+                let row = child.children[0];
+                let person = row.children[1].value;
+                let price = parseFloat(row.children[2].value);
+
+                if (format.expense[person] == undefined) {
+                    format.expense[person] = 0;
+                }
+                format.expense[person] += price;
+                format.total += price;
+            }
+            if (format.expense[userId] != undefined) {
+                delete format.expense[userId];
+            }
+            console.log(format);
+            const exp_resposne = await group_methods.submitExpense(format);
+            if (exp_resposne.errorType) {
+                console.log("an error occured");
+            } else if (exp_resposne.success) {
+                shopping_methods.updateActiveStatus(listId, false);
+                window.location.reload(true);
+                return;
+            } else {
+                console.log("I'm not doing this");
+            }
             setShowFinalizePopup(false);
         }
     }
     
     const submitConfirmation = () => {
-        const confirmFinalize = window.confirm("Are you sure you want to finalize this list? (cannot be undone)");
-        if (confirmFinalize) {
-            // Call function to finalize list
-            fulfillAction();
-        }
+        // const confirmFinalize = window.confirm("Are you sure you want to finalize this list? (cannot be undone)");
+        // if (confirmFinalize) {
+        //     // Call function to finalize list
+        //     fulfillAction();
+        // }
+        fulfillAction();
     };
 
     const activeStatus = async (event) => {
@@ -54,9 +95,11 @@ export default function FinalizePopup({ items, listId, isActive, members, setSho
         event.target.nextElementSibling.style = "display:grid";
     }
 
-    const closeContainer = () => {
+    const closeContainer = async () => {
         if (!ButtonLock.isLocked()) {
-            setShowFinalizePopup(false);
+            const res = await shopping_methods.updateActiveStatus(listId, true);
+            window.location.reload();
+            //setShowFinalizePopup(false);
         }
     }
 
@@ -66,7 +109,7 @@ export default function FinalizePopup({ items, listId, isActive, members, setSho
                 <div className={styles.x_button} onClick={closeContainer}></div>
                 <div className={styles.transaction_heading}>
                 <p className={styles.filter_expense_container}> Finalize list:</p>
-                    <div className={styles.item_list}>
+                    <div className={styles.item_list} id = "item_list">
                     {items.map((item, index) => (
                         <div key={index} className={styles.item_row}>
                             <div className={styles.item_container}>

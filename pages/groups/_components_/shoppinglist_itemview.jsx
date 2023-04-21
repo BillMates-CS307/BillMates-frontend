@@ -1,7 +1,7 @@
 import styles from "@/styles/Group.module.css"
 import { shopping_methods } from "@/lambda_service/shoppingService.js";
 
-export default function ItemMenuView({ itemName, itemId, listId, onDelete }) {
+export default function ItemMenuView({ itemName, itemId, listId, onDelete, isActive }) {
   const handleDelete = async () => {
     const confirmDelete = window.confirm("Are you sure you want to delete this item?");
     if (!confirmDelete) {
@@ -23,12 +23,17 @@ export default function ItemMenuView({ itemName, itemId, listId, onDelete }) {
   return (
     <div className={styles.listTemplate}>
       <p className={styles.listNameP}>{itemName}</p>
-      <a className={styles.listNameAnchor}>
-        
-      <svg onClick={(event) => handleDelete(itemId, listId)} xmlns="http://www.w3.org/2000/svg" width="21" height="3" viewBox="0 0 21 3" fill="none">
-        <line x1="3.31924e-09" y1="1.75" x2="21" y2="1.75" stroke="#FE0A0A" strokeWidth="2.5"/>
-      </svg>
-      </a>
+      { (isActive)?
+      <>
+        <a className={styles.listNameAnchor} onClick={(event) => handleDelete(itemId, listId)}>
+          
+        <svg xmlns="http://www.w3.org/2000/svg" width="21" height="3" viewBox="0 0 21 3" fill="none">
+          <line x1="3.31924e-09" y1="1.75" x2="21" y2="1.75" stroke="#FE0A0A" strokeWidth="2.5"/>
+        </svg>
+        </a>
+      </> :
+      <></>
+      }
     </div>
   );
 }

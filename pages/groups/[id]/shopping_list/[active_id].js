@@ -38,7 +38,7 @@ export default function ShoppingListActive() {
         }
     }, [isAuthenticated]);
 
-    //Defining state management
+    //Defining state managementgroupId
     const [loading, setLoading] = useState(true);
     const [makeItemListVisible, setMakeItemListVisible] = useState(false);
     const [showFinalizePopup, setShowFinalizePopup] = useState(false);
@@ -47,7 +47,8 @@ export default function ShoppingListActive() {
         groupId : null,
         listId : null, 
         lists : {},
-        items : {}
+        items : {},
+        name : ""
     });
 
     const listId = (isAuthenticated) ? window.location.href.match('[a-zA-Z0-9\-]*$')[0] : null;
@@ -97,6 +98,36 @@ export default function ShoppingListActive() {
         });
     };
 
+    const handleBigRedButton = async () => {
+        if (response_data.items.isActive) {
+            const confirmFinalize = window.confirm("Are you sure you want to finalize this list? (new items can't be added)");
+            if (confirmFinalize) {
+                const res = await shopping_methods.updateActiveStatus(listId, false);
+                console.log(res);
+                //pull in the most fresh data
+                const fresh = await shopping_methods.fetchListData(groupId, listId);
+                console.log(fresh);
+                if (fresh.errorType || !fresh.success) {
+                    window.location.reload();
+                } else {
+                    let formatted_response = {
+                        items : {}
+                    }
+                    for (let item_id in fresh.data) {
+                        formatted_response.items[item_id] = fresh.data[item_id];
+                    }
+                    console.log(formatted_response);
+                    setResponseData(formatted_response);
+                }
+                setShowFinalizePopup(response_data.items.items.length != 0);
+            }
+
+        } else {
+            const result = await shopping_methods.updateActiveStatus(listId, true);
+            window.location.reload();
+        }
+    }
+
     //API call to fetch group data (to get group members)
     useEffect(() => {
         if (isAuthenticated) {
@@ -115,16 +146,6 @@ export default function ShoppingListActive() {
             console.error("Failed to fetch group data");
         }
     };
-
-    function placeHolder() {
-        console.log("TODO");
-        if (loading) {
-            setTimeout(() => {
-                setLoading(false);
-            }, 5000);
-        }
-        return;
-    }
     
     if (isAuthenticated) {
        
@@ -149,17 +170,22 @@ export default function ShoppingListActive() {
                                 itemName={item}
                                 itemId={`${listId}_${index}`}
                                 listId={listId}
+                                isActive={response_data.items.isActive}
                                 onDelete={handleItemDelete}
                                 />
                             );
                             })
                         }
-                        <div className={styles.createExpense} onClick={() => setShowFinalizePopup(true)}>FINALIZE</div>
+                        <div className={styles.createExpense} onClick={handleBigRedButton}> {(response_data.items.isActive)? "FINALIZE" : "ACTIVATE" } </div>
                         {showFinalizePopup && groupData && (
                             <FinalizePopup
                                 items={response_data.items.items}
                                 listId = {listId}
                                 members={groupData.members} 
+                                groupId={groupId}
+                                listName={response_data.items.name}
+                                userId={localStorage.getItem("email")}
+                                updateResponseData={setResponseData}
                                 setShowFinalizePopup={setShowFinalizePopup} //for exit button
                             />
                         )}
