@@ -1,6 +1,6 @@
 //Global HTML Imports
 import styles from '@/styles/Group.module.css'
-import Header from '../../../global_components/groups_header.jsx'
+import Header, {HEADER_PATHS} from '../../../global_components/groups_header.jsx'
 import Footer from '../../../global_components/footer.jsx'
 import CustomHead from '../../../global_components/head.jsx'
 import LoadingCircle from '../../../global_components/loading_circle.jsx';
@@ -109,7 +109,8 @@ export default function ShoppingLists() {
         return (
             <>
                 <CustomHead title={"Shopping Lists"} description={"Your shopping lists"}></CustomHead>
-                <Header></Header>
+                <Header groupPath={"../" + groupId} selected={HEADER_PATHS.ANALYTICS | HEADER_PATHS.GROUP | HEADER_PATHS.CALENDAR | HEADER_PATHS.SETTINGS | HEADER_PATHS.RECURRING}
+            getManagerStatus={() => {return true}}></Header>
                 <main className={styles.main}>
                 <div className={styles.banner}>
                     <p>LISTS</p>

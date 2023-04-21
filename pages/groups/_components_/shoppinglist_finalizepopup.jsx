@@ -5,7 +5,7 @@ import { shopping_methods } from '@/lambda_service/shoppingService.js';
 import { group_methods } from '@/lambda_service/groupService';
 
 
-export default function FinalizePopup({ items, listId, isActive, members, setShowFinalizePopup, userId, groupId, listName, updateResponseData }) {
+export default function FinalizePopup({ items, listId, isActive, members, setShowFinalizePopup, userId, groupId, listName }) {
     console.log("Finalizing shopping list...");
     
     const fulfillAction = async () => {
