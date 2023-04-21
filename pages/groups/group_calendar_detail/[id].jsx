@@ -4,7 +4,7 @@ import styled from "@emotion/styled";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import { user_methods } from "@/lambda_service/userService";
-import Header from "@/pages/global_components/groups_header";
+import Header, {HEADER_PATHS} from "@/pages/global_components/groups_header";
 import Footer from "@/pages/global_components/footer";
 import CustomHead from "@/pages/global_components/head";
 import { CommonPopup } from "@/lib/ui/CommonPopup";
@@ -57,7 +57,8 @@ export default function GroupCalendarDetail() {
         description={"A BillMates group calendar detail"}
       />
       <CommonPopup />
-      <Header groupId={holdGroupID} />
+      <Header groupPath={"../" + groupData.groupId} selected={HEADER_PATHS.CALENDAR | HEADER_PATHS.ANALYTICS | HEADER_PATHS.SETTINGS | HEADER_PATHS.GROUP | HEADER_PATHS.RECURRING | HEADER_PATHS.SHOPPINGLIST} 
+      getManagerStatus={() => {return true;}}/>
       <CalendarWrapper>
         {eventsSortedByTime.map((ev, i) => (
           <CalendarDetailItem key={i} {...ev} />

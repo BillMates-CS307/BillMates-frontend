@@ -8,7 +8,7 @@ import {
   userDataAction,
 } from "@/lib/store/userData/userData.slice";
 import { user_methods } from "@/lambda_service/userService";
-import Header from "@/pages/global_components/groups_header";
+import Header, { HEADER_PATHS } from "@/pages/global_components/groups_header";
 import Footer from "@/pages/global_components/footer";
 import CustomHead from "@/pages/global_components/head";
 import { CommonPopup } from "@/lib/ui/CommonPopup";
@@ -20,6 +20,7 @@ import {
 } from "@/lib/store/calendarData/calendarData.slice";
 import CalendarContents from "../_components_/CalendarContents";
 import LoadingCircle from "../../global_components/loading_circle";
+
 
 let calendarData = {
   events: [],
@@ -58,12 +59,8 @@ export default function GroupCalendar() {
     setLoading(false);
   }
 
-  function holdGroupID() {
-    if (userId == groupData.manager) {
-      router.push("/groupsettings/" + groupData.groupId);
-    } else {
-      router.push("/groupsettings_members/" + groupData.groupId);
-    }
+  function isManager() {
+    return true;
   }
 
   useEffect(() => {
@@ -86,7 +83,8 @@ export default function GroupCalendar() {
         description={"A BillMates group calendar"}
       />
       <CommonPopup />
-      <Header groupId={holdGroupID} />
+      <Header groupPath={"../" + groupData.groupId} selected={HEADER_PATHS.ANALYTICS | HEADER_PATHS.SETTINGS | HEADER_PATHS.GROUP | HEADER_PATHS.RECURRING | HEADER_PATHS.SHOPPINGLIST} 
+      getManagerStatus={isManager}/>
       <CalendarWrapper>
         {loading ? (
           <LoadingCircle
