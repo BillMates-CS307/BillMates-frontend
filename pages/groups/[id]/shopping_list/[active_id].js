@@ -10,7 +10,6 @@ import ItemMenuView from '../../_components_/shoppinglist_itemview.jsx';
 import CreateItems from '../../_components_/shoppinglist_createitem.jsx';
 import FinalizePopup from '../../_components_/shoppinglist_finalizepopup.jsx';
 
-
 import { group_methods } from '@/lambda_service/groupService.js';
 import { user_methods } from '@/lambda_service/userService.js';
 import { shopping_methods } from '@/lambda_service/shoppingService.js';
@@ -26,12 +25,10 @@ export default function ShoppingListActive() {
     const [isAuthenticated, setAuthentication] = useState(false);
     async function check() {
         let result = await user_methods.validateLoginJWT(router);
-        //let result = { success : true, payload : {"email" : "test@test.com"}};
         if (result.success) {
             localStorage.setItem("email", result.payload.email);
             setAuthentication(true);
         }
-        
     }
 
     useEffect(() => {
@@ -41,22 +38,15 @@ export default function ShoppingListActive() {
         }
     }, [isAuthenticated]);
 
-    //define loading circle and refresh when loading is done
-    const [loading, setLoading] = useState(true);
-    useEffect(() => {
-        if (isAuthenticated) {
-            fetchData(); //make the call
-        }
-    }, [isAuthenticated]);
-
     //Defining state management
+    const [loading, setLoading] = useState(true);
     const [makeItemListVisible, setMakeItemListVisible] = useState(false);
     const [showFinalizePopup, setShowFinalizePopup] = useState(false);
-    const [groupData, setGroupData] = useState(null);
+    const [groupData, setGroupData] = useState({members : {}});
     const [response_data, setResponseData] = useState({
         groupId : null,
-        listId : null, //added 4-19-23
-        lists : {}, //might not be needed
+        listId : null, 
+        lists : {},
         items : {}
     });
 
@@ -64,10 +54,8 @@ export default function ShoppingListActive() {
     const matchedGroupId = (isAuthenticated) ? window.location.href.match('(groups)\/[a-zA-z\-0-9]+')[0] : null;
     const groupId = (matchedGroupId) ? matchedGroupId.substring(7) : null;
     const groudId = (matchedGroupId) ? matchedGroupId.substring(7) : null; //just in case API call for group info no work lol
-    
-    console.log("listId: " + listId);
-    console.log("groupId: " + groupId);
-    //API call and populate list data
+
+    //API call and populate active list data
     const fetchData = async () => {
         console.log("fetching data");
         let response = {
@@ -120,7 +108,7 @@ export default function ShoppingListActive() {
     const fetchGroupData = async () => {
         const email = localStorage.getItem("email");
         const groupResponse = await group_methods.getGroupInfo(groudId, email); //"groudId" as listed in groupService
-        console.log("groupResponse members: " + groupResponse);
+        //console.log("groupResponse members: " + groupResponse);
         if (groupResponse.success) {
             setGroupData(groupResponse);
         } else {
@@ -139,6 +127,7 @@ export default function ShoppingListActive() {
     }
     
     if (isAuthenticated) {
+       
         return (
             <>
             <CustomHead title={"Shopping Lists"} description={"Your shopping lists"}></CustomHead>
@@ -170,7 +159,7 @@ export default function ShoppingListActive() {
                             <FinalizePopup
                                 items={response_data.items.items}
                                 listId = {listId}
-                                members={groupData.members[1]} 
+                                members={groupData.members} 
                                 setShowFinalizePopup={setShowFinalizePopup} //for exit button
                             />
                         )}

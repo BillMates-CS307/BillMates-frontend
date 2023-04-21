@@ -3,7 +3,6 @@ import { shopping_methods } from "@/lambda_service/shoppingService.js";
 
 export default function ItemMenuView({ itemName, itemId, listId, onDelete }) {
   const handleDelete = async () => {
-    // Add a confirmation dialog before proceeding with the delete operation
     const confirmDelete = window.confirm("Are you sure you want to delete this item?");
     if (!confirmDelete) {
       return;

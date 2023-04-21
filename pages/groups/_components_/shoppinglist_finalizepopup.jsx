@@ -4,16 +4,22 @@ import { ButtonLock } from "../../global_components/button_lock";
 import { shopping_methods } from '@/lambda_service/shoppingService.js';
 
 export default function FinalizePopup({ items, listId, isActive, members, setShowFinalizePopup }) {
-    console.log("members: " + members);
-    //let members = ["John", "Jane", "Bob", "Samantha"]; //testing
     console.log("Finalizing shopping list...");
     
     const fulfillAction = () => {
         if (!ButtonLock.isLocked()) {
-            hideParent(-1);
+            setShowFinalizePopup(false);
         }
     }
     
+    const submitConfirmation = () => {
+        const confirmFinalize = window.confirm("Are you sure you want to finalize this list? (cannot be undone)");
+        if (confirmFinalize) {
+            // Call function to finalize list
+            fulfillAction();
+        }
+    };
+
     const activeStatus = async (event) => {
         if (!ButtonLock.isLocked()) {
             ButtonLock.LockButton();
@@ -49,38 +55,40 @@ export default function FinalizePopup({ items, listId, isActive, members, setSho
     }
 
     const closeContainer = () => {
-        console.log("Closing container...");
         if (!ButtonLock.isLocked()) {
-            console.log("Close container working??");
             setShowFinalizePopup(false);
         }
     }
-
 
     return (
         <div className={styles.transaction_background} id="transaction_input">
             <div className={styles.transaction_large}>
                 <div className={styles.x_button} onClick={closeContainer}></div>
                 <div className={styles.transaction_heading}>
+                <p className={styles.filter_expense_container}> Finalize list:</p>
                     <div className={styles.item_list}>
-                        {items.map((item, index) => (
-                            <div key={index} className={styles.item_row}>
-                                <span className={styles.item_name}>{item}</span>
-                                <select
-                                    className={styles.gallery_type_select}
-                                    id={`member_select_${index}`}
-                                >
-                                    {members.map((member, idx) => (
-                                        <option key={idx} value={member.id}>
-                                            {member.name}
-                                        </option>
-                                    ))}
-                                </select>
+                    {items.map((item, index) => (
+                        <div key={index} className={styles.item_row}>
+                            <div className={styles.item_container}>
+                            <div className={styles.item_text}>{item}</div>
+                            <select
+                                className={styles.gallery_type_select}
+                                id={`member_select_${index}`}
+                            >
+                                {Object.keys(members).map((member, idx) => (
+                                <option key={idx} value={member}>
+                                    {members[member]}
+                                </option>
+                                ))}
+                            </select>
+                            <input type="text" placeholder='$00.00' id="input_item_total" />
                             </div>
-                        ))}
+                        </div>
+                    ))}
                     </div>
                 </div>
+                <div className={styles.submit_expense_container} onClick={submitConfirmation}><p>Submit</p></div>
             </div>
         </div>
-  );
+    );
 }
