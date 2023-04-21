@@ -120,8 +120,9 @@ export default function ShoppingListActive() {
     const fetchGroupData = async () => {
         const email = localStorage.getItem("email");
         const groupResponse = await group_methods.getGroupInfo(groudId, email); //"groudId" as listed in groupService
+        console.log("groupResponse members: " + groupResponse);
         if (groupResponse.success) {
-            setGroupData(groupResponse.data);
+            setGroupData(groupResponse);
         } else {
             console.error("Failed to fetch group data");
         }
@@ -169,7 +170,7 @@ export default function ShoppingListActive() {
                             <FinalizePopup
                                 items={response_data.items.items}
                                 listId = {listId}
-                                members={groupData.members} 
+                                members={groupData.members[1]} 
                                 setShowFinalizePopup={setShowFinalizePopup} //for exit button
                             />
                         )}
