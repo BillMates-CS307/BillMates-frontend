@@ -214,7 +214,7 @@ export default function Analytics() {
         setGalleryIdx(gi);
     }
     function isGroupManager() {
-        return false; //TODO: fix this
+        return true; //TODO: fix this
     }
     function exportData() {
         console.log(galleryIdx);
