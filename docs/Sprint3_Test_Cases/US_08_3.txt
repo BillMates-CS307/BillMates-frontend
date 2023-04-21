@@ -1,0 +1,12 @@
+A. Identification and classification
+Test Case: 8003
+System: Analytics View
+Backend is able to return the analytics for a group/user
+Severity: 3
+
+B. Instructions
+   1. Run `sprint3.py` in the backend client testing module
+
+C. Expected Result:
+    1. The modules displays a 'Passed : True' for User Story #8
+

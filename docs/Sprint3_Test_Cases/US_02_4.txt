@@ -1,0 +1,12 @@
+A. Identification and classification
+Test Case: 2004
+System: Shopping List Updates
+Backend is able to update a shopping list for a group
+Severity: 3
+
+B. Instructions
+   1. Run `sprint3.py` in the backend client testing module
+
+C. Expected Result:
+    1. The modules displays a 'Passed : True' for User Story #2
+

@@ -1,0 +1,12 @@
+A. Identification and classification
+Test Case: 6004
+System: Get Calendar Info (User)
+Backend is able to get calendar information(s) for a user
+Severity: 3
+
+B. Instructions
+   1. Run `sprint3.py` in the backend client testing module
+
+C. Expected Result:
+    1. The modules displays a 'Passed : True' for User Story #6
+

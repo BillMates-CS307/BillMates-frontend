@@ -1,0 +1,12 @@
+A. Identification and classification
+Test Case: 7004
+System: Add/Remove Recurring Expenses
+Backend is able to create and remove a recurring expense for a group
+Severity: 3
+
+B. Instructions
+   1. Run `sprint3.py` in the backend client testing module
+
+C. Expected Result:
+    1. The modules displays a 'Passed : True' for User Story #7
+
