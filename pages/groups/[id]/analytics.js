@@ -263,8 +263,9 @@ export default function Analytics() {
                 responseData = {
                     "my_relative_balances": userBarGraph
                 }
+                console.log(userBarGraph);
                 for (let item of userBarGraph) {
-                    sum += parseFloat(item).amt;
+                    sum += parseFloat(item.amt);
                 }
                 break;
             case  5:
@@ -416,11 +417,12 @@ export default function Analytics() {
                                         <ResponsiveContainer>
                                             <BarChart data={userBarGraph}>
                                                 <   CartesianGrid strokeDasharray="3 3" stroke='var(--dark-neutral-background)' />
-                                                <XAxis dataKey="name" stroke='var(--main-background-font-color)' />
+                                                <XAxis dataKey="name" stroke='var(--main-background-font-color)' hide={true} />
                                                 <YAxis stroke='var(--main-background-font-color)'
                                                     dataKey={(v) => { return parseFloat(v.amt) }}
                                                     domain={[0, 'auto']}
-                                                    tickCount={6} />
+                                                    tickCount={6}
+                                                />
 
                                                 <Tooltip />
                                                 <Bar type="monotone" dataKey="amt" fill="var(--green-background)">
