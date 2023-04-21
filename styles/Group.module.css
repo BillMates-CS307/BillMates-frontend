@@ -762,6 +762,13 @@ border-radius: var(--border-radius);
     margin: auto;
     background: #D96767;
     mix-blend-mode: normal;
+    border: 1px solid #000000;
+    color: #ffffff;
+    font-size: 16px;
+    cursor: pointer; 
+    text-align: center; 
+    line-height: 37px; 
+    display: block;
 }
 
 .infobanner {
@@ -776,3 +783,45 @@ border-radius: var(--border-radius);
     font-size: 1rem;
     color: #FFF;
 }
+
+.popupContainer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .popupContent {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    max-width: 80%;
+    overflow-y: auto;
+  }
+  
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .th,
+  .td {
+    text-align: left;
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .button {
+    /* Customize button style */
+    cursor: pointer;
+    margin-top: 10px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  

@@ -8,6 +8,8 @@ import LoadingCircle from '../../../global_components/loading_circle.jsx';
 //Components
 import ItemMenuView from '../../_components_/shoppinglist_itemview.jsx';
 import CreateItems from '../../_components_/shoppinglist_createitem.jsx';
+import FinalizePopup from '../../_components_/shoppinglist_finalizepopup.jsx';
+
 
 import { group_methods } from '@/lambda_service/groupService.js';
 import { user_methods } from '@/lambda_service/userService.js';
@@ -26,10 +28,12 @@ export default function ShoppingListActive() {
         let result = await user_methods.validateLoginJWT(router);
         //let result = { success : true, payload : {"email" : "test@test.com"}};
         if (result.success) {
-            localStorage.setItem("tempId", result.payload.email);
+            localStorage.setItem("email", result.payload.email);
             setAuthentication(true);
         }
+        
     }
+
     useEffect(() => {
         if (!isAuthenticated) {
             console.log("authenticating");
@@ -47,6 +51,8 @@ export default function ShoppingListActive() {
 
     //Defining state management
     const [makeItemListVisible, setMakeItemListVisible] = useState(false);
+    const [showFinalizePopup, setShowFinalizePopup] = useState(false);
+    const [groupData, setGroupData] = useState(null);
     const [response_data, setResponseData] = useState({
         groupId : null,
         listId : null, //added 4-19-23
@@ -57,9 +63,11 @@ export default function ShoppingListActive() {
     const listId = (isAuthenticated) ? window.location.href.match('[a-zA-Z0-9\-]*$')[0] : null;
     const matchedGroupId = (isAuthenticated) ? window.location.href.match('(groups)\/[a-zA-z\-0-9]+')[0] : null;
     const groupId = (matchedGroupId) ? matchedGroupId.substring(7) : null;
+    const groudId = (matchedGroupId) ? matchedGroupId.substring(7) : null; //just in case API call for group info no work lol
+    
     console.log("listId: " + listId);
     console.log("groupId: " + groupId);
-    //API call and populate group information to trigger redraw
+    //API call and populate list data
     const fetchData = async () => {
         console.log("fetching data");
         let response = {
@@ -101,6 +109,24 @@ export default function ShoppingListActive() {
         });
     };
 
+    //API call to fetch group data (to get group members)
+    useEffect(() => {
+        if (isAuthenticated) {
+            fetchData();
+            fetchGroupData();
+        }
+    }, [isAuthenticated]);
+      
+    const fetchGroupData = async () => {
+        const email = localStorage.getItem("email");
+        const groupResponse = await group_methods.getGroupInfo(groudId, email); //"groudId" as listed in groupService
+        if (groupResponse.success) {
+            setGroupData(groupResponse.data);
+        } else {
+            console.error("Failed to fetch group data");
+        }
+    };
+
     function placeHolder() {
         console.log("TODO");
         if (loading) {
@@ -134,12 +160,19 @@ export default function ShoppingListActive() {
                                 itemId={`${listId}_${index}`}
                                 listId={listId}
                                 onDelete={handleItemDelete}
-                                //goToList={() => router.push(`/groups/${groupId}/shopping_list/`)}
                                 />
                             );
                             })
                         }
-                        <div className={styles.createExpense}></div>
+                        <div className={styles.createExpense} onClick={() => setShowFinalizePopup(true)}>FINALIZE</div>
+                        {showFinalizePopup && groupData && (
+                            <FinalizePopup
+                                items={response_data.items.items}
+                                listId = {listId}
+                                members={groupData.members} 
+                                setShowFinalizePopup={setShowFinalizePopup} //for exit button
+                            />
+                        )}
                     </section>
                     </>
                 }
