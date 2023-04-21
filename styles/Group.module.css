@@ -708,3 +708,111 @@ border-radius: var(--border-radius);
     padding: 2px 5px;
     font-size: 0.75rem;
   }
+
+/* ------------Lists------------ */
+.listTemplate {
+    display: flex;
+    gap: 4rem;
+    border: 1px solid var(--opposite-background);
+    margin: 3px auto;
+    width: 95%;
+    cursor: pointer;
+    border-radius: var(--border-radius);
+}
+
+.listNameP {
+    background-color: var(--neutral-background);
+    /* color: white; */
+    font-weight: bold;
+    flex: 4;
+    padding: 10px;
+    border-top-left-radius: var(--border-radius);
+    border-bottom-left-radius: var(--border-radius);
+}
+
+.listNameAnchor {
+    margin-right: 3%;
+    margin-top: 1%;
+}
+
+.listItem {
+    box-sizing: border-box;
+    position: absolute;
+    width: 250px;
+    height: 46px;
+    left: 35px;
+    top: 140px;
+    background: #E6E6E6;
+    border: 1px solid #000000;
+    border-radius: var(--border-radius);
+}
+
+.shoppingTitle {
+    text-align: center;
+    padding: 1%;
+    background: var(--green-background);
+    margin-top: 1%;
+    color: white;
+}
+
+.createExpense {
+    /* button */
+    width: 226px;
+    height: 37px;
+    margin: auto;
+    background: #D96767;
+    mix-blend-mode: normal;
+    border: 1px solid #000000;
+    color: #ffffff;
+    font-size: 16px;
+    cursor: pointer; 
+    text-align: center; 
+    line-height: 37px; 
+    display: block;
+}
+
+.infobanner {
+    width: 100%;
+    /* margin-top: 15px; */
+    background-color: var(--neutral-background);
+    text-align: center;
+    padding: 5px 0;
+}
+
+.infobanner p {
+    font-size: 1rem;
+    color: #FFF;
+}
+  
+.button {
+    cursor: pointer;
+    margin-top: 10px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.item_list {
+    display: flex;
+    flex-direction: column;
+}
+
+.item_row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    gap: 10px;
+}
+
+.item_container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+  
+.item_text {
+    /* flex: 1; */
+    flex-shrink: 0;
+    width: 70px;
+}
+  

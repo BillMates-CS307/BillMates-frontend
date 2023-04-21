@@ -1,0 +1,15 @@
+A. Identification and classification
+Test Case: 2004
+System: Shopping List
+User is able to add an item to an active list
+Severity: 2
+
+B. Instructions
+    1. Log into an account and select a group (create as needed)
+    2. Click on the hamburger bar and select "Shopping Lists"
+    3. Click on a list that is active (has not been finalized yet)
+    4. Select the "+" button
+
+C. Expected Result:
+    1. User is prompted to name the item
+    2. The item is add to the list

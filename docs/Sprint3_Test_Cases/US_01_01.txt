@@ -1,0 +1,15 @@
+A. Identification and classification
+Test Case: 1001
+System: Shopping List
+User is able to create a new shopping list
+Severity: 1
+
+B. Instructions
+    1. Log into an account and select a group (create as needed)
+    2. Click on the hamburger bar and select "Shopping Lists"
+    3. Click on the plus symbol in the bottom right
+    4. Enter in a name and submit
+
+C. Expected Result:
+	1. After clicking the plus symbol, the user is prompted to enter in a name
+    2. The page is reloaded and shows an item box with the name provided
