@@ -99,6 +99,7 @@ export default function ShoppingListActive() {
     };
 
     const handleBigRedButton = async () => {
+        if (response_data.items.items.length == 0) {return;}
         if (response_data.items.isActive) {
             const confirmFinalize = window.confirm("Are you sure you want to finalize this list? (new items can't be added)");
             if (confirmFinalize) {
@@ -152,7 +153,7 @@ export default function ShoppingListActive() {
         return (
             <>
             <CustomHead title={"Shopping Lists"} description={"Your shopping lists"}></CustomHead>
-            <Header groupPath={"../../" + groupId} selected={HEADER_PATHS.ANALYTICS | HEADER_PATHS.GROUP | HEADER_PATHS.CALENDAR | HEADER_PATHS.SETTINGS | HEADER_PATHS.RECURRING}
+            <Header groupPath={"../../" + groupId} selected={HEADER_PATHS.ANALYTICS | HEADER_PATHS.GROUP | HEADER_PATHS.CALENDAR | HEADER_PATHS.SETTINGS | HEADER_PATHS.RECURRING | HEADER_PATHS.SHOPPINGLIST}
             getManagerStatus={() => {return true}}></Header>
             <main className={styles.main}>
                 <div className={styles.banner}>

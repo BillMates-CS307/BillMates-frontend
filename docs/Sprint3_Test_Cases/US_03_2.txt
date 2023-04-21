@@ -12,5 +12,6 @@ B. Instructions
     4. User 1, click on "Finalize"
     5. User 2, add or remove an item
 C. Expected Result:
-    1. User 2 is warned that the list has been finalized (or maybe page gets reloaded and shown finalized view) =----------=-=-=-==-==-=-=
+    1. User 2 is warned that the list has been finalized
+    2. Page is reloaded and shown inactive view
     

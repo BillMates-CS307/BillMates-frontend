@@ -6,7 +6,7 @@ Severity: 2
 
 B. Instructions
     1. Repeat test case 2002
-    2. Click "confirm"
+    2. Click "ok"
 
 
 C. Expected Result:

@@ -10,5 +10,5 @@ B. Instructions
     3. Select a list (create as needed) and ensure there is at least one item
     4. Click on "Finalize"
 C. Expected Result:
-    1. User is prompted with "Are you sure you want to finalize?" --------------------------------
+    1. User is prompted with "Are you sure you want to finalize this list?"
     2. User has the option to confirm or cancel
