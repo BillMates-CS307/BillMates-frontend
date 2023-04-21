@@ -11,12 +11,15 @@ export default function ItemMenuView({ itemName, itemId, listId, onDelete, isAct
     const delete_response = await shopping_methods.removeItem(itemName, listId);
     console.log(delete_response);
     if (delete_response.errorType) {
-      console.log(delete_response.errorMessage);
-      alert("An error occurred, please try again later");
+      alert("This list has been finalized");
+        window.location.reload();
       return;
+    } else if (delete_response.success) {
+            // Call the onDelete prop
+            onDelete(itemId);
     } else {
-      // Call the onDelete prop
-      onDelete(itemId);
+        alert("This list has been finalized");
+        window.location.reload();
     }
   };
   

@@ -24,7 +24,7 @@ export default function ShoppingListCreateItem({ hideParent, listId }) {
                 return;
             }
 
-            event.target.children[1].textContent = "Create Item List";
+            event.target.children[1].textContent = "Adding Item";
             event.target.children[1].style = "background : var(--green-muted-background)";
             console.log(value);
             let response = await shopping_methods.addItem(value, listId);
