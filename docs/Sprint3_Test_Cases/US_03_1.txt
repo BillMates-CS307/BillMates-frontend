@@ -1,0 +1,14 @@
+A. Identification and classification
+Test Case: 3001
+System: Shopping List
+User is prompted to confirm finalize
+Severity: 3
+
+B. Instructions
+    1. Login and go to a group (create as neeed)
+    2. Navigate to the shopping lists
+    3. Select a list (create as needed) and ensure there is at least one item
+    4. Click on "Finalize"
+C. Expected Result:
+    1. User is prompted with "Are you sure you want to finalize?" --------------------------------
+    2. User has the option to confirm or cancel

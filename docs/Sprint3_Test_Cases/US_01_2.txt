@@ -1,0 +1,15 @@
+A. Identification and classification
+Test Case: 1002
+System: Shopping List
+All users see the same items
+Severity: 1
+
+B. Instructions
+	1. User 1, login and go to a group with multiple members
+    2. Click on the hamburger bar and select "Lists"
+    3. Click on an existing list or create a new one
+    4. Add an item
+    5. User 2, go to the list altered by user 1
+
+C. Expected Result:
+    1. User 2 sees the item created by user 1

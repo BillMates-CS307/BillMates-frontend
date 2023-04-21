@@ -1,0 +1,15 @@
+A. Identification and classification
+Test Case: 2001
+System: Shopping List
+User is able to add an item to the list
+Severity: 2
+
+B. Instructions
+    1. Login and go to a group (create as needed)
+    2. Click on the hamburger bar and select "Lists"
+    3. Click on a list (create as needed)
+    4. Click on the plus button and name the item
+
+C. Expected Result:
+    1. The newly named item appears as an item in the list
+    2. Each item has a "-" symbol next to it 

@@ -1,0 +1,16 @@
+A. Identification and classification
+Test Case: 1003
+System: Shopping List
+Reseting a group clears all existing lists
+Severity: 3
+
+B. Instructions
+	1. Login and go to a group where you are the manager (create as needed)
+    2. Click on the hamburger bar and select "Lists"
+    3. Click the plus button and name the list
+    4. Click on the hamburger bar and select "Settings"
+    5. Click on reset group
+    6. Navigate back to the lists
+
+C. Expected Result:
+    1. A blank screen is shown as no groups exist

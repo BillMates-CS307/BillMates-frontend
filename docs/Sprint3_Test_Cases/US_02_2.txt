@@ -1,0 +1,14 @@
+A. Identification and classification
+Test Case: 2002
+System: Shopping List
+User has to confirm removing an item
+Severity: 3
+
+B. Instructions
+    1. Repeat test case 2001
+    2. Click on the "-" symbol
+
+
+C. Expected Result:
+    1. User is prompted with "Are you sure you want to delete this item"
+    2. User has options to confirm or cancel

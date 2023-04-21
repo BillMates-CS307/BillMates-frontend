@@ -1,0 +1,13 @@
+A. Identification and classification
+Test Case: 1001
+System: Shopping List
+User is able to create a new shopping list
+Severity: 3
+
+B. Instructions
+	1. Login and go to a group (create as needed)
+    2. Click on the hamburger bar and select "Lists"
+    3. Click the plus button and name the list
+
+C. Expected Result:
+    1. The page is reloaded and the list specified is shown on screen

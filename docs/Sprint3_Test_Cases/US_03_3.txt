@@ -1,0 +1,18 @@
+A. Identification and classification
+Test Case: 3003
+System: Shopping List
+User is able to create an expense from a finalized list
+Severity: 3
+
+B. Instructions
+    1. Login and go to a group (create as neeed)
+    2. Navigate to the shopping lists
+    3. Select a list (create as needed) and ensure there is at least one item
+    4. Click on "Finalize"
+    5. Click on "Confirm"
+    6. Fill out the form as neccesary (selecting a person for each item and inputting a price)
+    7. Click "Submit"
+    8. Navigate to the group page
+C. Expected Result:
+    1. A new expense with the shopping list name is created
+    2. Each debt is the total amount assigned to them in the shopping list

@@ -1,0 +1,16 @@
+A. Identification and classification
+Test Case: 3002
+System: Shopping List
+A finalized list cannot be altered
+Severity: 1
+
+B. Instructions
+    1. User 1, login and go to a group (create as neeed)
+    2. User 1, navigate to the shopping lists
+    3. User 2, naviate to that same list
+    3. User 1, select a list (create as needed) and ensure there is at least one item
+    4. User 1, click on "Finalize"
+    5. User 2, add or remove an item
+C. Expected Result:
+    1. User 2 is warned that the list has been finalized (or maybe page gets reloaded and shown finalized view) =----------=-=-=-==-==-=-=
+    
